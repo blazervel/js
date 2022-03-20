@@ -2,17 +2,16 @@
 
 namespace Blazervel\Blazervel\Components;
 
-use Blazervel\Blazervel\Component;
+use Blazervel\Blazervel\Components\Component;
 
 class Block extends Component
 {
-  protected function render(...$params): Component
+
+  protected function render(): Component
   {
     return (
       new Component(
-        tag: 'div', 
-        className: 'block', 
-        params: $params
+        className: 'block relative', 
       )
     );
   }

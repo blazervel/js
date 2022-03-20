@@ -6,68 +6,97 @@ use Blazervel\Blazervel\Exceptions\BlazervelComponentException;
 
 abstract class Component
 {
+  protected string $tagName   = 'div';
+  protected string $id        = '';
+  protected string $className = '';
+  protected string $style     = '';
+  protected array $children   = [];
 
-  // protected string $tagName = 'div';
-  // protected ?string $className;
-  // protected ?string $style;
-  // protected array $children;
+  protected array $supportedAttributes = [
+    'tagName',
+    'id',
+    'className',
+    'style',
+    'children'
+  ];
 
-  // abstract protected function render(): Component;
+  abstract protected function render(): Component;
 
-  // public function __construct(string $tagName = null, string $className = null, string $style = null, array $children = [], ...$params)
-  // {
-  //   $this->tagName   = $tagName   ?: $this->tagName;
-  //   $this->className = $className ?: $this->className;
-  //   $this->style     = $style     ?: $this->style;
-  //   $this->children  = array_merge($children, $params);
-  // }
+  public function __construct(
+    string $tagName = null,
+    string $id = null,
+    string $className = null,
+    string $style = null,
+    array $children = null
+  )
+  {
+    if ($id) :
+      $this->id = $id;
+    endif;
 
-  // protected function mergeParams(Component $extenderComponent): Component
-  // {
-  //   if ($extenderComponent->tagName) :
-  //     $this->tagName = $extenderComponent->tagName;
-  //   endif;
+    if ($tagName) :
+      $this->tagName = $tagName;
+    endif;
 
-  //   if ($extenderComponent->className) :
-  //     $this->className.= " {$extenderComponent->className}";
-  //   endif;
+    if ($className) :
+      $this->className = trim(join(' ', array_merge(explode(' ', $this->className), explode(' ', $className))));
+    endif;
 
-  //   if ($extenderComponent->style) :
-  //     $this->style.= " {$extenderComponent->style}";
-  //   endif;
+    if ($style) :
+      $this->style.= " {$style}";
+    endif;
 
-  //   return $this;
-  // }
+    if ($children) :
+      $this->children = $children;
+    endif;
+  }
 
-  // public function __invoke()
-  // {
-  //   return $this->toHTML();
-  // }
+  public function __invoke()
+  {
+    return $this->extrapolate()->toHtml();
+  }
 
-  // public function toHTML(): string
-  // {
-  //   // CardComponent Component ($this)
-  //   $extenderComponent = $this;
-    
-  //   // Block Component (render-returned $component)
-  //   $extendeeComponent = $extenderComponent->render();
+  public function inheritAttributes(Component $extendee): void
+  {
+    foreach($this->supportedAttributes as $attr) :
+      $this->$attr = $this->$attr ?: $extendee->$attr;
+    endforeach;
+  }
 
-  //   $paramMergedComponent = $extendeeComponent->mergeParams(
-  //     $extenderComponent
-  //   );
+  public function extrapolate()
+  {
+    $extendees = [
+      $extender = $this
+    ];
 
-  //   $children = '';
-  //   foreach($paramMergedComponent->children as $childComponent) :
-  //     $children.= (new $childComponent)->print();
-  //   endforeach;
+    do {
 
-  //   return trim("
-  //     <{$paramMergedComponent->tagName} 
-  //       class=\"{$paramMergedComponent->className}\" 
-  //       style=\"{$paramMergedComponent->style}\"
-  //     >{
-  //       $children
-  //     }</{$paramMergedComponent->tagName}>
-  //   ");
-  // }
+      $extendees[] = $extendee = $extender->render();
+
+      $extender = $extendee;
+
+    } while (get_parent_class($extender) === Self::class && get_class($extender) !== Self::class);
+
+    foreach ($extendees as $extendee) :
+      $this->inheritAttributes($extendee);
+    endforeach;
+
+    return $this;
+  }
+
+  public function toHtml(): string
+  {
+    $childrenHtml = '';
+
+    foreach($this->children as $childComponent) :
+      $childrenHtml.= $childComponent; //(new $childComponent)->print();
+    endforeach;
+
+    return trim("
+      <{$this->tagName} 
+        class=\"{$this->className}\" 
+        style=\"{$this->style}\"
+      >{$childrenHtml}</{$this->tagName}>
+    ");
+  }
 }
