@@ -32,7 +32,7 @@ abstract class Contract
       $this->rules = collect($this->rules)->only($only)->all();
     endif;
 
-    $this->getModel();
+    $this->model();
   }
 
   public static function make(array $data, array $rules = null, array $only = null): ValidatorResponse

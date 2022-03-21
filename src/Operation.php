@@ -2,28 +2,50 @@
 
 namespace Blazervel\Blazervel;
 
+use Illuminate\Http\Request;
+
 use Blazervel\Blazervel\Exceptions\BlazervelOperationException;
 use Blazervel\Blazervel\Traits\WithModel;
+use Blazervel\Blazervel\Traits\WithContract;
 
 abstract class Operation
 {
-  use WithModel;
+  use WithModel, WithContract;
 
   abstract protected function steps(): array;
 
-  protected mixed $latestResponse;
+  protected Request $request;
 
-  public function run(): mixed {
+  public static function run(): mixed {
 
-    $this->getModel();
+    $calledClass = get_called_class();
 
-    //$this->validate();
+    $operation = new $calledClass;
 
-    foreach ($this->steps() as $stepMethod) :
-      $latestResponse = $this->$stepMethod();
+    $operation->request = request();
+
+    foreach ($operation->steps() as $stepMethod) :
+
+      if ($stepMethod == 'model' && method_exists($calledClass, 'model')) :
+        $lastResponse = $operation->model();
+        continue;
+      endif;
+  
+      if ($stepMethod == 'contract' && method_exists($calledClass, 'contract')) :
+        $lastResponse = $operation->contract();
+        continue;
+      endif;
+  
+      if ($stepMethod == 'validate' && method_exists($calledClass, 'validate')) :
+        $lastResponse = $operation->validate();
+        continue;
+      endif;
+
+      $lastResponse = $operation->$stepMethod();
+
     endforeach;
 
-    return $this->latestResponse = $latestResponse;
+    return $lastResponse;
   }
 
 }

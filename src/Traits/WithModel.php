@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\Route;
 
 trait WithModel
 {
-  private function getModel(): void
+  public string $modelName;
+  
+  private function model(): void
   {
-    $utility        = class_basename($this);
+    $utility        = class_basename(get_parent_class());
     $exceptionClass = "Blazervel\\Blazervel\\Exceptions\\Blazervel{$utility}Exception";
     $className      = class_basename(get_called_class());
     $currentRoute   = Route::getCurrentRoute();
@@ -36,6 +38,7 @@ trait WithModel
       $model = new $modelClass;
     endif;
 
+    $this->modelName = $modelProperty;
     $this->$modelProperty = $model;
   }
 }
