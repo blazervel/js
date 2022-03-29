@@ -12,4 +12,9 @@ class Component extends ComponentAbstract
     return $this;
   }
 
+  public function test()
+  {
+    return 'test';
+  }
+
 }

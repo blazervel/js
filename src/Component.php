@@ -11,6 +11,7 @@ abstract class Component
   protected string $className = '';
   protected string $style     = '';
   protected array $children   = [];
+  protected array $content   = [];
 
   protected array $supportedAttributes = [
     'tagName',
