@@ -26,7 +26,10 @@ abstract class Div
     array $content = null,
     array $text = null,
     string $type = null,
-    array $for = null
+    array $for = null,
+    array $if = null,
+    array $unless = null,
+    array $model = null
   )
   {
     $this->tagName   = $tagName ?: $this->tagName;
@@ -36,6 +39,9 @@ abstract class Div
     $this->text      = $text;
     $this->type      = $type;
     $this->for       = $for;
+    $this->if        = $if;
+    $this->unless    = $for;
+    $this->model     = $model;
   }
 
   public function __invoke()
