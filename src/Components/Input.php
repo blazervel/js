@@ -2,7 +2,7 @@
 
 namespace Blazervel\Blazervel\Components;
 
-use Blazervel\Blazervel\Div as Component;
+use Blazervel\Blazervel\Component;
 
 class Input extends Component
 {

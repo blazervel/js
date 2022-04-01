@@ -13,16 +13,16 @@ abstract class Contract
 {
   use WithModel;
 
-  abstract protected function rules(): array;
+  abstract protected function rules(array $data = []): array;
 
   public array $rules;
   public array $only;
 
   public function __construct(array $data, array $rules = null, string|array $only = null)
   {
-    $this->data = $data;
+    $this->runModel();
 
-    $this->rules = $this->rules();
+    $this->rules = $this->rules($data);
 
     if ($rules) :
       $this->rules = array_merge($this->rules, $rules);
@@ -30,20 +30,21 @@ abstract class Contract
 
     if ($this->only = $only) :
       $this->rules = collect($this->rules)->only($only)->all();
+      $data = collect($data)->only($only)->all();
     endif;
 
-    $this->model();
+    $this->data = $data;
   }
 
   public static function make(array $data, array $rules = null, array $only = null): ValidatorResponse
   {
     $className = get_called_class();
-    $validator = new $className($data, $rules, $only);
+    $contract = new $className($data, $rules, $only);
 
     return Validator::make(
-      $validator->data, 
-      $validator->rules, 
-      $validator->only
+      $contract->data, 
+      $contract->rules, 
+      $contract->only
     );
   }
   

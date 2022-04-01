@@ -1,12 +1,20 @@
 <?php
 
-namespace Blazervel\Blazervel\Web\Attributes\Traits;
+namespace Blazervel\Blazervel\Web\Attributes\ClassName\Traits;
 
 use Illuminate\Support\Str;
 
 trait WithTailwind
 {
-  private array $effectsPseudos = ['hover:', 'focus:', 'active:', 'group-hover:', 'transition'];
+  private string $appCssPublicPath = 'css/app.css';
+
+  private array $effectsPseudos = [
+    'hover:',
+    'focus:',
+    'active:',
+    'group-hover:',
+    'transition'
+  ];
 
   private function tailwindRemoveEffectsClassNames(array $classNames): array
   {
@@ -15,14 +23,9 @@ trait WithTailwind
     foreach($classNames as $key => $val) :
       $className = is_string($key) ? $key : $val;
 
-      // if (
-      //   Str::contains(
-      //     $className,
-      //     $this->effectsPseudos
-      //   )
-      // ) :
-      //   continue;
-      // endif;
+      if (!Str::of($className)->contains($this->effectsPseudos)) :
+        continue;
+      endif;
 
       $effectlessClassNames = $val;
     endforeach;

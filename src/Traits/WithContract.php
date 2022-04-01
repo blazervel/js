@@ -11,9 +11,9 @@ trait WithContract
 {
   public Contract $contract;
 
-  private function contract(): void
+  protected function runContract(): void
   {
-    $utility = class_basename(get_parent_class());
+    $utility = class_basename(__CLASS__);
 
     if ($modelProperty = $this->modelName) :
       $modelClassName = ucfirst($modelProperty);
@@ -27,7 +27,7 @@ trait WithContract
     );
   }
 
-  private function validate(): void
+  protected function runValidate(): void
   {
     $this->contract();
 

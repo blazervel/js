@@ -3,7 +3,7 @@
 namespace Blazervel\Blazervel\Web\Attributes;
 
 use Blazervel\Blazervel\Exceptions\BlazervelComponentAttributeModelException;
-use Illuminate\Database\Schema\Builder;
+use Illuminate\Support\Facades\DB;
 
 class Model
 {
@@ -14,19 +14,25 @@ class Model
 
   public function __construct(string $modelClass, string $field, int $modelId = null)
   {
-    if (class_exists($modelClass)) :
+    if (!class_exists($modelClass)) :
       throw new BlazervelComponentAttributeModelException(
         "Model class {$modelClass} not found"
       );
     endif;
 
+    $schemaBuilder = DB::getSchemaBuilder();
+    $modelTable = (new $modelClass)->getTable();
+
+    if (!$schemaBuilder->hasColumn($modelTable, $field)) :
+      throw new BlazervelComponentAttributeModelException(
+        "Field {$field} not found on {$modelClass} model"
+      );
+    endif;
+
     $this->modelClass = $modelClass;
-    $this->field = $field;
-    // $this->fieldType = Builder::getColumnType(
-    //   (new $modelClass)->getTable(),
-    //   $field
-    // );
-    $this->modelId = $modelId;
+    $this->modelId    = $modelId;
+    $this->field      = $field;
+    $this->fieldType  = $schemaBuilder->getColumnType($modelTable, $field);
   }
 
   public function field(int $modelId = null): mixed

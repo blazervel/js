@@ -3,10 +3,14 @@
 namespace Blazervel\Blazervel\Web\Attributes;
 
 // use Blazervel\Blazervel\Web\Attributes\Traits\WithTailwind;
+
+use Blazervel\Blazervel\Exceptions\BlazervelComponentAttributeStyleException;
+
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Blazervel\Blazervel\Web\Attributes\Style\Properties;
+use Blazervel\Blazervel\Web\Attributes\Style\Property;
+use Blazervel\Blazervel\Web\Attributes\Style\Pseudo;
 
 class Style
 {
@@ -237,19 +241,85 @@ class Style
   public string $writingMode;
   public string $zIndex;
 
+  // Pseudos
+  public array $lang; // [$lang => new Style()]
+  public array $nthChild; // [$nth => new Style()]
+  public array $nthLastChild;
+  public array $nthLastOfType;
+  public array $nthOfType;
+  public self $not;
+  public self $active;
+  public self $checked;
+  public self $disabled;
+  public self $empty;
+  public self $enabled;
+  public self $firstChild;
+  public self $firstOfType;
+  public self $focus;
+  public self $hover;
+  public self $inRange;
+  public self $invalid;
+  public self $lastChild;
+  public self $lastOfType;
+  public self $link;
+  public self $onlyOfType;
+  public self $onlyChild;
+  public self $optional;
+  public self $outOfRange;
+  public self $readOnly;
+  public self $readWrite;
+  public self $required;
+  public self $root;
+  public self $target;
+  public self $valid;
+  public self $visited;
+  public self $after;
+  public self $before;
+  public self $firstLetter;
+  public self $firstLine;
+  public self $selection;
+
+  public function __construct(
+    string|array|self|null ...$arguments
+  ) {
+
+    if (!$arguments[0]) return;
+
+    foreach ($arguments as $propertyOrPsuedo => $valueOrStyleArray) :
+
+      if (Property::exists($propertyOrPsuedo)) :
+
+        $this->$propertyOrPsuedo = $valueOrStyleArray;
+
+      elseif (Pseudo::exists($propertyOrPsuedo)) :
+
+        // $this->$propertyOrPsuedo($valueOrStyleArray['nth'], $valueOrStyleArray['style']);
+
+      else :
+
+        throw new BlazervelComponentAttributeStyleException(
+          "'{$propertyOrPsuedo}' is not a valid css property or pseudo"
+        );
+
+      endif;
+      
+    endforeach;
+  }
+
   public function string()
   {
     $string = '';
-    $styleProperties = Properties::cases();
+    $styleProperties = Property::all();
     $styles = get_object_vars($this);
 
-    foreach ($styleProperties as $property) :
-      $key = $property->name;
-      $name = $property->value;
-
+    foreach ($styleProperties as $key => $name) :
+      
       if ($option = $styles[$key] ?? null) :
+        
         $string.= "{$name}:{$option->value};";
+        
       endif;
+      
     endforeach;
 
     return $string;

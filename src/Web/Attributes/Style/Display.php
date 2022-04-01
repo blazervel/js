@@ -2,11 +2,26 @@
 
 namespace Blazervel\Blazervel\Web\Attributes\Style;
 
-enum Display: string
+use ReflectionClass;
+
+class Display
 {
-  case flex = 'display:flex';
-  case inlineFlex = 'display:inline-flex';
-  case block = 'display:block';
-  case inline = 'display:inline';
-  case inlineBlock = 'display:inline-block';
+  const flex = 'display:flex';
+  const inlineFlex = 'display:inline-flex';
+  const block = 'display:block';
+  const inline = 'display:inline';
+  const inlineBlock = 'display:inline-block';
+
+  public static function find(string $propertyName): string|null
+  {
+    $properties = new ReflectionClass(__CLASS__);
+    $properties = $properties->getConstants();
+    
+    return $properties[$propertyName] ?? null;
+  }
+
+  public static function exists(string $propertyName): bool
+  {
+    return self::find($propertyName) !== null;
+  }
 }
