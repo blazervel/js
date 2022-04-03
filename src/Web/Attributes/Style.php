@@ -1,16 +1,16 @@
 <?php
 
-namespace Blazervel\Blazervel\Web\Attributes;
+namespace Blazervel\Web\Attributes;
 
-// use Blazervel\Blazervel\Web\Attributes\Traits\WithTailwind;
+// use Blazervel\Web\Attributes\Traits\WithTailwind;
 
-use Blazervel\Blazervel\Exceptions\BlazervelComponentAttributeStyleException;
+use Blazervel\Exceptions\BlazervelComponentAttributeStyleException;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Blazervel\Blazervel\Web\Attributes\Style\Property;
-use Blazervel\Blazervel\Web\Attributes\Style\Pseudo;
+use Blazervel\Web\Attributes\Style\Property;
+use Blazervel\Web\Attributes\Style\Pseudo;
 
 class Style
 {

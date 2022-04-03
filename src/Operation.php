@@ -1,12 +1,12 @@
 <?php
 
-namespace Blazervel\Blazervel;
+namespace Blazervel;
 
 use Illuminate\Http\Request;
 
-use Blazervel\Blazervel\Exceptions\BlazervelOperationException;
-use Blazervel\Blazervel\Traits\WithModel;
-use Blazervel\Blazervel\Traits\WithContract;
+use Blazervel\Exceptions\BlazervelOperationException;
+use Blazervel\Traits\WithModel;
+use Blazervel\Traits\WithContract;
 
 abstract class Operation
 {

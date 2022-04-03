@@ -1,9 +1,9 @@
 <?php
 
-namespace Blazervel\Blazervel;
+namespace Blazervel;
 
-use Blazervel\Blazervel\Exceptions\BlazervelContractException;
-use Blazervel\Blazervel\Traits\WithModel;
+use Blazervel\Exceptions\BlazervelContractException;
+use Blazervel\Traits\WithModel;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;

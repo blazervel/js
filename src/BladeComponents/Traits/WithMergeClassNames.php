@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\Blazervel\BladeComponents\Traits;
+namespace Blazervel\BladeComponents\Traits;
 
-use Blazervel\Blazervel\Web\Attributes\ClassName\Traits\WithTailwind;
+use Blazervel\Web\Attributes\ClassName\Traits\WithTailwind;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Providers;
+namespace Blazervel\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\Blazervel;
+namespace Blazervel;
 
-use Blazervel\Blazervel\Exceptions\BlazervelComponentException;
+use Blazervel\Exceptions\BlazervelComponentException;
 
 abstract class ComponentOld
 {

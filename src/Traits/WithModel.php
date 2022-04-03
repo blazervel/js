@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Traits;
+namespace Blazervel\Traits;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
