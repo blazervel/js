@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\Components;
+namespace Blazervel\Blazervel\Components;
 
-use Blazervel\Component;
+use Blazervel\Blazervel\Component;
 
 class Text extends Component
 {

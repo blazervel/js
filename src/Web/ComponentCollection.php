@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Web;
+namespace Blazervel\Blazervel\Web;
 
 use Illuminate\Support\Collection;
 

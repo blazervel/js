@@ -2,7 +2,7 @@
 
 namespace Blazervel;
 
-use Blazervel\Exceptions\BlazervelComponentException;
+use Blazervel\Blazervel\Exceptions\BlazervelComponentException;
 
 abstract class ComponentOld
 {

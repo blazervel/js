@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\Web\Attributes;
+namespace Blazervel\Blazervel\Web\Attributes;
 
-use Blazervel\Exceptions\BlazervelComponentAttributeForException;
+use Blazervel\Blazervel\Exceptions\BlazervelComponentAttributeForException;
 
 class ForCollection
 {

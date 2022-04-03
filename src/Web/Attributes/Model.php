@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\Web\Attributes;
+namespace Blazervel\Blazervel\Web\Attributes;
 
-use Blazervel\Exceptions\BlazervelComponentAttributeModelException;
+use Blazervel\Blazervel\Exceptions\BlazervelComponentAttributeModelException;
 use Illuminate\Support\Facades\DB;
 
 class Model

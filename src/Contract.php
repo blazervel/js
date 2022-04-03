@@ -2,8 +2,8 @@
 
 namespace Blazervel;
 
-use Blazervel\Exceptions\BlazervelContractException;
-use Blazervel\Traits\WithModel;
+use Blazervel\Blazervel\Exceptions\BlazervelContractException;
+use Blazervel\Blazervel\Traits\WithModel;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;

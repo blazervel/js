@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Web\Attributes\ClassName\Traits;
+namespace Blazervel\Blazervel\Web\Attributes\ClassName\Traits;
 
 use Illuminate\Support\Str;
 

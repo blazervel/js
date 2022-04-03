@@ -1,11 +1,11 @@
 <?php
 
-namespace Blazervel\Traits;
+namespace Blazervel\Blazervel\Traits;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
 
-use Blazervel\Contract;
+use Blazervel\Blazervel\Contract;
 
 trait WithContract
 {

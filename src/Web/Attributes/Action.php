@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\Web\Attributes;
+namespace Blazervel\Blazervel\Web\Attributes;
 
-use Blazervel\Exceptions\BlazervelComponentAttributeClickException;
+use Blazervel\Blazervel\Exceptions\BlazervelComponentAttributeClickException;
 
 class Action
 {

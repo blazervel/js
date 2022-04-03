@@ -8,13 +8,13 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\View;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
-use Blazervel\Web\ComponentCollection;
-use Blazervel\Web\Attributes\AttributeCollection;
-use Blazervel\Web\Attributes\ClassName;
-use Blazervel\Web\Attributes\Style;
-use Blazervel\Web\Attributes\ForCollection;
-use Blazervel\Web\Attributes\Model;
-use Blazervel\Web\Attributes\Action;
+use Blazervel\Blazervel\Web\ComponentCollection;
+use Blazervel\Blazervel\Web\Attributes\AttributeCollection;
+use Blazervel\Blazervel\Web\Attributes\ClassName;
+use Blazervel\Blazervel\Web\Attributes\Style;
+use Blazervel\Blazervel\Web\Attributes\ForCollection;
+use Blazervel\Blazervel\Web\Attributes\Model;
+use Blazervel\Blazervel\Web\Attributes\Action;
 
 abstract class Component
 {

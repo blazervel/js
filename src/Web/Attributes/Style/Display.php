@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Web\Attributes\Style;
+namespace Blazervel\Blazervel\Web\Attributes\Style;
 
 use ReflectionClass;
 
