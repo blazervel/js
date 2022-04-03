@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel;
+namespace Blazervel\Blazervel;
 
 use Blazervel\Blazervel\Exceptions\BlazervelContractException;
 use Blazervel\Blazervel\Traits\WithModel;
@@ -13,8 +13,6 @@ abstract class Contract
 {
   use WithModel;
 
-  abstract protected function rules(array $data = []): array;
-
   public array $rules;
   public array $only;
 
@@ -22,7 +20,9 @@ abstract class Contract
   {
     $this->runModel();
 
-    $this->rules = $this->rules($data);
+    $this->rules = $this->rules(
+      $data
+    );
 
     if ($rules) :
       $this->rules = array_merge($this->rules, $rules);

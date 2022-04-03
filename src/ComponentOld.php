@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel;
+namespace Blazervel\Blazervel;
 
 use Blazervel\Blazervel\Exceptions\BlazervelComponentException;
 
