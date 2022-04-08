@@ -1,10 +1,10 @@
 <?php
 
-namespace Blazervel\Blazervel;
+namespace Blazervel\Blazervel\PHPNative;
 
 use Blazervel\Blazervel\Exceptions\BlazervelComponentException;
 
-abstract class ComponentOld
+abstract class Component
 {
   protected string $tagName   = 'div';
   protected string $id        = '';

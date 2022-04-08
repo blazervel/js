@@ -1,0 +1,45 @@
+<?php
+
+namespace [namespace];
+
+use Blazervel\Blazervel\Policy as Blazervel;
+
+use [modelClass];
+
+class Policy extends Blazervel
+{
+  public function viewAny(User $user): bool
+  {
+    //
+  }
+
+  public function view(User $user, [model] $[modelName]): bool
+  {
+    //
+  }
+
+  public function create(User $user): bool
+  {
+    //
+  }
+
+  public function update(User $user, [model] $[modelName]): bool
+  {
+    //
+  }
+
+  public function delete(User $user, [model] $[modelName]): bool
+  {
+    //
+  }
+
+  public function restore(User $user, [model] $[modelName]): bool
+  {
+    //
+  }
+
+  public function forceDelete(User $user, [model] $[modelName]): bool
+  {
+    //
+  }
+}

@@ -2,17 +2,19 @@
 
 namespace Blazervel\Blazervel\Traits;
 
-use Illuminate\Validation\Validator;
+use Illuminate\Auth\Access\AuthorizationException;
 use Blazervel\Blazervel\Concept;
+use Blazervel\Blazervel\Policy;
 
-trait WithContract
+trait WithPolicy
 {
-  public Validator $contract;
 
-  protected function runContract(): void
+  protected Policy $policy;
+
+  protected function runPolicy(): void
   {
     $calledClassNamespace = Concept::conceptNamespace(get_called_class());
-    $contractClass = "{$calledClassNamespace}\\Contract";
+    $policyClass = "{$calledClassNamespace}\\Policy";
 
     $modelName = $this->modelName ?? null;
 
@@ -25,16 +27,16 @@ trait WithContract
 
     endif;
 
-    $this->contract = $contractClass::make(
+    $this->policy = $policyClass::make(
       action: $this->action,
-      data: $model->toArray()
+      model: $model
     );
   }
 
-  protected function runValidate(): void
+  public function runAuthorize(): void
   {
-    $this->runContract();
+    $this->runPolicy();
 
-    $this->contract->validate();
+    $this->policy->authorize();
   }
 }

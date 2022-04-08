@@ -1,0 +1,16 @@
+<?php
+
+namespace [namespace];
+
+use Blazervel\Blazervel\Blade\State;
+use Blazervel\Blazervel\Blade\Component as Blazervel;
+
+class [class] extends Blazervel
+{
+  public function __construct()
+  {
+    $this->state = new State(
+      //
+    );
+  }
+}

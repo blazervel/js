@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\BladeComponents\Traits;
+namespace Blazervel\Blazervel\Blade\Traits;
 
 use Blazervel\Blazervel\Web\Attributes\ClassName\Traits\WithTailwind;
 use Illuminate\Support\Facades\File;

@@ -4,13 +4,15 @@ namespace Blazervel\Blazervel\Traits;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
+use Blazervel\Blazervel\Concept;
 
 trait WithModel
 {
   protected string $modelName;
+  protected string $collectionName;
   protected ?string $modelClass = null;
-  
-  protected function runModel(): void
+
+  private function getModelProperties()
   {
     if ($this->modelClass) :
 
@@ -19,39 +21,55 @@ trait WithModel
 
     else :
 
-      $utility        = class_basename(__CLASS__);
-      $exceptionClass = "Blazervel\\Blazervel\\Exceptions\\Blazervel{$utility}Exception";
-      $className      = class_basename(get_called_class());
-      $currentRoute   = Route::getCurrentRoute();
-
-      if (!Str::of($className)->contains($utility)) :
-        throw new $exceptionClass(
-          "You've improperly named your {$utility}. The convention should be \"[ModelName]{$utility}}\"."
-        );
-      endif;
-  
-      $modelClassName = Str::remove($utility, $className);
-  
-      if (class_exists("\\App\\{$modelClassName}")) :
-        $modelClass = "\\App\\{$modelClassName}"; 
-      else :
-        $modelClass = "\\App\\Models\\{$modelClassName}";
-      endif;
+      $calledClassNamespace = Concept::conceptNamespace(get_called_class());
+      $modelClassName       = class_basename($calledClassNamespace);
+      $currentRoute         = Route::getCurrentRoute();
+      $modelClass           = "\\App\\Models\\{$modelClassName}";
 
       $this->modelClass = $modelClass;
 
     endif;
 
-    $modelName = Str::lower($modelClassName);
-    $modelProperty = Str::camel($modelClassName);
+    $modelName = Str::camel($modelClassName);
+
+    $this->modelName = $modelName;
+
+    $collectionName = Str::plural($modelName);
+
+    $this->collectionName = $collectionName;
+  }
+  
+  protected function runModel(): void
+  {
+    $this->getModelProperties();
+
+    $modelName = $this->modelName;
+    $modelClass = $this->modelClass;
 
     if ($modelLookup = $currentRoute->parameters[$modelName] ?? false) :
+      
       $model = $modelClass::find($modelLookup);
+      
+    elseif(isset($this->arguments[$modelName])) :
+
+      $model = $this->arguments[$modelName];
+
     else :
+      
       $model = new $modelClass;
+      
     endif;
 
-    $this->modelName = $modelProperty;
-    $this->$modelProperty = $model;
+    $this->$modelName = $model;
+  }
+
+  public function runCollection()
+  {
+    $this->getModelProperties();
+
+    $modelClass = $this->modelClass;
+    $collectionName = $this->collectionName;
+    
+    $this->$collectionName = $modelClass::get();
   }
 }

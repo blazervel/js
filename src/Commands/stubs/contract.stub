@@ -1,0 +1,29 @@
+<?php
+
+namespace [namespace];
+
+use Blazervel\Blazervel\Policy as Blazervel;
+
+class Contract extends Blazervel
+{
+  public function store(array $data = []): array
+  {
+    return [
+      //
+    ];
+  }
+
+  public function update(array $data = []): array
+  {
+    return [
+      //
+    ];
+  }
+
+  public function destroy(array $data = []): array
+  {
+    return [
+      //
+    ];
+  }
+}

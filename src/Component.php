@@ -78,35 +78,17 @@ abstract class Component
   {
     $calledClassName = get_called_class();
 
-    switch($name) :
-      case 'tagName' :
-        return new $calledClassName(tagName: $arguments[0] ?? null);
-        break;
-      case 'type' :
-        return new $calledClassName(type: $arguments[0] ?? null);
-        break;
-      case 'className' :
-        return new $calledClassName(className: $arguments);
-        break;
-      case 'style' :
-        return new $calledClassName(style: $arguments);
-        break;
-      case 'children' :
-        return new $calledClassName(children: $arguments);
-        break;
-      case 'for' :
-        return new $calledClassName(for: $arguments[0]);
-        break;
-      case 'model' :
-        return new $calledClassName(model: $arguments[0]);
-        break;
-      case 'click' :
-        return new $calledClassName(click: $arguments[0]);
-        break;
-      case 'set' :
-        return new $calledClassName(set: $arguments);
-        break;
-    endswitch;
+    return match ($name) {
+      'tagName'   => new $calledClassName(tagName:   $arguments[0] ?? null),
+      'type'      => new $calledClassName(type:      $arguments[0] ?? null),
+      'className' => new $calledClassName(className: $arguments),
+      'style'     => new $calledClassName(style:     $arguments),
+      'children'  => new $calledClassName(children:  $arguments),
+      'for'       => new $calledClassName(for:       $arguments[0]),
+      'model'     => new $calledClassName(model:     $arguments[0]),
+      'click'     => new $calledClassName(click:     $arguments[0]),
+      'set'       => new $calledClassName(set:       $arguments),
+    };
   }
 
   public function __call($name, $arguments)

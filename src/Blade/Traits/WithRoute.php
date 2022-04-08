@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\BladeComponents\Traits;
+namespace Blazervel\Blazervel\Blade\Traits;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
