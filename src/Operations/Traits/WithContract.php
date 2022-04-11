@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Traits;
+namespace Blazervel\Blazervel\Operations\Traits;
 
 use Illuminate\Validation\Validator;
 use Blazervel\Blazervel\Concept;

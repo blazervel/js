@@ -2,13 +2,12 @@
 
 namespace Blazervel\Blazervel;
 
-use Illuminate\Support\Str;
+use Illuminate\Support\{ Str, Collection };
 use Illuminate\Support\Facades\Route;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Http\Request;
 
 use Blazervel\Blazervel\Exceptions\BlazervelConceptException;
-
-use Blazervel\Blazervel\Operations\Operation as OperationObject;
 
 class Concept
 {
@@ -39,9 +38,9 @@ class Concept
         basename($file->getFileName())
       );
 
-      $operations[$name] = new OperationObject(
-        className: "{$this->namespace}\\Operations\\{$name}"
-      );
+      $actionClass = "{$this->namespace}\\Operations\\{$name}";
+
+      $operations[$name] = new $actionClass;
     endforeach;
 
     return $this->operations = $operations;
@@ -65,6 +64,13 @@ class Concept
     endforeach;
 
     return $concepts;
+  }
+
+  public static function operations()
+  {
+    return (new Collection(
+      Concept::list()
+    ))->pluck('operations')->flatten()->all();
   }
 
   public static function conceptFor(string $conceptItemClass): self
@@ -135,15 +141,67 @@ class Concept
 
   public static function registerRoutes()
   {
-    foreach(self::list() as $name => $concept) :
-      foreach($concept->operations as $name => $operation) :
-        $method = Str::lower($operation->method);
-        Route::$method(
-          $operation->uri, 
-          $operation->className
-        );
-      endforeach;
+    foreach(Concept::operations() as $name => $operation) :
+      $method = Str::lower($operation->method);
+      Route::$method(
+        $operation->uri, 
+        $operation::class
+      )->middleware(
+        $operation->httpMiddleware
+      );
     endforeach;
+
+    //Route::get('blazervel/js/blazervel.js', function(){ return response()->header(); });
+    //Route::get('blazervel/css/blazervel.css', function(){ return response()->header(); });
+
+    $endpoint = 'blazervel/concepts/{conceptName}/components/{operationName}';
+
+    Route::get($endpoint, function(string $conceptName, string $operationName){
+      $conceptName    = Str::ucfirst(Str::camel($conceptName));
+      $operationName  = Str::ucfirst(Str::camel($operationName));
+      $componentClass = "\\App\\Concepts\\{$conceptName}\\Components\\{$operationName}";
+      $component      = new $componentClass;
+
+      return response()->json(
+        $component->stateData(), 
+        200
+      );
+    });
+
+    Route::post("{$endpoint}/actions/{actionName}", function(
+      Request $request, 
+      string $conceptName, 
+      string $operationName, 
+      string $actionName
+    ){
+      $conceptName    = Str::ucfirst(Str::camel($conceptName));
+      $operationName  = Str::ucfirst(Str::camel($operationName));
+      $componentClass = "\\App\\Concepts\\{$conceptName}\\Components\\{$operationName}";
+      $component      = new $componentClass;
+
+      if (method_exists($component, $actionName)) :
+        return response()->json([
+          'error' => __('blazervel::components.action_doesnt_exist_on_component', [
+            'action_name' => $actionName,
+            'operation_name' => $operationName,
+          ])
+        ], 500);
+      endif;
+
+      $component->$actionName();
+
+      return response()->json(
+        $component->stateData(), 
+        200
+      );
+    });
+  }
+
+  public static function scheduleables()
+  {
+    return (new Collection(
+      Concept::operations()
+    ))->whereNotNull('scheduleFrequency')->all();
   }
 
   public static function __callStatic($name, $arguments)

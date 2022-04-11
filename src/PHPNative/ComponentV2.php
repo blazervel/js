@@ -16,7 +16,7 @@ use Blazervel\Blazervel\Web\Attributes\ForCollection;
 use Blazervel\Blazervel\Web\Attributes\Model;
 use Blazervel\Blazervel\Web\Attributes\Action;
 
-abstract class Component
+abstract class ComponentV2
 {
   public string $tagName = 'div';
   public ?string $type = null;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Traits;
+namespace Blazervel\Blazervel\Operations\Traits;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
@@ -8,7 +8,7 @@ use Blazervel\Blazervel\Concept;
 
 trait WithModel
 {
-  protected string $modelName;
+  protected string|bool|null $modelName = null;
   protected string $collectionName;
   protected ?string $modelClass = null;
 

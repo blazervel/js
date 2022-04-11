@@ -2,11 +2,9 @@
 
 namespace Blazervel\Blazervel\Blade;
 
-use Illuminate\Support\Str;
-use Illuminate\Routing\Route;
-use Illuminate\Contracts\Container\Container;
+use Illuminate\Support\{ Str, Collection, Js };
+use Illuminate\Database\Eloquent\{ Model, Builder, Collection as EloquentCollection };
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Js;
 
 use Blazervel\Blazervel\Blade\Components\Dashboard;
 use Blazervel\Blazervel\Blade\State;
@@ -32,21 +30,6 @@ abstract class Component extends LaravelComponent
 
   protected $slot;
 
-  // protected array $only = [
-  //   'id', 
-  //   'class', 
-  //   'style', 
-  //   'for', 
-  //   'if', 
-  //   'unless'
-  // ];
-
-  public function __construct(string $slot = null)
-  {
-    $this->id = (string) Str::orderedUuid();
-    $this->slot = $slot ?: '';
-  }
-
   public function render()
   {
     $calledClass   = get_called_class();
@@ -55,49 +38,102 @@ abstract class Component extends LaravelComponent
     $componentName = class_basename($calledClass);
     
     if (
-      !View::exists("concepts.{$conceptName}::{$componentName}") &&
+      !View::exists("blazervel.{$conceptName}::{$componentName}") &&
       View::exists("blazervel::{$componentName}")
     ) :
       return View::make(
-        "blazervel::{$componentName}"
+        "blazervel::{$componentName}",
+        $this->data()
       );
     endif;
 
     return View::make(
-      "concepts.{$conceptName}::{$componentName}"
+      "blazervel.{$conceptName}::{$componentName}",
+      $this->data()
     );
   }
 
-  public function state()
+  public function componentKey()
   {
-    return $this->data();
+    return Str::snake(Str::replace('\\', ' ', 
+      Str::remove('\\Components', 
+        Str::remove('App\\Concepts', $this::class)
+      )
+    ), '-');
   }
 
   public function renderWithoutLayout()
   {
-    $componentKey = Str::snake(Str::replace('\\', ' ', Str::remove('\\Components', Str::remove('App\\Concepts', $this::class))), '-');
+    $conceptName = Str::snake(Concept::conceptName($this::class), '-');
+    $operationName = Str::snake(class_basename($this::class));
+    $stateData = Js::from($this->stateData());
 
     return View::make(CreateBladeView::fromString(
-      "<div v-scope @vue:mounted=\"getState('{$componentKey}', {attribute: 'value'})\">
-        {$this->render()}
+      "<div v-scope v-cloak @vue:mounted=\"init('{$conceptName}', '{$operationName}', {$stateData})\">
+        <template v-if=\"mounted\">{$this->render()}</template>
       </div>"
-    ), $this->data());
+    ));
 
   }
 
   public function renderWithLayout(string $layout)
   {
-    return View::make(CreateBladeView::fromString(
-      "
+    return View::make(CreateBladeView::fromString("
       @extends('{$layout}')
-
       @section('content')
-
         {$this->renderWithoutLayout()}
-
       @endsection
-      "
-    ));
+    "));
+  }
+
+  public function stateData()
+  {
+    return (new Collection(
+
+      $this->data()
+
+    ))->map(function($value){
+
+      if ($value instanceof Model) :
+
+        return $value->toArray();
+
+      elseif ($value instanceof Builder) :
+
+        return $value->get()->map(function($value){
+
+          if ($value instanceof Model) :
+
+            return $value->toArray();
+
+          endif;
+
+          return $value;
+
+        })->all();
+
+      elseif (
+        $value instanceof EloquentCollection ||
+        $value instanceof Collection
+      ) :
+
+        return $value->map(function($value){
+
+          if ($value instanceof Model) :
+
+            return $value->toArray();
+
+          endif;
+
+          return $value;
+
+        })->all();
+
+      endif;
+
+      return $value;
+
+    })->all();
   }
 
   // public function __get(string $name): mixed

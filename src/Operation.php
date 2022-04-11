@@ -4,67 +4,128 @@ namespace Blazervel\Blazervel;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\{ View, File };
 use Illuminate\Routing\Route;
 use Illuminate\Contracts\Container\Container;
-
-use Inertia\Inertia;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 use Blazervel\Blazervel\Exceptions\BlazervelOperationException;
-use Blazervel\Blazervel\Traits\WithModel;
-use Blazervel\Blazervel\Traits\WithContract;
-use Blazervel\Blazervel\Traits\WithPolicy;
+use Blazervel\Blazervel\Operations\Traits\{ 
+  WithModel,
+  WithContract,
+  WithPolicy,
+  WithQueueable,
+  WithScheduleable 
+};
 
-abstract class Operation
+abstract class Operation implements ShouldQueue
 {
-  use WithModel, WithContract, WithPolicy;
+  use WithModel, WithContract, WithPolicy, WithQueueable, WithScheduleable;
 
   protected Request $request;
-  protected array $arguments;
-  public string $method;
+  protected array $arguments = [];
+  public ?string $method = null;
   public null|string|bool $uri = null;
+  public string $name;
+  public string $concept;
+  public string $className;
+  public string $namespace;
+  public array $httpMiddleware = ['auth'];
+
+  private $actionMethodMap = [
+    'index'   => 'GET',
+    'show'    => 'GET',
+    'create'  => 'GET',
+    'store'   => 'POST',
+    'edit'    => 'GET',
+    'update'  => 'PUT',
+    'destroy' => 'DELETE',
+  ];
+
+  private $actionUriMap = [
+    'index'   => '/',
+    'show'    => '/{model}',
+    'create'  => '/{action}',
+    'store'   => '/',
+    'edit'    => '/{model}/{action}',
+    'update'  => '/{model}/{action}',
+    'destroy' => '/{model}',
+  ];
 
   abstract public function steps(): array;
+
+  public function __construct(mixed ...$arguments)
+  {
+    $calledClass     = get_called_class();
+    $this->action    = Str::camel(class_basename($calledClass));
+    $this->arguments = $arguments;
+    $this->request   = request();
+    $this->concept   = Concept::conceptName($calledClass);
+    $this->name      = class_basename($calledClass);
+    $this->namespace = Str::remove("\\{$this->name}", $calledClass);
+    $this->method    = $this->actionMethodMap[Str::camel($this->name)] ?? $this->method ?: 'GET';
+    $this->uri       = $this->uri();
+  }
+
+  public function handle()
+  {
+    foreach ($this->steps() as $stepMethod) :
+
+      if ($stepMethod == 'model' && !method_exists($calledClass, 'model')) :
+        $lastResponse = $this->runModel();
+        continue;
+      endif;
+
+      if ($stepMethod == 'authorize' && !method_exists($calledClass, 'authorize')) :
+        $lastResponse = $this->runAuthorize();
+        continue;
+      endif;
+  
+      if ($stepMethod == 'validate' && !method_exists($calledClass, 'validate')) :
+        $lastResponse = $this->runValidate();
+        continue;
+      endif;
+
+      if ($stepMethod == 'collection' && !method_exists($calledClass, 'collection')) :
+        $lastResponse = $this->runCollection();
+        continue;
+      endif;
+
+      $lastResponse = $this->$stepMethod();
+
+    endforeach;
+
+    return $lastResponse;
+  }
 
   public static function run(...$arguments): mixed 
   {
     $calledClass = get_called_class();
 
-    $operation = new $calledClass;
+    return (new $calledClass(...$arguments))->handle();
+  }
 
-    $operation->action    = Str::camel(class_basename($calledClass));
-    $operation->arguments = $arguments;
-    $operation->request   = request();
-    $operation->method    = $operation->method ?: $operation->runMethod();
+  public function uri(): string|null
+  {
+    if ($this->uri === false) :
+      return null;
+    elseif ($this->uri) :
+      return $this->uri;
+    endif;
 
-    foreach ($operation->steps() as $stepMethod) :
+    if ($this->modelName !== false && $this->modelName === null) :
+      $this->runModel();
+    endif;
 
-      if ($stepMethod == 'model' && !method_exists($calledClass, 'model')) :
-        $lastResponse = $operation->runModel();
-        continue;
-      endif;
-
-      if ($stepMethod == 'authorize' && !method_exists($calledClass, 'authorize')) :
-        $lastResponse = $operation->runAuthorize();
-        continue;
-      endif;
-  
-      if ($stepMethod == 'validate' && !method_exists($calledClass, 'validate')) :
-        $lastResponse = $operation->runValidate();
-        continue;
-      endif;
-
-      if ($stepMethod == 'collection' && !method_exists($calledClass, 'collection')) :
-        $lastResponse = $operation->runCollection();
-        continue;
-      endif;
-
-      $lastResponse = $operation->$stepMethod();
-
-    endforeach;
-
-    return $lastResponse;
+    $conceptSlug = Str::plural(Str::snake($this->concept, '-'));
+    $actionSlug  = Str::snake($this->name, '-');
+    $uri         = $this->actionUriMap[Str::camel($this->name)] ?? $this->uri ?? (in_array('model', $this->steps()) ? "/{model}/{action}" : "/{action}");
+    $uri         = "{$conceptSlug}{$uri}";
+    $uri         = Str::replace('{model}', '{' . $this->modelName . '}', $uri);
+    $uri         = Str::replace('{action}', $actionSlug, $uri);
+    $uri         = Str::of($uri)->endsWith('/') ? Str::replaceLast('/', '', $uri) : $uri;
+    
+    return $uri;
   }
 
   public function __invoke(Container $container, Route $route)
@@ -74,24 +135,25 @@ abstract class Operation
     $actionName = class_basename($this::class);
 
     if (
+      class_exists('\\Inertia\\Inertia') &&
       !class_exists($componentClass) &&
       File::exists("{$concept->path}/Components/{$actionName}.js")
     ) :
 
       if (
-        !View::exists('concepts.shared::layouts.inertia') &&
+        !View::exists('blazervel.shared::layouts.inertia') &&
         View::exists('blazervel::layouts.inertia')
       ) :
-        Inertia::setRootView(
+        \Inertia\Inertia::setRootView(
           'blazervel::layouts.inertia'
         );
       else :
-        Inertia::setRootView(
-          'concepts.shared::layouts.inertia'
+        \Inertia\Inertia::setRootView(
+          'blazervel.shared::layouts.inertia'
         );
       endif;
       
-      return Inertia::render("{$concept->name}/Components/{$actionName}", [
+      return \Inertia\Inertia::render("{$concept->name}/Components/{$actionName}", [
         // data
       ]);
     endif;
@@ -103,16 +165,18 @@ abstract class Operation
     $conceptSlug = Str::snake($concept->name, '-');
 
     if (
-      View::exists("concepts.{$conceptSlug}::layouts.app")
+      View::exists("blazervel.{$conceptSlug}::layouts.app")
     ) :
-      $layout = "concepts.{$conceptSlug}::layouts.app";
+      $layout = "blazervel.{$conceptSlug}::layouts.app";
     elseif (
-      View::exists('concepts.shared::layouts.app')
+      View::exists('blazervel.shared::layouts.app')
     ) :
-      $layout = 'concepts.shared::layouts.app';
+      $layout = 'blazervel.shared::layouts.app';
     endif;
 
-    return $component->renderWithLayout($layout);
+    return $component->renderWithLayout(
+      $layout
+    );
   }
 
   public function __get(string $name): mixed

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use Blazervel\Blazervel\Operation as Blazervel;
 
-class Update extends Blazervel
+class Store extends Blazervel
 {
   public function steps(): array
   {
