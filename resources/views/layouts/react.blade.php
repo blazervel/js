@@ -7,10 +7,10 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
     <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}"/>
     <x-blazervel::styles :href="mix('css/app.css')"/>
-    <x-blazervel::script :src="mix('blazervel/js/petite.js')"/>
+    <x-blazervel::script :src="mix('blazervel/js/react.js')"/>
     @include('blazervel::head')
   </head>
-  <body id="petite" class="font-sans antialiased">
-    @yield('content') 
+  <body class="font-sans antialiased">
+    @yield('content')
   </body>
 </html>

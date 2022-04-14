@@ -18,8 +18,6 @@ trait WithTailwind
 
   private function tailwindRemoveEffectsClassNames(array $classNames): array
   {
-    $effectlessClassNames = [];
-
     foreach($classNames as $key => $val) :
       $className = is_string($key) ? $key : $val;
 
@@ -27,10 +25,10 @@ trait WithTailwind
         continue;
       endif;
 
-      $effectlessClassNames = $val;
+      unset($classNames[$key]);
     endforeach;
 
-    return $effectlessClassNames;
+    return $classNames;
   }
 
   /** 

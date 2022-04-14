@@ -3,7 +3,7 @@
 namespace Blazervel\Blazervel;
 
 use Illuminate\Support\{ Str, Collection };
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\{ Route, Log };
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
 
@@ -14,7 +14,7 @@ class Concept
   public string $name;
   public string $namespace;
   public string $path;
-  public array $operations;
+  public array $operations = [];
 
   public function __construct(string $name, string $namespace, string $path)
   {
@@ -42,6 +42,8 @@ class Concept
 
       $operations[$name] = new $actionClass;
     endforeach;
+    
+    dd($operations);
 
     return $this->operations = $operations;
   }
@@ -139,15 +141,20 @@ class Concept
     return "{$namespace}\\Components\\{$action}";
   }
 
-  public static function registerRoutes()
+  public static function registerRoutes(): void
   {
     foreach(Concept::operations() as $name => $operation) :
       $method = Str::lower($operation->method);
+      $uri = $operation->uri;
+      $middleware = $operation->httpMiddleware;
+
+      $middleware[] = 'web';
+
       Route::$method(
         $operation->uri, 
         $operation::class
       )->middleware(
-        $operation->httpMiddleware
+        $middleware
       );
     endforeach;
 

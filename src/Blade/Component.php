@@ -4,7 +4,7 @@ namespace Blazervel\Blazervel\Blade;
 
 use Illuminate\Support\{ Str, Collection, Js };
 use Illuminate\Database\Eloquent\{ Model, Builder, Collection as EloquentCollection };
-use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\{ View, File };
 
 use Blazervel\Blazervel\Blade\Components\Dashboard;
 use Blazervel\Blazervel\Blade\State;
@@ -62,11 +62,35 @@ abstract class Component extends LaravelComponent
     ), '-');
   }
 
+  public function hasJsView()
+  {
+    $concept = Concept::conceptFor($this::class);
+    $operationName = class_basename($this::class);
+
+    return File::exists(
+      "{$concept->path}/resources/js/{$operationName}.js"
+    );
+  }
+
   public function renderWithoutLayout()
   {
-    $conceptName = Str::snake(Concept::conceptName($this::class), '-');
-    $operationName = Str::snake(class_basename($this::class));
-    $stateData = Js::from($this->stateData());
+    $conceptName   = Concept::conceptName($this::class);
+    $conceptSlug   = Str::snake($conceptName, '-');
+    $operationName = class_basename($this::class);
+    $operationSlug = Str::snake($operationName);
+    $stateData     = Js::from($this->stateData());
+
+    if ($this->hasJsView()) :
+      return View::make(CreateBladeView::fromString(
+        "<div 
+          id=\"react\" 
+          data-concept=\"{$conceptSlug}\" 
+          data-operation=\"{$operationName}\" 
+          data-initial-state=\"{$stateData}\"
+          data-component-path=\"{$conceptName}/resources/js/{$operationName}\"
+        ></div>"
+      ));
+    endif;
 
     return View::make(CreateBladeView::fromString(
       "<div v-scope v-cloak @vue:mounted=\"init('{$conceptName}', '{$operationName}', {$stateData})\">
@@ -76,8 +100,23 @@ abstract class Component extends LaravelComponent
 
   }
 
-  public function renderWithLayout(string $layout)
+  public function renderWithLayout()
   {
+    $concept     = Concept::conceptFor($this::class);
+    $layoutType  = $this->hasJsView() ? 'react' : 'app';
+    $layout      = "blazervel::layouts.{$layoutType}";
+    $conceptSlug = Str::snake($concept->name, '-');
+
+    if (
+      View::exists("blazervel.{$conceptSlug}::layouts.{$layoutType}")
+    ) :
+      $layout = "blazervel.{$conceptSlug}::layouts.{$layoutType}";
+    elseif (
+      View::exists("blazervel.shared::layouts.{$layoutType}")
+    ) :
+      $layout = "blazervel.shared::layouts.{$layoutType}";
+    endif;
+
     return View::make(CreateBladeView::fromString("
       @extends('{$layout}')
       @section('content')

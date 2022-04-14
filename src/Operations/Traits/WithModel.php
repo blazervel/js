@@ -3,14 +3,14 @@
 namespace Blazervel\Blazervel\Operations\Traits;
 
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\{ Route, Log };
 use Blazervel\Blazervel\Concept;
 
 trait WithModel
 {
   protected string|bool|null $modelName = null;
   protected string $collectionName;
-  protected ?string $modelClass = null;
+  private ?string $modelClass = null;
 
   private function getModelProperties()
   {
@@ -41,10 +41,16 @@ trait WithModel
   
   protected function runModel(): void
   {
+    if (
+      $this->modelName !== null
+    ) return;
+
     $this->getModelProperties();
 
     $modelName = $this->modelName;
     $modelClass = $this->modelClass;
+
+    if ($modelName === false) return;
 
     if ($modelLookup = $currentRoute->parameters[$modelName] ?? false) :
       

@@ -52,6 +52,7 @@ trait WithMergeClassNames
     //   $classNames
     // );
 
+
     return Arr::toCssClasses($classNames);
   }
 

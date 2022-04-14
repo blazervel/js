@@ -4,12 +4,13 @@ namespace Blazervel\Blazervel;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\{ View, File };
+use Illuminate\Support\Facades\{ View, Log };
 use Illuminate\Routing\Route;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use Blazervel\Blazervel\Exceptions\BlazervelOperationException;
+use Blazervel\Blazervel\Operations\Shared;
 use Blazervel\Blazervel\Operations\Traits\{ 
   WithModel,
   WithContract,
@@ -25,12 +26,14 @@ abstract class Operation implements ShouldQueue
   protected Request $request;
   protected array $arguments = [];
   public ?string $method = null;
+  public ?string $uriPrefix = null;
   public null|string|bool $uri = null;
   public string $name;
   public string $concept;
   public string $className;
   public string $namespace;
   public array $httpMiddleware = ['auth'];
+  private ?Shared $shared;
 
   private $actionMethodMap = [
     'index'   => 'GET',
@@ -56,15 +59,13 @@ abstract class Operation implements ShouldQueue
 
   public function __construct(mixed ...$arguments)
   {
-    $calledClass     = get_called_class();
-    $this->action    = Str::camel(class_basename($calledClass));
     $this->arguments = $arguments;
-    $this->request   = request();
-    $this->concept   = Concept::conceptName($calledClass);
-    $this->name      = class_basename($calledClass);
-    $this->namespace = Str::remove("\\{$this->name}", $calledClass);
-    $this->method    = $this->actionMethodMap[Str::camel($this->name)] ?? $this->method ?: 'GET';
-    $this->uri       = $this->uri();
+    $this->request = request();
+
+    $this->props();
+    // $this->shared();
+    $this->method();
+    $this->uri();
   }
 
   public function handle()
@@ -105,17 +106,46 @@ abstract class Operation implements ShouldQueue
     return (new $calledClass(...$arguments))->handle();
   }
 
-  public function uri(): string|null
+  private function props(): void
   {
+    $calledClass     = get_called_class();
+    $this->action    = Str::camel(class_basename($calledClass));
+    $this->concept   = Concept::conceptName($calledClass);
+    $this->name      = class_basename($calledClass);
+    $this->namespace = Str::remove("\\{$this->name}", $calledClass);
+  }
+
+  private function shared()
+  {
+    $sharedClass = 'App\\Concepts\\Shared\\Operations\\Shared';
+
+    $this->shared = class_exists($sharedClass) ? new $sharedClass(...$this->arguments) : null;
+  }
+
+  private function method(): void
+  {
+    $this->method = $this->actionMethodMap[Str::camel($this->name)] ?? $this->method ?: 'GET';
+  }
+
+  private function uri(): void
+  {
+    $prefix = $this->shared->uriPrefix ?? $this->uriPrefix ?: false;
+
     if ($this->uri === false) :
-      return null;
+
+      return;
+
     elseif ($this->uri) :
-      return $this->uri;
+
+      $this->uri = (
+        $prefix
+          ? "{$prefix}/{$this->uri}"
+          : $this->uri
+      );
+
     endif;
 
-    if ($this->modelName !== false && $this->modelName === null) :
-      $this->runModel();
-    endif;
+    $this->runModel();
 
     $conceptSlug = Str::plural(Str::snake($this->concept, '-'));
     $actionSlug  = Str::snake($this->name, '-');
@@ -125,20 +155,23 @@ abstract class Operation implements ShouldQueue
     $uri         = Str::replace('{action}', $actionSlug, $uri);
     $uri         = Str::of($uri)->endsWith('/') ? Str::replaceLast('/', '', $uri) : $uri;
     
-    return $uri;
+    $this->uri (
+      $prefix
+          ? "{$prefix}/{$uri}"
+          : $uri
+    );
   }
 
-  public function __invoke(Container $container, Route $route)
+  private function component(): string
   {
     $componentClass = Concept::componentFor($this::class);
-    $concept = Concept::conceptFor($this::class);
-    $actionName = class_basename($this::class);
+    $concept        = Concept::conceptFor($this::class);
+    $actionName     = class_basename($this::class);
+    $layout         = 'blazervel::layouts.app';
+    $conceptSlug    = Str::snake($concept->name, '-');
+    $component      = new $componentClass;
 
-    if (
-      class_exists('\\Inertia\\Inertia') &&
-      !class_exists($componentClass) &&
-      File::exists("{$concept->path}/Components/{$actionName}.js")
-    ) :
+    if ($component->hasJsView() && class_exists('\\Inertia\\Inertia')) :
 
       if (
         !View::exists('blazervel.shared::layouts.inertia') &&
@@ -153,30 +186,19 @@ abstract class Operation implements ShouldQueue
         );
       endif;
       
-      return \Inertia\Inertia::render("{$concept->name}/Components/{$actionName}", [
-        // data
-      ]);
+      return \Inertia\Inertia::render(
+        "{$concept->name}/resources/js/{$actionName}",
+        $component->data()
+      );
+
     endif;
 
-    $component = new $componentClass;
-    $viewName = Str::snake($actionName, '-');
-    $view = "blazervel::{$viewName}";
-    $layout = 'blazervel::layouts.app';
-    $conceptSlug = Str::snake($concept->name, '-');
+    return $component->renderWithLayout();
+  }
 
-    if (
-      View::exists("blazervel.{$conceptSlug}::layouts.app")
-    ) :
-      $layout = "blazervel.{$conceptSlug}::layouts.app";
-    elseif (
-      View::exists('blazervel.shared::layouts.app')
-    ) :
-      $layout = 'blazervel.shared::layouts.app';
-    endif;
-
-    return $component->renderWithLayout(
-      $layout
-    );
+  public function __invoke(Container $container, Route $route)
+  {
+    return $this->component();
   }
 
   public function __get(string $name): mixed
