@@ -10,7 +10,7 @@ class Edit extends Blazervel
   {
     return [
       'model',
-      'authorize'
+      'authorize',
     ];
   }
 }
