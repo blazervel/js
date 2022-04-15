@@ -2,8 +2,8 @@
 
 namespace [namespace];
 
-use Blazervel\Blazervel\Blade\State;
-use Blazervel\Blazervel\Blade\Component as Blazervel;
+use Blazervel\Blazervel\Components\State;
+use Blazervel\Blazervel\Component as Blazervel;
 
 class [class] extends Blazervel
 {

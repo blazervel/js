@@ -1,6 +1,8 @@
 <?php
 
-namespace Blazervel\Blazervel\Blade;
+namespace Blazervel\Blazervel\Components;
+
+use Illuminate\Support\Str;
 
 class Directives
 {

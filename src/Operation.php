@@ -33,7 +33,6 @@ abstract class Operation implements ShouldQueue
   public string $className;
   public string $namespace;
   public array $httpMiddleware = ['auth'];
-  private ?Shared $shared;
 
   private $actionMethodMap = [
     'index'   => 'GET',
@@ -63,13 +62,14 @@ abstract class Operation implements ShouldQueue
     $this->request = request();
 
     $this->props();
-    // $this->shared();
     $this->method();
     $this->uri();
   }
 
   public function handle()
   {
+    $calledClass = get_called_class();
+
     foreach ($this->steps() as $stepMethod) :
 
       if ($stepMethod == 'model' && !method_exists($calledClass, 'model')) :
@@ -115,21 +115,14 @@ abstract class Operation implements ShouldQueue
     $this->namespace = Str::remove("\\{$this->name}", $calledClass);
   }
 
-  private function shared()
-  {
-    $sharedClass = 'App\\Concepts\\Shared\\Operations\\Shared';
-
-    $this->shared = class_exists($sharedClass) ? new $sharedClass(...$this->arguments) : null;
-  }
-
   private function method(): void
   {
-    $this->method = $this->actionMethodMap[Str::camel($this->name)] ?? $this->method ?: 'GET';
+    $this->method = $this->actionMethodMap[Str::camel($this->name)] ?? $this->method;
   }
 
   private function uri(): void
   {
-    $prefix = $this->shared->uriPrefix ?? $this->uriPrefix ?: false;
+    $prefix = $this->uriPrefix ?: false;
 
     if ($this->uri === false) :
 
@@ -155,18 +148,19 @@ abstract class Operation implements ShouldQueue
     $uri         = Str::replace('{action}', $actionSlug, $uri);
     $uri         = Str::of($uri)->endsWith('/') ? Str::replaceLast('/', '', $uri) : $uri;
     
-    $this->uri (
+    $this->uri = (
       $prefix
           ? "{$prefix}/{$uri}"
           : $uri
     );
   }
 
-  private function component(): string
+  private function component(): mixed
   {
-    $componentClass = Concept::componentFor($this::class);
-    $concept        = Concept::conceptFor($this::class);
-    $actionName     = class_basename($this::class);
+    $calledClass    = get_called_class();
+    $componentClass = Concept::componentFor($calledClass);
+    $concept        = Concept::conceptFor($calledClass);
+    $actionName     = class_basename($calledClass);
     $layout         = 'blazervel::layouts.app';
     $conceptSlug    = Str::snake($concept->name, '-');
     $component      = new $componentClass;
@@ -201,27 +195,30 @@ abstract class Operation implements ShouldQueue
     return $this->component();
   }
 
-  public function __get(string $name): mixed
+  public function __get(string $property): mixed
   {
-    if (in_array($name, ['model', 'modelName'])) :
+    if (
+      in_array($property, ['model', 'modelName']) && 
+      !isset($this->arguments[$property])
+    ) :
       $this->runModel();
     endif;
 
-    if (property_exists($this, $name)) :
+    if (property_exists($this, $property)) :
 
-      return $this->$name;
+      return $this->$property;
 
-    elseif (method_exists($this, $name)) :
+    elseif (method_exists($this, $property)) :
 
-      return $this->$name();
+      return $this->$property();
 
-    elseif (isset($this->arguments[$name])) :
+    elseif (isset($this->arguments[$property])) :
 
-      return $this->arguments[$name];
+      return $this->arguments[$property];
 
     endif;
 
-    return $this->$name;
+    return $this->$property;
   }
 
 }

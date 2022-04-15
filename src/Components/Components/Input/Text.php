@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\Blazervel\Blade\Components\Input;
+namespace Blazervel\Blazervel\Components\Components\Input;
 
-use Blazervel\Blazervel\Blade\Component;
+use Blazervel\Blazervel\Component;
 
 class Text extends Component
 {

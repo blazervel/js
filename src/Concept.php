@@ -3,7 +3,7 @@
 namespace Blazervel\Blazervel;
 
 use Illuminate\Support\{ Str, Collection };
-use Illuminate\Support\Facades\{ Route, Log };
+use Illuminate\Support\Facades\{ Route, Log, View };
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
 
@@ -42,8 +42,6 @@ class Concept
 
       $operations[$name] = new $actionClass;
     endforeach;
-    
-    dd($operations);
 
     return $this->operations = $operations;
   }
@@ -131,7 +129,7 @@ class Concept
     return join('\\', $conceptItemClassNamespace);
   }
 
-  public static function componentFor(string $conceptItemClass)
+  public static function componentFor(string $conceptItemClass): string
   {
     $action = class_basename($conceptItemClass);
     $namespace = self::conceptNamespace(
@@ -141,21 +139,88 @@ class Concept
     return "{$namespace}\\Components\\{$action}";
   }
 
+  public static function componentLookup(string $componentNameOrPath): string|null
+  {
+    $conceptComponent = null;
+
+    if (Str::of($componentNameOrPath)->contains(['.', '/'])) :
+      $componentPath      = Str::replace('.', '/', $componentNameOrPath);
+      $componentPath      = explode('/', $componentPath);
+      $componentName      = Str::ucfirst(Str::camel(end($componentPath)));
+      $componentNamespace = (new Collection($componentPath))->map(function($value){ return Str::ucfirst(Str::camel($value)); })->join('\\');
+      $conceptComponent   = "App\\Concepts\\{$componentNamespace}";
+    else :
+      $componentName      = Str::ucfirst(Str::camel($componentNameOrPath));
+    endif;
+
+    $sharedComponent = "App\\Concepts\\Shared\\Components\\{$componentName}";
+    $blazervelComponent = "Blazervel\\Blazervel\\Components\\Components\\{$componentName}";
+
+    if ($conceptComponent && class_exists($conceptComponent)) :
+
+      return $conceptComponent;
+
+    elseif (class_exists($sharedComponent)) :
+
+      return $sharedComponent;
+
+    elseif (class_exists($blazervelComponent)) :
+
+      return $blazervelComponent;
+
+    endif;
+
+    return null;
+  }
+
+  public static function viewLookup(string $componentNameOrPath): string|null
+  {
+    $conceptView = null;
+
+    if (Str::of($componentNameOrPath)->contains(['.', '/'])) :
+      $componentPath = Str::replace('.', '/', $componentNameOrPath);
+      $conceptName   = explode('/', $componentPath)[0];
+      $componentName = end(explode('/', $componentPath));
+      $componentName = Str::snake($componentName, '-');
+      $conceptView   = "blazervel.{$conceptName}::{$componentName}";
+    else :
+      $componentName = Str::snake($componentNameOrPath, '-');
+    endif;
+
+    if ($conceptView && View::exists($conceptView)) :
+      return $conceptView;
+    endif;
+    
+    if (View::exists($view = "blazervel.shared::{$componentName}")) :
+      return $view;
+    endif;
+    
+    if (View::exists($view = "blazervel::{$componentName}")) :
+      return $view;
+    endif;
+
+    return null;
+  }
+
   public static function registerRoutes(): void
   {
-    foreach(Concept::operations() as $name => $operation) :
-      $method = Str::lower($operation->method);
-      $uri = $operation->uri;
-      $middleware = $operation->httpMiddleware;
+    foreach(Concept::operations() as $operation) :
 
-      $middleware[] = 'web';
+      if (!$method = Str::lower($operation->method)) :
+        continue;
+      endif;
+
+      $name       = Str::plural(Str::snake($operation->concept, '-'));
+      $name      .= '.' . Str::snake($operation->name, '-');
+      $middleware = array_merge(['web'], $operation->httpMiddleware);
 
       Route::$method(
         $operation->uri, 
         $operation::class
       )->middleware(
         $middleware
-      );
+      )->name($name);
+
     endforeach;
 
     //Route::get('blazervel/js/blazervel.js', function(){ return response()->header(); });

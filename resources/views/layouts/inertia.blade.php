@@ -6,8 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
     <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}"/>
-    <x-blazervel::styles :href="mix('css/app.css')"/>
-    <x-blazervel::script :src="mix('blazervel/js/inertia.js')"/>
+    <blazervel:styles :href="mix('css/app.css')"/>
+    <blazervel:script :src="mix('blazervel/js/inertia.js')"/>
+    <blazervel:head />
     @include('blazervel::head')
     @inertiaHead
   </head>

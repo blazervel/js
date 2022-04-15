@@ -1,21 +1,19 @@
 <?php
 
-namespace Blazervel\Blazervel\Blade;
+namespace Blazervel\Blazervel;
 
 use Illuminate\Support\{ Str, Collection, Js };
 use Illuminate\Database\Eloquent\{ Model, Builder, Collection as EloquentCollection };
 use Illuminate\Support\Facades\{ View, File };
 
-use Blazervel\Blazervel\Blade\Components\Dashboard;
-use Blazervel\Blazervel\Blade\State;
+use Blazervel\Blazervel\Components\Components\Dashboard;
+use Blazervel\Blazervel\Components\CreateBladeView;
 use Blazervel\Blazervel\Concept;
 
 use Illuminate\View\Component as LaravelComponent;
 
 abstract class Component extends LaravelComponent
 {
-  protected State $state;
-
   protected string $layout = Dashboard::class;
 
   protected string $id;
@@ -27,42 +25,22 @@ abstract class Component extends LaravelComponent
   protected $unless;
   protected $for;
   protected $onclick;
-
   protected $slot;
 
-  public function render()
+  public function data()
   {
-    $calledClass   = get_called_class();
-    $concept       = Concept::conceptNamespace($calledClass);
-    $conceptName   = Str::snake(class_basename($concept), '-');
-    $componentName = class_basename($calledClass);
-    
-    if (
-      !View::exists("blazervel.{$conceptName}::{$componentName}") &&
-      View::exists("blazervel::{$componentName}")
-    ) :
-      return View::make(
-        "blazervel::{$componentName}",
-        $this->data()
-      );
-    endif;
+    $this->except = array_merge([
+      'hasJsView',
+      'stateData',
+      'renderWithLayout',
+      'attributes',
+      'componentName'
+    ], $this->except);
 
-    return View::make(
-      "blazervel.{$conceptName}::{$componentName}",
-      $this->data()
-    );
+    return parent::data();
   }
 
-  public function componentKey()
-  {
-    return Str::snake(Str::replace('\\', ' ', 
-      Str::remove('\\Components', 
-        Str::remove('App\\Concepts', $this::class)
-      )
-    ), '-');
-  }
-
-  public function hasJsView()
+  public function hasJsView(): bool
   {
     $concept = Concept::conceptFor($this::class);
     $operationName = class_basename($this::class);
@@ -72,32 +50,44 @@ abstract class Component extends LaravelComponent
     );
   }
 
-  public function renderWithoutLayout()
+  public function render()
   {
-    $conceptName   = Concept::conceptName($this::class);
+    $calledClass   = get_called_class();
+    $conceptName   = Concept::conceptName($calledClass);
     $conceptSlug   = Str::snake($conceptName, '-');
-    $operationName = class_basename($this::class);
-    $operationSlug = Str::snake($operationName);
-    $stateData     = Js::from($this->stateData());
+    $componentName = class_basename($calledClass);
+    $stateData     = Js::from($this->stateData([
+      'concept' => $conceptSlug,
+      'operation' => $componentName,
+      'componentPath' => "{$conceptName}/resources/js/{$componentName}",
+    ]));
 
     if ($this->hasJsView()) :
       return View::make(CreateBladeView::fromString(
-        "<div 
-          id=\"react\" 
-          data-concept=\"{$conceptSlug}\" 
-          data-operation=\"{$operationName}\" 
-          data-initial-state=\"{$stateData}\"
-          data-component-path=\"{$conceptName}/resources/js/{$operationName}\"
-        ></div>"
+        "<div id=\"react\" data-initial-state=\"{$stateData}\"></div>"
       ));
     endif;
+    
+    if (
+      !View::exists("blazervel.{$conceptName}::{$componentName}") &&
+      View::exists("blazervel::{$componentName}")
+    ) :
+      $slot = View::make(
+        "blazervel::{$componentName}",
+        $this->data()
+      );
+    endif;
+
+    $slot = View::make(
+      "blazervel.{$conceptName}::{$componentName}",
+      $this->data()
+    );
 
     return View::make(CreateBladeView::fromString(
-      "<div v-scope v-cloak @vue:mounted=\"init('{$conceptName}', '{$operationName}', {$stateData})\">
-        <template v-if=\"mounted\">{$this->render()}</template>
+      "<div v-scope v-cloak @vue:mounted=\"init('{$conceptName}', '{$componentName}', {$stateData})\">
+        <template v-if=\"mounted\">{$slot}</template>
       </div>"
     ));
-
   }
 
   public function renderWithLayout()
@@ -117,17 +107,17 @@ abstract class Component extends LaravelComponent
       $layout = "blazervel.shared::layouts.{$layoutType}";
     endif;
 
-    return View::make(CreateBladeView::fromString("
-      @extends('{$layout}')
+    return View::make(CreateBladeView::fromString(
+     "@extends('{$layout}')
       @section('content')
-        {$this->renderWithoutLayout()}
-      @endsection
-    "));
+        {$this->render()}
+      @endsection"
+    ));
   }
 
-  public function stateData()
+  public function stateData(array $mergeData = []): array
   {
-    return (new Collection(
+    $data = (new Collection(
 
       $this->data()
 
@@ -173,6 +163,8 @@ abstract class Component extends LaravelComponent
       return $value;
 
     })->all();
+
+    return array_merge($data, $mergeData);
   }
 
   // public function __get(string $name): mixed

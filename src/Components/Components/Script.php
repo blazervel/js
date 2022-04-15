@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\Blazervel\Blade\Components;
+namespace Blazervel\Blazervel\Components\Components;
 
-use Blazervel\Blazervel\Blade\Component;
+use Blazervel\Blazervel\Component;
 
 class Script extends Component
 {

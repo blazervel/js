@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Console\Scheduling\Schedule;
 
-use Blazervel\Blazervel\Blade\TagCompiler;
+use Blazervel\Blazervel\Components\TagCompiler;
 use Blazervel\Blazervel\Concept;
 
 use Illuminate\Support\ServiceProvider;
@@ -57,7 +57,7 @@ class BlazervelServiceProvider extends ServiceProvider
   private function loadComponents()
   {
     Blade::componentNamespace(
-      'Blazervel\\Blazervel\\Blade\\Components', 
+      'Blazervel\\Blazervel\\Components\\Components', 
       'blazervel'
     );
 
@@ -91,6 +91,7 @@ class BlazervelServiceProvider extends ServiceProvider
       endforeach;
     });
   }
+  
   public function loadRoutes() 
   {
     Concept::registerRoutes();
