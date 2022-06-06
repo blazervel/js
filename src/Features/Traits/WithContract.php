@@ -3,7 +3,7 @@
 namespace Blazervel\Blazervel\Operations\Traits;
 
 use Illuminate\Validation\Validator;
-use Blazervel\Blazervel\Concept;
+use Blazervel\Blazervel\Feature;
 
 trait WithContract
 {
@@ -11,7 +11,7 @@ trait WithContract
 
   protected function runContract(): void
   {
-    $calledClassNamespace = Concept::conceptNamespace(get_called_class());
+    $calledClassNamespace = Feature::conceptNamespace(get_called_class());
     $contractClass = "{$calledClassNamespace}\\Contract";
 
     $modelName = $this->modelName ?? null;

@@ -3,7 +3,7 @@
 namespace Blazervel\Blazervel\Operations\Traits;
 
 use Illuminate\Auth\Access\AuthorizationException;
-use Blazervel\Blazervel\Concept;
+use Blazervel\Blazervel\Feature;
 use Blazervel\Blazervel\Policy;
 
 trait WithPolicy
@@ -13,7 +13,7 @@ trait WithPolicy
 
   protected function runPolicy(): void
   {
-    $calledClassNamespace = Concept::conceptNamespace(get_called_class());
+    $calledClassNamespace = Feature::conceptNamespace(get_called_class());
     $policyClass = "{$calledClassNamespace}\\Policy";
 
     $modelName = $this->modelName ?? null;

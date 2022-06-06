@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Console\Scheduling\Schedule;
 
 use Blazervel\Blazervel\Components\TagCompiler;
-use Blazervel\Blazervel\Concept;
+use Blazervel\Blazervel\Feature;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -17,7 +17,7 @@ class BlazervelServiceProvider extends ServiceProvider
 
 	public function register()
 	{
-    foreach (Concept::operations() as $operation) :
+    foreach (Feature::operations() as $operation) :
 
         $operationClass = $operation::class;
 
@@ -45,7 +45,7 @@ class BlazervelServiceProvider extends ServiceProvider
       "{$this->pathTo}/resources/views", 'blazervel'
     );
 
-    foreach (Concept::list() as $name => $concept) :
+    foreach (Feature::list() as $name => $concept) :
       $conceptName = Str::snake($name, '-');
 
       $this->loadViewsFrom(
@@ -61,7 +61,7 @@ class BlazervelServiceProvider extends ServiceProvider
       'blazervel'
     );
 
-    foreach (Concept::list() as $name => $concept) :
+    foreach (Feature::list() as $name => $concept) :
       $conceptName = Str::snake($name, '-');
 
       Blade::componentNamespace(
@@ -80,7 +80,7 @@ class BlazervelServiceProvider extends ServiceProvider
   private function scheduleTasks()
   {
     $this->app->booted(function () {
-      foreach(Concept::scheduleables() as $schedule) :
+      foreach(Feature::scheduleables() as $schedule) :
         $className = $schedule::class;
         $arguments = $schedule->scheduleArguments;
         $frequency = $schedule->scheduleFrequency;
@@ -94,7 +94,7 @@ class BlazervelServiceProvider extends ServiceProvider
   
   public function loadRoutes() 
   {
-    Concept::registerRoutes();
+    Feature::registerRoutes();
 
     $this->loadRoutesFrom(
       "{$this->pathTo}/routes/web.php"

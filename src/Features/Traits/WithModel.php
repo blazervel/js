@@ -4,7 +4,7 @@ namespace Blazervel\Blazervel\Operations\Traits;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\{ Route, Log };
-use Blazervel\Blazervel\Concept;
+use Blazervel\Blazervel\Feature;
 
 trait WithModel
 {
@@ -21,7 +21,7 @@ trait WithModel
 
     else :
 
-      $calledClassNamespace = Concept::conceptNamespace(get_called_class());
+      $calledClassNamespace = Feature::conceptNamespace(get_called_class());
       $modelClassName       = class_basename($calledClassNamespace);
       $currentRoute         = Route::getCurrentRoute();
       $modelClass           = "\\App\\Models\\{$modelClassName}";

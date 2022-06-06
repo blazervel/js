@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark:bg-gray-900">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Laravel') }}</title>
-    <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}"/>
-    <x-blazervel::styles :href="mix('css/app.css')"/>
-    <x-blazervel::script :src="mix('blazervel/js/petite.js')"/>
-    @include('blazervel::head')
+    <title inertia>{{ config('app.name', 'Blazervel') }}</title>
+    @routes
+    
+    <script src="https://kit.fontawesome.com/360509c7d2.js" crossorigin="anonymous"></script>
+
+    <b:styles :href="mix('css/app.css')"/>
+    <b:script :src="mix('js/app.js')"/>
   </head>
-  <body id="petite" class="font-sans antialiased">
-    @yield('content') 
+  <body class="font-sans antialiased">
+    @inertia
   </body>
 </html>

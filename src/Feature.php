@@ -3,13 +3,11 @@
 namespace Blazervel\Blazervel;
 
 use Illuminate\Support\{ Str, Collection };
-use Illuminate\Support\Facades\{ Route, Log, View };
+use Illuminate\Support\Facades\{ Route, View };
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
 
-use Blazervel\Blazervel\Exceptions\BlazervelConceptException;
-
-class Concept
+class Feature
 {
   public string $name;
   public string $namespace;
@@ -58,7 +56,7 @@ class Concept
       $name = basename($path);
       $concepts[$name] = new self(
         name: $name,
-        namespace: "App\\Concepts\\{$name}",
+        namespace: "App\\Features\\{$name}",
         path: $path,
       );
     endforeach;
@@ -69,7 +67,7 @@ class Concept
   public static function operations()
   {
     return (new Collection(
-      Concept::list()
+      Feature::list()
     ))->pluck('operations')->flatten()->all();
   }
 
@@ -148,12 +146,12 @@ class Concept
       $componentPath      = explode('/', $componentPath);
       $componentName      = Str::ucfirst(Str::camel(end($componentPath)));
       $componentNamespace = (new Collection($componentPath))->map(function($value){ return Str::ucfirst(Str::camel($value)); })->join('\\');
-      $conceptComponent   = "App\\Concepts\\{$componentNamespace}";
+      $conceptComponent   = "App\\Features\\{$componentNamespace}";
     else :
       $componentName      = Str::ucfirst(Str::camel($componentNameOrPath));
     endif;
 
-    $sharedComponent = "App\\Concepts\\Shared\\Components\\{$componentName}";
+    $sharedComponent = "App\\Features\\Shared\\Components\\{$componentName}";
     $blazervelComponent = "Blazervel\\Blazervel\\Components\\Components\\{$componentName}";
 
     if ($conceptComponent && class_exists($conceptComponent)) :
@@ -204,7 +202,7 @@ class Concept
 
   public static function registerRoutes(): void
   {
-    foreach(Concept::operations() as $operation) :
+    foreach(Feature::operations() as $operation) :
 
       if (!$method = Str::lower($operation->method)) :
         continue;
@@ -231,7 +229,7 @@ class Concept
     Route::get($endpoint, function(string $conceptName, string $operationName){
       $conceptName    = Str::ucfirst(Str::camel($conceptName));
       $operationName  = Str::ucfirst(Str::camel($operationName));
-      $componentClass = "\\App\\Concepts\\{$conceptName}\\Components\\{$operationName}";
+      $componentClass = "\\App\\Features\\{$conceptName}\\Components\\{$operationName}";
       $component      = new $componentClass;
 
       return response()->json(
@@ -248,7 +246,7 @@ class Concept
     ){
       $conceptName    = Str::ucfirst(Str::camel($conceptName));
       $operationName  = Str::ucfirst(Str::camel($operationName));
-      $componentClass = "\\App\\Concepts\\{$conceptName}\\Components\\{$operationName}";
+      $componentClass = "\\App\\Features\\{$conceptName}\\Components\\{$operationName}";
       $component      = new $componentClass;
 
       if (method_exists($component, $actionName)) :
@@ -272,7 +270,7 @@ class Concept
   public static function scheduleables()
   {
     return (new Collection(
-      Concept::operations()
+      Feature::operations()
     ))->whereNotNull('scheduleFrequency')->all();
   }
 

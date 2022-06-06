@@ -2,7 +2,7 @@
 
 namespace Blazervel\Blazervel\Components;
 
-use Blazervel\Blazervel\Concept;
+use Blazervel\Blazervel\Feature;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Illuminate\View\Compilers\ComponentTagCompiler;
@@ -23,7 +23,7 @@ class TagCompiler extends ComponentTagCompiler
     $pattern = "/
       <
         \s*
-        blazervel[-\:]([\w\-\:\.]*)
+        b[-\:]([\w\-\:\.]*)
         (?<attributes>
           (?:
             \s+
@@ -75,7 +75,7 @@ class TagCompiler extends ComponentTagCompiler
     $pattern = "/
       <
         \s*
-        blazervel[-\:]([\w\-\:\.]*)
+        b[-\:]([\w\-\:\.]*)
         \s*
         (?<attributes>
           (?:
@@ -116,11 +116,11 @@ class TagCompiler extends ComponentTagCompiler
 
   public function componentClass(string $component)
   {
-    if ($class = Concept::componentLookup($component)) :
+    if ($class = Feature::componentLookup($component)) :
       return $class;
     endif;
 
-    if ($view = Concept::viewLookup($component)) :
+    if ($view = Feature::viewLookup($component)) :
       return $view;
     endif;
 
