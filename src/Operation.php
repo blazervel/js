@@ -120,17 +120,17 @@ abstract class Operation implements ShouldQueue
     $this->method = $this->actionMethodMap[Str::camel($this->name)] ?? $this->method;
   }
 
-  private function uri(): void
+  private function uri(): string|bool
   {
     $prefix = $this->uriPrefix ?: false;
 
     if ($this->uri === false) :
 
-      return;
+      return $this->uri;
 
     elseif ($this->uri) :
 
-      $this->uri = (
+      return $this->uri = Str::replace('//', '/',
         $prefix
           ? "{$prefix}/{$this->uri}"
           : $this->uri
@@ -148,7 +148,7 @@ abstract class Operation implements ShouldQueue
     $uri         = Str::replace('{action}', $actionSlug, $uri);
     $uri         = Str::of($uri)->endsWith('/') ? Str::replaceLast('/', '', $uri) : $uri;
     
-    $this->uri = (
+    return $this->uri = Str::replace('//', '/',
       $prefix
           ? "{$prefix}/{$uri}"
           : $uri

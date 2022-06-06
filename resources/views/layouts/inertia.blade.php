@@ -9,6 +9,7 @@
     <blazervel:styles :href="mix('css/app.css')"/>
     <blazervel:script :src="mix('blazervel/js/inertia.js')"/>
     <blazervel:head />
+    @routes
     @include('blazervel::head')
     @inertiaHead
   </head>
