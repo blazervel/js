@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Console\Scheduling\Schedule;
 
-use Blazervel\Blazervel\Components\TagCompiler;
+use Blazervel\Blazervel\View\TagCompiler;
 use Blazervel\Blazervel\Feature;
 
 use Illuminate\Support\ServiceProvider;
@@ -17,17 +17,17 @@ class BlazervelServiceProvider extends ServiceProvider
 
 	public function register()
 	{
-    foreach (Feature::operations() as $operation) :
+    // foreach (Feature::operations() as $operation) :
 
-        $operationClass = $operation::class;
+    //     $operationClass = $operation::class;
 
-        $this->app->bind($operationClass, function($app) use ($operationClass) {
-          return new $operationClass(
-            request: $app->request,
-          );
-        });
+    //     $this->app->bind($operationClass, function($app) use ($operationClass) {
+    //       return new $operationClass(
+    //         request: $app->request,
+    //       );
+    //     });
 
-    endforeach;
+    // endforeach;
 	}
 
   public function boot()
@@ -36,7 +36,7 @@ class BlazervelServiceProvider extends ServiceProvider
     $this->loadComponents();
     $this->loadRoutes();
     $this->loadTranslations();
-    $this->scheduleTasks();
+    // $this->scheduleTasks();
   }
 
   private function loadViews()
@@ -45,13 +45,13 @@ class BlazervelServiceProvider extends ServiceProvider
       "{$this->pathTo}/resources/views", 'blazervel'
     );
 
-    foreach (Feature::list() as $name => $concept) :
-      $conceptName = Str::snake($name, '-');
+    // foreach (Feature::list() as $name => $concept) :
+    //   $conceptName = Str::snake($name, '-');
 
-      $this->loadViewsFrom(
-        "{$concept->path}/resources/views", "blazervel.{$conceptName}"
-      );
-    endforeach;
+    //   $this->loadViewsFrom(
+    //     "{$concept->path}/resources/views", "blazervel.{$conceptName}"
+    //   );
+    // endforeach;
   }
 
   private function loadComponents()
@@ -61,14 +61,14 @@ class BlazervelServiceProvider extends ServiceProvider
       'blazervel'
     );
 
-    foreach (Feature::list() as $name => $concept) :
-      $conceptName = Str::snake($name, '-');
+    // foreach (Feature::list() as $name => $concept) :
+    //   $conceptName = Str::snake($name, '-');
 
-      Blade::componentNamespace(
-        "{$concept->namespace}\\Components", 
-        "blazervel.{$conceptName}"
-      );
-    endforeach;
+    //   Blade::componentNamespace(
+    //     "{$concept->namespace}\\Components", 
+    //     "blazervel.{$conceptName}"
+    //   );
+    // endforeach;
 
     if (method_exists($this->app['blade.compiler'], 'precompiler')) {
       $this->app['blade.compiler']->precompiler(function ($string) {
@@ -94,11 +94,11 @@ class BlazervelServiceProvider extends ServiceProvider
   
   public function loadRoutes() 
   {
-    Feature::registerRoutes();
-
     $this->loadRoutesFrom(
       "{$this->pathTo}/routes/web.php"
     );
+
+    // Feature::registerRoutes();
   }
 
   public function loadTranslations() 

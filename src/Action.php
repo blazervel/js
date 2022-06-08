@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Blazervel;
+namespace Blazervel\Blazervel;
 
 use Lorisleiva\Actions\Action as BaseAction;
 

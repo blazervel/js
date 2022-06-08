@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Components\Components;
+namespace Blazervel\Blazervel\View\Components;
 
 use Blazervel\Blazervel\Component;
 

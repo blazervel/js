@@ -2,22 +2,9 @@
 
 namespace Blazervel\Blazervel\Operations;
 
-use Blazervel\Blazervel\Operation as Blazervel;
+use Blazervel\Blazervel\Action;
 
-class Destroy extends Blazervel
+class Destroy extends Action
 {
-  public function steps(): array
-  {
-    return [
-      'model',
-      'authorize',
-      'destroy'
-    ];
-  }
-
-  public function destroy(): bool
-  {
-    $modelName = $this->modelName;
-    return $this->$modelName->delete();
-  }
+  //
 }

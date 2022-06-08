@@ -2,15 +2,9 @@
 
 namespace Blazervel\Blazervel\Operations;
 
-use Blazervel\Blazervel\Operation as Blazervel;
+use Blazervel\Blazervel\Action;
 
-class Edit extends Blazervel
+class Edit extends Action
 {
-  public function steps(): array
-  {
-    return [
-      'model',
-      'authorize',
-    ];
-  }
+  //
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Components;
+namespace Blazervel\Blazervel\View;
 
 use Illuminate\Support\Str;
 

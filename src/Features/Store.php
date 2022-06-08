@@ -4,23 +4,9 @@ namespace Blazervel\Blazervel\Operations;
 
 use Illuminate\Database\Eloquent\Model;
 
-use Blazervel\Blazervel\Operation as Blazervel;
+use Blazervel\Blazervel\Action;
 
-class Store extends Blazervel
+class Store extends Action
 {
-  public function steps(): array
-  {
-    return [
-      'model',
-      'authorize',
-      'validate',
-      'store'
-    ];
-  }
-
-  public function store(): Model
-  {
-    $modelName = $this->modelName;
-    return $this->$modelName->save();
-  }
+  //
 }

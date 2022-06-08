@@ -4,15 +4,9 @@ namespace Blazervel\Blazervel\Operations;
 
 use Illuminate\Database\Eloquent\Collection;
 
-use Blazervel\Blazervel\Operation as Blazervel;
+use Blazervel\Blazervel\Action;
 
-class Index extends Blazervel
+class Index extends Action
 {
-  public function steps(): array
-  {
-    return [
-      'authorize',
-      'collection'
-    ];
-  }
+  //
 }
