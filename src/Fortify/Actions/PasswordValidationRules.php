@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Auth\Fortify;
+namespace Blazervel\Blazervel\Fortify\Actions;
 
 use Laravel\Fortify\Rules\Password;
 

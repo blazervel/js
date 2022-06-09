@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Auth\{
+use Blazervel\Blazervel\Fortify\Controllers\{
     AuthenticatedSessionController,
     ConfirmablePasswordController,
     EmailVerificationNotificationController,
@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\{
     RegisteredUserController,
     VerifyEmailController
 };
+
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {

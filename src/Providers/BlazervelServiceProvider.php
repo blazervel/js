@@ -2,7 +2,7 @@
 
 namespace Blazervel\Blazervel\Providers;
 
-use Blazervel\Blazervel\Auth\Fortify\{
+use Blazervel\Blazervel\Fortify\Actions\{
   CreateNewUser,
   ResetUserPassword,
   UpdateUserPassword,
