@@ -94,8 +94,7 @@ class BlazervelServiceProvider extends ServiceProvider
   private function loadRoutes() 
   {
     $this->loadRoutesFrom(
-      "{$this->pathTo}/routes/web.php",
-      "{$this->pathTo}/routes/fortify.php",
+      "{$this->pathTo}/routes/routes.php"
     );
   }
 
@@ -109,6 +108,8 @@ class BlazervelServiceProvider extends ServiceProvider
 
   private function loadFortify()
   {
+    config(['fortify.views' => false]);
+
     Fortify::createUsersUsing(CreateNewUser::class);
     Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
     Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
@@ -116,7 +117,6 @@ class BlazervelServiceProvider extends ServiceProvider
 
     RateLimiter::for('login', function (Request $request) {
       $email = (string) $request->email;
-
       return Limit::perMinute(5)->by($email.$request->ip());
     });
 
