@@ -2,14 +2,22 @@
 
 namespace Blazervel\Blazervel\Providers;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Console\Scheduling\Schedule;
+use App\Actions\Fortify\{
+  CreateNewUser,
+  ResetUserPassword,
+  UpdateUserPassword,
+  UpdateUserProfileInformation
+};
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Http\Request;
+use Laravel\Fortify\Fortify;
 
 use Blazervel\Blazervel\View\TagCompiler;
-use Blazervel\Blazervel\Feature;
 
-use Illuminate\Support\ServiceProvider;
+use Tightenco\Ziggy\BladeRouteGenerator;
+use Illuminate\Support\Facades\{ File, Blade, App, Lang };
+use Illuminate\Support\{ Str, ServiceProvider };
 
 class BlazervelServiceProvider extends ServiceProvider 
 {
@@ -17,17 +25,7 @@ class BlazervelServiceProvider extends ServiceProvider
 
 	public function register()
 	{
-    // foreach (Feature::operations() as $operation) :
-
-    //     $operationClass = $operation::class;
-
-    //     $this->app->bind($operationClass, function($app) use ($operationClass) {
-    //       return new $operationClass(
-    //         request: $app->request,
-    //       );
-    //     });
-
-    // endforeach;
+    //
 	}
 
   public function boot()
@@ -36,7 +34,40 @@ class BlazervelServiceProvider extends ServiceProvider
     $this->loadComponents();
     $this->loadRoutes();
     $this->loadTranslations();
-    // $this->scheduleTasks();
+    $this->loadDirectives();
+
+    $this->loadFortify();
+  }
+
+  private function loadDirectives(): void
+  {
+    Blade::directive('blazervel', fn ($group) => trim("
+      <script type=\"text/javascript\"> 
+        const Blazervel = <?php echo Js::from(['translations' => " . self::class . "::translations()]) ?>
+      </script>
+
+      <?php echo app('" . BladeRouteGenerator::class . "')->generate({$group}); ?>
+    "));
+  }
+
+  static function translations(): array
+  {
+    $translationFiles = File::files(
+      lang_path(
+        App::currentLocale()
+      )
+    );
+
+    $langKey = fn ($file) => (
+      Str::remove(".{$file->getExtension()}", $file->getFileName())
+    );
+
+    return (
+      collect($translationFiles)
+        ->map(fn ($file) => [$langKey($file) => Lang::get($langKey($file))])
+        ->collapse()
+        ->all()
+    );
   }
 
   private function loadViews()
@@ -44,14 +75,6 @@ class BlazervelServiceProvider extends ServiceProvider
     $this->loadViewsFrom(
       "{$this->pathTo}/resources/views", 'blazervel'
     );
-
-    // foreach (Feature::list() as $name => $concept) :
-    //   $conceptName = Str::snake($name, '-');
-
-    //   $this->loadViewsFrom(
-    //     "{$concept->path}/resources/views", "blazervel.{$conceptName}"
-    //   );
-    // endforeach;
   }
 
   private function loadComponents()
@@ -61,51 +84,45 @@ class BlazervelServiceProvider extends ServiceProvider
       'blazervel'
     );
 
-    // foreach (Feature::list() as $name => $concept) :
-    //   $conceptName = Str::snake($name, '-');
-
-    //   Blade::componentNamespace(
-    //     "{$concept->namespace}\\Components", 
-    //     "blazervel.{$conceptName}"
-    //   );
-    // endforeach;
-
     if (method_exists($this->app['blade.compiler'], 'precompiler')) {
       $this->app['blade.compiler']->precompiler(function ($string) {
         return app(TagCompiler::class)->compile($string);
       });
     }
   }
-
-  private function scheduleTasks()
-  {
-    $this->app->booted(function () {
-      foreach(Feature::scheduleables() as $schedule) :
-        $className = $schedule::class;
-        $arguments = $schedule->scheduleArguments;
-        $frequency = $schedule->scheduleFrequency;
-
-        app(Schedule::class)->job(
-          new $className(...$arguments)
-        )->$frequency();
-      endforeach;
-    });
-  }
   
-  public function loadRoutes() 
+  private function loadRoutes() 
   {
     $this->loadRoutesFrom(
-      "{$this->pathTo}/routes/web.php"
+      "{$this->pathTo}/routes/web.php",
+      "{$this->pathTo}/routes/auth.php",
     );
-
-    // Feature::registerRoutes();
   }
 
-  public function loadTranslations() 
+  private function loadTranslations() 
   {
     $this->loadTranslationsFrom(
       "{$this->pathTo}/lang", 
       'blazervel'
     );
   }
+
+  private function loadFortify()
+  {
+    Fortify::createUsersUsing(CreateNewUser::class);
+    Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
+    Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
+    Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
+
+    RateLimiter::for('login', function (Request $request) {
+      $email = (string) $request->email;
+
+      return Limit::perMinute(5)->by($email.$request->ip());
+    });
+
+    RateLimiter::for('two-factor', function (Request $request) {
+      return Limit::perMinute(5)->by($request->session()->get('login.id'));
+    });
+  }
+
 }
