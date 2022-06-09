@@ -2,7 +2,7 @@
 
 namespace Blazervel\Blazervel\Providers;
 
-use App\Actions\Fortify\{
+use Blazervel\Blazervel\Auth\Fortify\{
   CreateNewUser,
   ResetUserPassword,
   UpdateUserPassword,
@@ -95,7 +95,7 @@ class BlazervelServiceProvider extends ServiceProvider
   {
     $this->loadRoutesFrom(
       "{$this->pathTo}/routes/web.php",
-      "{$this->pathTo}/routes/auth.php",
+      "{$this->pathTo}/routes/fortify.php",
     );
   }
 
