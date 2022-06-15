@@ -1,0 +1,58 @@
+{
+  "name": "@blazervel/react",
+  "version": "0.0.4",
+  "license": "MIT",
+  "description": "The React adapter for Blazervel.js",
+  "contributors": [
+    "Joshua Anderton <hey@joshuaanderton.ca>"
+  ],
+  "homepage": "https://blazervel.com/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blazervel/blazerveljs.git",
+    "directory": "packages/react"
+  },
+  "bugs": {
+    "url": "https://github.com/blazervel/blazerveljs/issues"
+  },
+  "source": "src/index.js",
+  "main": "dist/index.js",
+  "unpkg": "dist/index.umd.js",
+  "scripts": {
+    "build": "npm run clean && npm run build:cjs && npm run build:umd",
+    "build:cjs": "microbundle --format cjs",
+    "build:umd": "microbundle --format umd --name BlazervelReact --globals react=React,@blazervel/blazervel=Blazervel,@heroicons/react/solid=HeroiconsReactSolid,@headlessui/react=HeadlessUiReact,@inertiajs/inertia-react=InertiaReact,@heroicons/react/outline=HeroiconsReactOutline",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build",
+    "watch": "microbundle watch --format cjs"
+  },
+  "devDependencies": {
+    "@blazervel/blazervel": "^0.0.3",
+    "@headlessui/react": "^1.4.2",
+    "@heroicons/react": "^1.0.6",
+    "@inertiajs/inertia": "^0.11.0",
+    "@inertiajs/inertia-react": "^0.8.0",
+    "@inertiajs/progress": "^0.2.6",
+    "@types/react": "^16.9.1",
+    "@types/react-dom": "^17.0.9",
+    "eslint": "^7.0.0",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^4.0.0",
+    "microbundle": "^0.12.0",
+    "react-dom": "^17.0.2",
+    "react": "^16.9.0 || ^17.0.0"
+  },
+  "peerDependencies": {
+    "@blazervel/blazervel": "^0.0.3",
+    "@headlessui/react": "^1.4.2",
+    "@heroicons/react": "^1.0.6",
+    "@inertiajs/inertia": "^0.11.0",
+    "@inertiajs/inertia-react": "^0.8.0",
+    "@inertiajs/progress": "^0.2.6",
+    "react-dom": "^17.0.2",
+    "react": "^16.9.0 || ^17.0.0"
+  },
+  "dependencies": {
+    "lodash.isequal": "^4.5.0"
+  }
+}

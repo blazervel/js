@@ -4,9 +4,12 @@ namespace Blazervel\Blazervel\Providers;
 
 use Blazervel\Blazervel\View\TagCompiler;
 
+use Blazervel\Lang\Lang;
 use Tightenco\Ziggy\BladeRouteGenerator;
-use Illuminate\Support\Facades\{ File, Blade, App, Lang };
-use Illuminate\Support\{ Str, ServiceProvider };
+use Blazervel\Blazervel\Support\Feature;
+use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Facades\{ Config, Blade };
+use Illuminate\Support\ServiceProvider;
 
 class BlazervelServiceProvider extends ServiceProvider 
 {
@@ -14,7 +17,7 @@ class BlazervelServiceProvider extends ServiceProvider
 
 	public function register()
 	{
-    //
+    $this->registerAnonymousClassAliases();
 	}
 
   public function boot()
@@ -28,33 +31,32 @@ class BlazervelServiceProvider extends ServiceProvider
 
   private function loadDirectives(): void
   {
-    Blade::directive('blazervel', fn ($group) => trim("
-      <script type=\"text/javascript\"> 
-        const Blazervel = <?php echo Js::from(['translations' => " . self::class . "::translations()]) ?>
-      </script>
-
-      <?php echo app('" . BladeRouteGenerator::class . "')->generate({$group}); ?>
+    Blade::directive('blazervel', fn ($group) => trim("c
+      <?php echo app('" . Lang::class . "')->generate({$group}) ?>
+      <?php echo app('" . BladeRouteGenerator::class . "')->generate({$group}) ?>
     "));
   }
 
-  static function translations(): array
+  public function registerAnonymousClassAliases(): void
   {
-    $translationFiles = File::files(
-      lang_path(
-        App::currentLocale()
-      )
-    );
+    if (!Config::get('blazervel.anonymous_classes')) :
+      return;
+    endif;
 
-    $langKey = fn ($file) => (
-      Str::remove(".{$file->getExtension()}", $file->getFileName())
-    );
+    $anonymousClasses = Feature::anonymousClasses();
 
-    return (
-      collect($translationFiles)
-        ->map(fn ($file) => [$langKey($file) => Lang::get($langKey($file))])
-        ->collapse()
-        ->all()
-    );
+    $this->app->booting(function ($app) use ($anonymousClasses) {
+
+      $loader = AliasLoader::getInstance();
+
+      foreach($anonymousClasses as $namespace => $class) :
+        $loader->alias(
+          $namespace, 
+          $class
+        );
+      endforeach;
+
+    });
   }
 
   private function loadViews()

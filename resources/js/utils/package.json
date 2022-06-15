@@ -1,0 +1,41 @@
+{
+  "name": "@blazervel/blazervel",
+  "version": "0.0.4",
+  "license": "MIT",
+  "description": "The official JS toolset for Blazervel (the zero-configuration full stack Laravel workflow)",
+  "contributors": [
+    "Joshua Anderton <hey@joshuaanderton.ca>"
+  ],
+  "homepage": "https://blazervel.com/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blazervel/blazerveljs.git",
+    "directory": "packages/blazervel"
+  },
+  "bugs": {
+    "url": "https://github.com/blazervel/blazerveljs/issues"
+  },
+  "files": ["dist", "types"],
+  "source": "src/index.js",
+  "main": "dist/index.js",
+  "unpkg": "dist/index.umd.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "build": "npm run clean && npm run build:cjs && npm run build:umd",
+    "build:cjs": "microbundle --format cjs",
+    "build:umd": "microbundle --format umd --name Blazervel --external none",
+    "clean": "rm -rf types && rm -rf dist",
+    "prepublishOnly": "npm run build",
+    "watch": "microbundle watch --format cjs"
+  },
+  "dependencies": {
+    "axios": "^0.26.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.19.0",
+    "@typescript-eslint/parser": "^4.19.0",
+    "eslint": "^7.23.0",
+    "microbundle": "^0.12.0",
+    "typescript": "^4.2.4"
+  }
+}
