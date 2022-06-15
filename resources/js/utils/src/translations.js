@@ -1,4 +1,10 @@
-export const lang = ( key, count, language ) => {
+type LangProps = {
+  key: string,
+  count?: number,
+  language?: string
+}
+
+export const lang = (): LangProps => {
 
   const { translations } = typeof BlazervelLang !== 'undefined' ? BlazervelLang : globalThis?.BlazervelLang
   

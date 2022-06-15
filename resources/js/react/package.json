@@ -1,29 +1,17 @@
 {
   "name": "@blazervel/react",
-  "version": "0.0.4",
-  "license": "MIT",
-  "description": "The React adapter for Blazervel.js",
   "contributors": [
     "Joshua Anderton <hey@joshuaanderton.ca>"
   ],
-  "homepage": "https://blazervel.com/",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/blazervel/blazerveljs.git",
-    "directory": "packages/react"
-  },
-  "bugs": {
-    "url": "https://github.com/blazervel/blazerveljs/issues"
-  },
   "source": "src/index.js",
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.js",
   "scripts": {
-    "build": "npm run clean && npm run build:cjs && npm run build:umd",
+    "build": "yarn run clean && yarn run build:cjs && yarn run build:umd",
     "build:cjs": "microbundle --format cjs",
     "build:umd": "microbundle --format umd --name BlazervelReact --globals react=React,@blazervel/blazervel=Blazervel,@heroicons/react/solid=HeroiconsReactSolid,@headlessui/react=HeadlessUiReact,@inertiajs/inertia-react=InertiaReact,@heroicons/react/outline=HeroiconsReactOutline",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "yarn run build",
     "watch": "microbundle watch --format cjs"
   },
   "devDependencies": {

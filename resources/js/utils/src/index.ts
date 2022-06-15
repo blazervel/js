@@ -5,4 +5,4 @@ export {
 
 export {
   lang
-} from './translations'
+} from './translations.js'

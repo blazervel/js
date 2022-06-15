@@ -1,7 +1,6 @@
-
-export function mergeCssClasses(...props) {
+export function mergeCssClasses(...props: Array<string|Array<string>> ) {
   
-  let cssClasses = []
+  let cssClasses: Array<string> = []
 
   props.filter(prop => ['object', 'array', 'string'].indexOf(typeof prop) >= 0).forEach(prop => {
 
@@ -17,7 +16,7 @@ export function mergeCssClasses(...props) {
 
 }
 
-export function conditionalClassNames(...classes) {
+export function conditionalClassNames(...classes: Array<string|Array<string>>) {
   
   return classes.filter(Boolean).join(' ')
   
