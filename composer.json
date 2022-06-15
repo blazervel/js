@@ -1,6 +1,6 @@
 {
   "name": "blazervel/blazervel",
-  "description": "Trailblazer method utilized for Laravel.",
+  "description": "Zero-configuration Laravel development workflow",
   "license": "MIT",
   "authors": [
       {
