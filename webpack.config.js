@@ -4,9 +4,14 @@ const path = require('path')
 module.exports = {
   resolve: {
     alias: {
-      '@blazervel/blazervel': path.resolve(`${dir}/resources/js/utils/dist/index.js`),
-      '@blazervel/react': path.resolve(`${dir}/resources/js/react/dist/index.js`),
-      '@app': path.resolve('./resources/js')
+      '@app': path.resolve('./resources/js'),
+      '@blazervel/blazervel': path.resolve(`${dir}/resources/js/utils/dist`),
+      '@blazervel/react': path.resolve(`${dir}/resources/js/react/dist`),
+      '@inertiajs/inertia-react': path.resolve('./node_modules/@inertiajs/inertia-react'),
+      '@inertiajs/inertia': path.resolve('./node_modules/@inertiajs/inertia'),
+      'axios': path.resolve('./node_modules/axios'),
+      'react-dom': path.resolve('./node_modules/react-dom'),
+      'react': path.resolve('./node_modules/react'),
     },
   },
   output: {

@@ -1,7 +1,9 @@
+import React from 'react'
 import { Dashboard } from './Dashboard'
 import {
   PageHeader,
   Container,
+  Button,
   Card,
   List,
   Form
@@ -14,21 +16,22 @@ export const FormLayout = ({
   pageHeading,
   pageActions,
 
-  formAction,
   formRoute,
+  formMethod,
   formFields,
   formSubmitButtonText,
 
   children,
 
 }) => (
-  <Dashboard pageTitle={pageTitle}>
+  <Dashboard pageTitle={pageTitle} {...props}>
 
     <Container sm>
 
       <Card>
 
         <PageHeader
+          superHeading={pageSuperHeading}
           heading={pageHeading || pageTitle}
           actions={pageActions}
           sm />
@@ -42,6 +45,7 @@ export const FormLayout = ({
         <Form
           className="mt-8"
           route={formRoute}
+          method={formMethod}
           fields={formFields}
           formSubmitButtonText={formSubmitButtonText} />
 
@@ -68,6 +72,7 @@ export const IndexLayout = ({
   pageActions,
   
   items,
+  itemsNoneFoundRoute,
   itemTitle,
   itemRoute,
   itemActions,
@@ -77,7 +82,7 @@ export const IndexLayout = ({
   ...props
 
 }) => (
-  <Dashboard pageTitle={pageTitle} {...props}>
+  <Dashboard pageTitle={pageTitle} {...props} {...props}>
 
     <PageHeader
       superHeading={pageSuperHeading}
@@ -95,7 +100,8 @@ export const IndexLayout = ({
       items={items}
       itemTitle={itemTitle}
       itemRoute={itemRoute}
-      itemActions={itemActions} />
+      itemActions={itemActions}
+      noneFoundRoute={itemsNoneFoundRoute} />
 
   </Dashboard>
 )
@@ -114,7 +120,7 @@ export function ShowLayout({
 
 }) {
   return (
-    <Dashboard pageTitle={itemTitle}>
+    <Dashboard pageTitle={itemTitle} {...props}>
 
       <PageHeader
         superHeading={pageSuperHeading}

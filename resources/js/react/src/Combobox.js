@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import { Combobox as ComboboxHeadless } from '@headlessui/react'
-import { mergeCssClasses } from '@blazervel/blazervel'
+import { mergeCssClasses } from '../../utils/src/css-classes'
 
 export function Combobox({ label, options, handleChange }) {
   

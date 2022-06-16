@@ -19,6 +19,7 @@ export { Badge } from './Badge'
 export { Container } from './Container'
 export { Card } from './Card'
 export { Icon } from './Icon'
+export { Alert } from './Alert'
 
 export {
   PageHeader,

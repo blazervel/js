@@ -1,4 +1,5 @@
-import { Icon } from '.'
+import React from 'react'
+import { Icon, Button, ButtonPrimary } from '.'
 
 export function SectionHeader({
   icon,
@@ -39,9 +40,15 @@ export function SectionHeader({
 
       </div>
       
-      {actions & (
+      {actions && (
         <div className="flex-shrink-0 mt-4 md:mt-0 pl-0 md:pl-4 space-x-3">
-          {actions}
+          {Array.isArray(actions) ? actions.map(({ primary, ...actionProps }, i) => (primary || false) === true ? (
+            <ButtonPrimary key={encodeURI(actionProps.route)} {...actionProps} />
+          ) : (
+            <Button key={encodeURI(actionProps.route)} {...actionProps} />
+          )) : (
+            actions
+          )}
         </div>
       )}
 

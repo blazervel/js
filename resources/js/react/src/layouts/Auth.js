@@ -1,18 +1,22 @@
 import React from 'react'
 import { Dashboard, Card, Container, ApplicationLogo } from '..'
 
-export const Auth = ({ children, ...props }) => (
-  <Dashboard {...props} sidebar={false} topbar={false}>
-    <Container xs>
+export function Auth({ children, ...props }){
+  return (
+    <>
+      <Dashboard {...props} sidebar={false} topbar={false}>
+        <Container xs>
 
-      <div className="flex justify-center">
-        <ApplicationLogo lg />
-      </div>
+          <div className="flex justify-center">
+            <ApplicationLogo lg />
+          </div>
 
-      <Card className="mt-6">
-        {children}
-      </Card>
+          <Card className="mt-6">
+            {children}
+          </Card>
 
-    </Container>
-  </Dashboard>
-)
+        </Container>
+      </Dashboard>
+    </>
+  )
+}

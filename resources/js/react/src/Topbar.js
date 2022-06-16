@@ -1,7 +1,8 @@
+import React from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
 import { Link, ApplicationLogo } from '.'
-import { mergeCssClasses } from '@blazervel/blazervel'
+import { mergeCssClasses } from '../../utils/src/css-classes'
 
 export function Topbar({ navigation, className, ...props }) {
   return (

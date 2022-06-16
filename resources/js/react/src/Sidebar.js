@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ApplicationLogo, Link } from '.'
-import { mergeCssClasses } from '@blazervel/blazervel'
+import { mergeCssClasses } from '../../utils/src/css-classes'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
 
 export function Sidebar({ children, navigation }) {

@@ -1,4 +1,4 @@
-export const lang = () => {
+export const lang = (key) => {
 
   const { translations } = typeof BlazervelLang !== 'undefined' ? BlazervelLang : globalThis?.BlazervelLang
   

@@ -1,7 +1,7 @@
 import React from 'react'
 import { ArrowSmDownIcon, ArrowSmUpIcon } from '@heroicons/react/solid'
 import { Link } from '.'
-import { conditionalClassNames } from '@blazervel/blazervel'
+import { conditionalClassNames } from '../../utils/src/css-classes'
 
 export function Stats({ stats, ...props }) {
 

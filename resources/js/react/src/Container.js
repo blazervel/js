@@ -1,3 +1,5 @@
+import React from 'react'
+
 export const Container = ({ xs = false, sm = false, lg = false, className, children }) => {
   
   let maxWidth = 'max-w-3xl'

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import { Label } from '.'
-import { mergeCssClasses } from '@blazervel/blazervel'
+import { mergeCssClasses } from '../../utils/src/css-classes'
 
 export function Input({
   xs = false,
