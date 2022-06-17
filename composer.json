@@ -12,6 +12,7 @@
       "php": "^8.0",
       "illuminate/support": "^8.67|^9.0",
       "lorisleiva/laravel-actions": "^2.4",
+      "phpstan/phpstan": "^1.7",
       "tightenco/ziggy": "^1.0"
   },
   "require-dev": {

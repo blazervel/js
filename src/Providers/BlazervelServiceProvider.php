@@ -2,6 +2,7 @@
 
 namespace Blazervel\Blazervel\Providers;
 
+use Blazervel\Blazervel\Commands\MakeCommand;
 use Blazervel\Blazervel\View\TagCompiler;
 
 use Blazervel\Lang\Lang;
@@ -27,6 +28,12 @@ class BlazervelServiceProvider extends ServiceProvider
     $this->loadRoutes();
     $this->loadTranslations();
     $this->loadDirectives();
+
+    if ($this->app->runningInConsole()) :
+      $this->commands([
+        MakeCommand::class,
+      ]);
+    endif;
   }
 
   private function loadDirectives(): void
@@ -39,7 +46,7 @@ class BlazervelServiceProvider extends ServiceProvider
 
   public function registerAnonymousClassAliases(): void
   {
-    if (!Config::get('blazervel.anonymous_classes')) :
+    if (!Config::get('blazervel.anonymous_classes', true)) :
       return;
     endif;
 
