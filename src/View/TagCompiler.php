@@ -3,7 +3,6 @@
 namespace Blazervel\Blazervel\View;
 
 use Blazervel\Blazervel\Feature;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Illuminate\View\Compilers\ComponentTagCompiler;
 

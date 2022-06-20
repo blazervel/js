@@ -2,7 +2,7 @@
 
 namespace Blazervel\Blazervel\View\Components;
 
-use Blazervel\Blazervel\Component;
+use Illuminate\View\Component;
 
 class Script extends Component
 {

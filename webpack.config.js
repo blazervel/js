@@ -1,5 +1,5 @@
-const path = require('path')
-      dir = process.env.BLAZERVELOPMENT == true ? '../packages/blazervel/blazervel' : './vendor/blazervel/blazervel'
+const path = require('path'),
+      dir = process.env.BLAZERVELOPMENT == true ? '../packages/blazervel' : './vendor/blazervel/blazervel'
 
 module.exports = {
   resolve: {

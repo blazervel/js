@@ -38,7 +38,7 @@ class BlazervelServiceProvider extends ServiceProvider
 
   private function loadDirectives(): void
   {
-    Blade::directive('blazervel', fn ($group) => trim("c
+    Blade::directive('blazervel', fn ($group) => trim("
       <?php echo app('" . Lang::class . "')->generate({$group}) ?>
       <?php echo app('" . BladeRouteGenerator::class . "')->generate({$group}) ?>
     "));
@@ -76,7 +76,7 @@ class BlazervelServiceProvider extends ServiceProvider
   private function loadComponents()
   {
     Blade::componentNamespace(
-      'Blazervel\\Blazervel\\Components\\Components', 
+      'Blazervel\\Blazervel\\View\\Components', 
       'blazervel'
     );
 

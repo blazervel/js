@@ -25,24 +25,24 @@ class Feature
 
   public static function componentLookup(string $componentNameOrPath): string|null
   {
-    $conceptComponent = null;
+    $featureComponent = null;
 
     if (Str::of($componentNameOrPath)->contains(['.', '/'])) :
       $componentPath      = Str::replace('.', '/', $componentNameOrPath);
       $componentPath      = explode('/', $componentPath);
       $componentName      = Str::ucfirst(Str::camel(end($componentPath)));
       $componentNamespace = (new Collection($componentPath))->map(function($value){ return Str::ucfirst(Str::camel($value)); })->join('\\');
-      $conceptComponent   = "App\\Features\\{$componentNamespace}";
+      $featureComponent   = "App\\Features\\{$componentNamespace}";
     else :
       $componentName      = Str::ucfirst(Str::camel($componentNameOrPath));
     endif;
 
-    $sharedComponent = "App\\Features\\Shared\\Components\\{$componentName}";
-    $blazervelComponent = "Blazervel\\Blazervel\\Components\\Components\\{$componentName}";
+    $sharedComponent = "App\\View\\Components\\{$componentName}";
+    $blazervelComponent = "Blazervel\\Blazervel\\View\\Components\\{$componentName}";
 
-    if ($conceptComponent && class_exists($conceptComponent)) :
+    if ($featureComponent && class_exists($featureComponent)) :
 
-      return $conceptComponent;
+      return $featureComponent;
 
     elseif (class_exists($sharedComponent)) :
 
@@ -59,23 +59,27 @@ class Feature
 
   public static function viewLookup(string $componentNameOrPath): string|null
   {
-    $conceptView = null;
+    $featureView = null;
 
     if (Str::of($componentNameOrPath)->contains(['.', '/'])) :
+
       $componentPath = Str::replace('.', '/', $componentNameOrPath);
-      $conceptName   = explode('/', $componentPath)[0];
+      $featureName   = explode('/', $componentPath)[0];
       $componentName = end(explode('/', $componentPath));
       $componentName = Str::snake($componentName, '-');
-      $conceptView   = "blazervel.{$conceptName}::{$componentName}";
+      $featureView   = "blazervel.{$featureName}::{$componentName}";
+
     else :
+      
       $componentName = Str::snake($componentNameOrPath, '-');
+      
     endif;
 
-    if ($conceptView && View::exists($conceptView)) :
-      return $conceptView;
+    if ($featureView && View::exists($featureView)) :
+      return $featureView;
     endif;
     
-    if (View::exists($view = "blazervel.shared::{$componentName}")) :
+    if (View::exists($view = "components.{$componentName}")) :
       return $view;
     endif;
     
