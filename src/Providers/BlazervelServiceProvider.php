@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 class BlazervelServiceProvider extends ServiceProvider 
 {
+  private string $pathTo = __DIR__ . '/../..';
   
   public function boot()
   {
