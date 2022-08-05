@@ -14,6 +14,7 @@
       "blazervel/auth": "dev-master",
       "blazervel/feature": "dev-master",
       "blazervel/ui": "dev-master",
+      "blazervel/workspaces": "dev-master",
       "blazervel/lang": "dev-master",
       "phpstan/phpstan": "^1.7"
   },
