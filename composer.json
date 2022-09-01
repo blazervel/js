@@ -15,11 +15,12 @@
       "blazervel/feature": "dev-master",
       "blazervel/ui": "dev-master",
       "blazervel/workspaces": "dev-master",
-      "blazervel/lang": "dev-master",
-      "phpstan/phpstan": "^1.7"
+      "blazervel/lang": "dev-master"
   },
   "require-dev": {
-      "phpunit/phpunit": "^9.3"
+      "phpunit/phpunit": "^9.3",
+      "phpstan/phpstan": "^1.7",
+      "laravel/pint": "^1.1"
   },
   "autoload": {
       "psr-4": {

@@ -12,7 +12,6 @@ class BlazervelServiceProvider extends ServiceProvider
   {
     $this->loadViews();
     $this->loadRoutes();
-    $this->loadTranslations();
   }
 
   private function loadViews()
@@ -26,14 +25,6 @@ class BlazervelServiceProvider extends ServiceProvider
   {
     $this->loadRoutesFrom(
       "{$this->pathTo}/routes/routes.php"
-    );
-  }
-
-  private function loadTranslations() 
-  {
-    $this->loadTranslationsFrom(
-      "{$this->pathTo}/lang", 
-      'blazervel'
     );
   }
 
