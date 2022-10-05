@@ -13,6 +13,7 @@
       "illuminate/support": "^8.67|^9.0",
       "blazervel/auth": "dev-master",
       "blazervel/feature": "dev-master",
+      "blazervel/contracts": "dev-master",
       "blazervel/ui": "dev-master",
       "blazervel/workspaces": "dev-master",
       "blazervel/lang": "dev-master"
