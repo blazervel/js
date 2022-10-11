@@ -16,7 +16,7 @@
       "blazervel/contracts": "dev-master",
       "blazervel/ui": "dev-master",
       "blazervel/workspaces": "dev-master",
-      "blazervel/lang": "dev-master"
+      "blazervel/lang-js": "dev-master"
   },
   "require-dev": {
       "phpunit/phpunit": "^9.3",
