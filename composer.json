@@ -15,6 +15,7 @@
       "blazervel/feature": "dev-master",
       "blazervel/contracts": "dev-master",
       "blazervel/ui": "dev-master",
+      "blazervel/inertia": "dev-master",
       "blazervel/workspaces": "dev-master",
       "blazervel/lang-js": "dev-master"
   },
