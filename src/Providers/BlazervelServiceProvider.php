@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 class BlazervelServiceProvider extends ServiceProvider
 {
-    private string $pathTo = __DIR__.'/../..';
+    private string $path = __DIR__ . '/../..';
 
     public function boot()
     {
@@ -17,14 +17,14 @@ class BlazervelServiceProvider extends ServiceProvider
     private function loadViews()
     {
         $this->loadViewsFrom(
-            "{$this->pathTo}/resources/views", 'blazervel'
+            "{$this->path}/resources/views", 'blazervel'
         );
     }
 
     private function loadRoutes()
     {
         $this->loadRoutesFrom(
-            "{$this->pathTo}/routes/routes.php"
+            "{$this->path}/routes/routes.php"
         );
     }
 }
