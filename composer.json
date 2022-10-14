@@ -11,12 +11,12 @@
   "require": {
       "php": "^8.0",
       "illuminate/support": "^8.67|^9.0",
-      "blazervel/auth": "^0.0.1",
-      "blazervel/features": "^0.0.1",
-      "blazervel/ui": "^0.0.1",
-      "blazervel/inertia": "^0.0.1",
-      "blazervel/workspaces": "^0.0.1",
-      "blazervel/lang-js": "^0.0.1"
+      "blazervel/auth": "dev-master",
+      "blazervel/features": "dev-master",
+      "blazervel/ui": "dev-master",
+      "blazervel/inertia": "dev-master",
+      "blazervel/workspaces": "dev-master",
+      "blazervel/lang-js": "dev-master"
   },
   "require-dev": {
       "phpunit/phpunit": "^9.3",
