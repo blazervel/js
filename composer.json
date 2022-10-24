@@ -9,14 +9,14 @@
       }
   ],
   "require": {
-      "php": "^8.0",
+      "php": "^8.1",
       "illuminate/support": "^8.67|^9.0",
       "blazervel/auth": "dev-master",
-      "blazervel/features": "dev-master",
+      "blazervel/actions": "dev-master",
       "blazervel/ui": "dev-master",
       "blazervel/inertia": "dev-master",
       "blazervel/workspaces": "dev-master",
-      "blazervel/lang-js": "dev-master"
+      "blazervel/langjs": "dev-master"
   },
   "require-dev": {
       "phpunit/phpunit": "^9.3",
@@ -39,7 +39,7 @@
   "extra": {
       "laravel": {
           "providers": [
-              "Blazervel\\Blazervel\\Providers\\BlazervelServiceProvider"
+              "Blazervel\\Blazervel\\Providers\\ServiceProvider"
           ]
       }
   }
