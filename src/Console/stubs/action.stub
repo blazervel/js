@@ -1,0 +1,13 @@
+<?php
+
+namespace {{ namespace }};
+
+use Blazervel\Blazervel\Action;
+
+class {{ class }} extends Action
+{
+    public function handle()
+    {
+        //
+    }
+}

@@ -1,0 +1,11 @@
+<?php
+
+use Blazervel\Blazervel\Action;
+
+return new class extends Action
+{
+    public function handle()
+    {
+        //
+    }
+};
