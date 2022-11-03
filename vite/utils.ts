@@ -31,7 +31,7 @@ export const _merge = (object: object, path: string, merge: object|Array<any>): 
   const value = _.get(object, path, null)
   
   if (value === null) {
-    return object
+    return _set(object, path, merge)
   }
   
   if (Array.isArray(value)) {

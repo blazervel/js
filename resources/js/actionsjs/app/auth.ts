@@ -10,11 +10,11 @@ export default ($app) => ({
       return null
     }
 
-    return $app.Models.User.find(userId)
+    return $app.models.user.find(userId)
   },
 
   async _currentUser() {
-    const response = await (new Connection('actions/auth-user'))._post({ namespace: 'blazervel-actionsjs' })
+    const response = await (new Connection('actions/auth-user'))._post({ namespace: 'blazervel' })
     
     return response.user || null
   },
@@ -24,16 +24,16 @@ export default ($app) => ({
   },
 
   async attempt(props: AuthAttemptProps) {
-    const response = await (new Connection('actions/auth-attempt'))._post({ email, password, namespace: 'blazervel-actionsjs' })
+    const response = await (new Connection('actions/auth-attempt'))._post({ email, password, namespace: 'blazervel' })
 
     if (response.user || false) {
       return false
     }
 
-    return $app.Models.User.find(response.user)
+    return $app.models.user.find(response.user)
   },
 
   async logout() {
-    return await (new Connection('actions/auth-logout'))._post({ namespace: 'blazervel-actionsjs' })
+    return await (new Connection('actions/auth-logout'))._post({ namespace: 'blazervel' })
   }
 })

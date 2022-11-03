@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title ajs>{{ config('app.name', 'Blazervel') }}</title>
+    <title>{{ config('app.name', 'Blazervel') }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite('resources/js/app.tsx')
   </head>

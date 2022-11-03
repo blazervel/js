@@ -12,7 +12,7 @@ class Actions
 {
     public static function dir(): string
     {
-        return Config::get('blazervel.actions.actions_dir', 'app/Actions');
+        return Config::get('blazervel.actions.actions_dir', 'app/Actions/Blazervel');
     }
 
     public static function namespace(): string
@@ -22,10 +22,46 @@ class Actions
                     ->join('\\');
     }
 
-    public static function keyClass(string $key)
+    public static function urlRoute(string $url, string $method = 'GET')
+    {
+        return (
+            app('router')
+                ->getRoutes()
+                ->match(
+                    app('request')
+                        ->create($url, $method)
+                )
+        );
+    }
+
+    public static function urlParams(string $url, string $method = 'GET'): array
+    {
+        $route = static::urlRoute($url, $method);
+
+        return $route->parameters;
+    }
+
+    public static function urlAction(string $url, string $method = 'GET'): string
+    {
+        $route = static::urlRoute($url, $method);
+        $actionClass = $route->action['controller'];
+
+        return static::actionKey($actionClass);
+    }
+
+    public static function actionComponent(string $action): string
+    {
+        $component = $action;
+        $component = Str::replace('-', '/', $component);
+        $component = "@/blazervel/{$component}";
+
+        return $component;
+    }
+
+    public static function keyClass(string $classKey): string
     {
         // Support blazervel package actions
-        if (Str::startsWith($actionKey, 'blazervel-')) {
+        if (Str::startsWith($classKey, 'blazervel-')) {
             $actionsNamespace = '';
         } else {
             $actionsNamespace = static::dir();
@@ -34,16 +70,14 @@ class Actions
             $actionsNamespace = "\\{$actionsNamespace}";
         }
 
-        $actionClass = explode('-', $actionKey);
+        $actionClass = explode('-', $classKey);
         $actionClass = collect($actionClass)->map(fn ($ac) => Str::ucfirst(Str::camel($ac)))->join('\\');
         $actionClass = "{$actionsNamespace}\\{$actionClass}";
-
-        $actionClass = Str::replace('Blazervel\\Actionsjs', 'Blazervel\\ActionsJS', $actionClass);
 
         return $actionClass;
     }
 
-    public static function keyAction(string $actionKey)
+    public static function keyAction(string $actionKey): string
     {
         // Support blazervel package actions
         if (Str::startsWith($actionKey, 'blazervel-')) {
@@ -59,9 +93,16 @@ class Actions
         $actionClass = collect($actionClass)->map(fn ($ac) => Str::ucfirst(Str::camel($ac)))->join('\\');
         $actionClass = "{$actionsNamespace}\\{$actionClass}";
 
-        $actionClass = Str::replace('Blazervel\\Actionsjs', 'Blazervel\\ActionsJS', $actionClass);
-
         return $actionClass;
+    }
+
+    public static function actionKey(string $action): string
+    {
+        $key = Str::remove(Actions::namespace() . '\\', $action);
+        $key = explode('\\', $key);
+        $key = collect($key)->map(fn ($key) => Str::camel($key));
+
+        return $key->join('-');
     }
 
     public static function directories(): array

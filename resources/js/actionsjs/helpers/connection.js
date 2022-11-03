@@ -8,36 +8,35 @@ export default class Connection {
             throw new Error('Missing endpoint');
         }
 
-        const endpointPrefix = import.meta.env.VITE_ACTIONSJS_PREFIX || 'api/actionsjs'
-        this.endpoint = `${endpointPrefix}/${endpoint}`
+        this.endpoint = `/api/blazervel/${endpoint}`
     }
 
     async _get(data = {}) {
         const response = await this.sendRequest(null, 'get', data)
-        return await response.data
+        return await this.unwrap(response, data)
     }
 
     async _post(data = {}) {
         const response = await this.sendRequest(null, 'post', data)
-        return await response.data
+        return await this.unwrap(response, data)
     }
 
     create(data) {
         return this
             .sendRequest(null, 'post', data)
-            .then(response => this.unwrap(response));
+            .then(response => this.unwrap(response, data));
     }
 
     read(idOrQuery) {
         return this
             .sendRequest(idOrQuery)
-            .then(response => this.unwrap(response));
+            .then(response => this.unwrap(response, data));
     }
 
     update(idOrQuery, data) {
         return this
             .sendRequest(idOrQuery, 'put', data)
-            .then(response => this.unwrap(response));
+            .then(response => this.unwrap(response, data));
     }
 
     delete(idOrQuery) {
@@ -50,7 +49,7 @@ export default class Connection {
         return actionFetch(
             this.buildUrl(urlSuffix),
             this.buildOptions(method, data)
-        );
+        )
     }
 
     buildUrl(suffix, type) {
@@ -106,8 +105,8 @@ export default class Connection {
         };
     }
 
-    unwrap(response) {
-        return response.data;
+    unwrap(response, data) {
+        return response.data
     }
 
     url(id, query) {

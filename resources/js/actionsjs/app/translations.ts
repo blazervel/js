@@ -1,6 +1,6 @@
 import Connection from '../helpers/connection'
 
-const langConfig = await (new Connection('actions/translations-config'))._get({ namespace: 'blazervel-actionsjs' })
+const langConfig = await (new Connection('actions/translations-config'))._get({ namespace: 'blazervel' })
 
 export default function (
   key: string,
@@ -10,20 +10,12 @@ export default function (
   locale: string|null = null
 ) {
 
-  const translations = langConfig.translations || {},
-        keys = key.split('.')
+  const translations: object = langConfig.translations,
+        keys: Array<string> = key.split('.')
 
-  locale = (
-    locale ||
-    langConfig.locale ||
-    document.getElementsByTagName('html')[0].getAttribute('lang') ||
-    'en'
-  )
+  let translation: string|null = null
 
-  let translation = null,
-      localeTranslations = translations[locale] || {}
-
-  keys.map(k => translation = localeTranslations[k] || '')
+  keys.map(k => translation = translations[k] || '')
 
   if (!translation && fallback) {
     for (var localeKey in translations) {

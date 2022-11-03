@@ -2,15 +2,20 @@
 
 namespace Blazervel\Blazervel\Providers;
 
-use Blazervel\Actions\Console\MakeActionCommand;
-use Blazervel\Actions\Console\MakeAnonymousActionCommand;
-use Blazervel\Actions\Support\Actions;
+use Blazervel\Blazervel\Actions\Pages;
+use Blazervel\Blazervel\Console\MakeActionCommand;
+use Blazervel\Blazervel\Console\MakeAnonymousActionCommand;
+use Blazervel\Blazervel\Support\Actions;
 use Blazervel\Blazervel\Support\ActionRoutes;
-use Lorisleiva\Actions\Facades\Actions as LaravelActions;
+
+use Illuminate\Routing\Router;
 use Illuminate\Foundation\AliasLoader;
+
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+
+use Lorisleiva\Actions\Facades\Actions as LaravelActions;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -18,16 +23,19 @@ class ServiceProvider extends BaseServiceProvider
 
     public function register()
     {
-        $this->ensureDirectoryExists();
-        $this->registerAnonymousClassAliases();
+        $this
+            ->ensureDirectoryExists()
+            ->registerAnonymousClassAliases()
+            ->registerRouterMacro();
     }
 
     public function boot()
     {
-        $this->loadViews();
-        $this->loadRoutes();
-        $this->loadTranslations();
-        $this->loadConfig();
+        $this
+            ->loadViews()
+            ->loadRoutes()
+            ->loadTranslations()
+            ->loadConfig();
 
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -37,21 +45,25 @@ class ServiceProvider extends BaseServiceProvider
         }
     }
 
-    private function ensureDirectoryExists()
+    private function ensureDirectoryExists(): self
     {
         File::ensureDirectoryExists(
             Actions::dir()
         );
+
+        return $this;
     }
 
-    private function loadConfig()
+    private function loadConfig(): self
     {
         $this->publishes([
             "{$this->path}/config/blazervel.php" => config_path('blazervel.php'),
         ], 'blazervel');
+
+        return $this;
     }
 
-    private function loadViews()
+    private function loadViews(): self
     {
         $this->loadViewsFrom(
             "{$this->path}/resources/views", 'blazervel'
@@ -60,14 +72,24 @@ class ServiceProvider extends BaseServiceProvider
         return $this;
     }
 
-    private function registerAnonymousClassAliases(): void
+    private function registerAnonymousClassAliases(): self
     {
         if (! Config::get('blazervel.actions.anonymous_classes', true)) {
-            return;
+            return $this;
         }
 
         $this->app->booting(function ($app) {
             $loader = AliasLoader::getInstance();
+
+            collect([
+                'Blazervel\\Action'           => 'Blazervel\\Blazervel\\Action',
+                'Blazervel\\WithModelActions' => 'Blazervel\\Blazervel\\WithModelActions',
+            ])->map(fn ($class, $namespace) => (
+                $loader->alias(
+                    $namespace,
+                    $class
+                )
+            ));
 
             Actions::anonymousClasses()->map(fn ($class, $namespace) => (
                 $loader->alias(
@@ -76,22 +98,40 @@ class ServiceProvider extends BaseServiceProvider
                 )
             ));
         });
+
+        return $this;
     }
 
-    private function loadRoutes()
+    private function registerRouterMacro(): self
+    {
+        Router::macro('blazervel', fn ($uri, $component, $props = []) => (
+            $this
+                ->match(['POST', 'GET', 'HEAD'], $uri, Pages\Show::class)
+                ->defaults('component', $component)
+                ->defaults('props', $props)
+        ));
+
+        return $this;
+    }
+
+    private function loadRoutes(): self
     {
         // LaravelActions::registerRoutes(
         //     Actions::directories()
         // );
 
         ActionRoutes::register();
+
+        return $this;
     }
 
-    private function loadTranslations()
+    private function loadTranslations(): self
     {
         $this->loadTranslationsFrom(
             "{$this->path}/lang",
             'blazervel-actions'
         );
+
+        return $this;
     }
 }

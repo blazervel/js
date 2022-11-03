@@ -13,9 +13,9 @@ export const defineConfig = (config: object = {}) => {
 	}
 
 	config = _merge(config, 'define', {
-		__APP_NAME__: _env('APP_NAME', null, config.mode),
-		__APP_URL__: _env('APP_URL', config.host || null, config.mode),
-		__APP_ENV__: appEnv,
+		__APP_NAME__: JSON.stringify(_env('APP_NAME', null, config.mode)),
+		__APP_URL__: JSON.stringify(_env('APP_URL', config.host || null, config.mode)),
+		__APP_ENV__: JSON.stringify(appEnv),
 	})
 
 	// Add tailwind to plugins

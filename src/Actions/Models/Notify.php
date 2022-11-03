@@ -19,8 +19,6 @@ class Notify extends ModelAction
             $key => $value
         ])->all();
 
-        dd($params);
-
         $this->model->notify(new $notifyClass(...$params));
     }
 }

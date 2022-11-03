@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Config;
 
 class ActionRoutes
 {
+    public string $endpointPrefix = 'api/blazervel';
+
     public static function register()
     {
         Route::middleware(['api', /*'auth:sanctum'*/])->group(function () {
@@ -22,14 +24,16 @@ class ActionRoutes
                 Route::post(  'models/{model}/{id}/notify', ModelActions\Notify::class);
 
                 // Action Routes
-                Route::post(  'actions/{action}',    ActionActions\HandleAction::class);
-                Route::get(   'actions/{action}',    ActionActions\HandleAction::class);
+                Route::post(  'actions/{action}',           ActionActions\Handle::class);
+                Route::get(   'actions/{action}',           ActionActions\Handle::class);
+                Route::post(  'batch',                      ActionActions\Batch::class);
+                Route::get(   'batch',                      ActionActions\Batch::class);
             });
         });
     }
 
     public static function endpointPrefix()
     {
-        return Config::get('blazervel.actionsjs.endpoint_prefix', 'api/actionsjs');
+        return (new self)->endpointPrefix;
     }
 }

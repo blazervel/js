@@ -1,12 +1,14 @@
 import Connection from '../helpers/connection'
-import action from '../helpers/action'
+import p from '../helpers/proxyable'
 import { snake } from '../helpers/utils'
 
-export default () => action({
+export default () => p({
+    
     run: async function (action, data) {
         const response = await (new Connection(`actions/${action}`))._get(data)
         return response
     },
+
     get: (target, prop, receiver) => {
         if (typeof target[prop] === 'undefined') {
 
