@@ -1,10 +1,15 @@
-import Connection from '../helpers/connection'
-import route from '@/../../vendor/tightenco/ziggy/src/js'
+import route from '@vendor/tightenco/ziggy/src/js'
+import config from './config'
 
-const ziggyConfig = await (new Connection('actions/routes-config'))._get({ namespace: 'blazervel' })
+config.load()
 
-export const routes = ziggyConfig.routes
+const routesConfig = await config.routes
 
 export default function (name: string, params: object, absolute: boolean) {
-  return route(name, params, absolute, ziggyConfig)
+  return route(
+    name,
+    params,
+    absolute,
+    routesConfig
+  )
 }

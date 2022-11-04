@@ -1,4 +1,5 @@
-import actionFetch from './fetch'
+import { cacheKey } from './cache';
+import { queueMakeRequest } from './fetch'
 
 export default class Connection {
 
@@ -11,13 +12,13 @@ export default class Connection {
         this.endpoint = `/api/blazervel/${endpoint}`
     }
 
-    async _get(data = {}) {
-        const response = await this.sendRequest(null, 'get', data)
+    async _get(data = {}, options = {}) {
+        const response = await this.sendRequest(null, 'get', data, options)
         return await this.unwrap(response, data)
     }
 
-    async _post(data = {}) {
-        const response = await this.sendRequest(null, 'post', data)
+    async _post(data = {}, options = {}) {
+        const response = await this.sendRequest(null, 'post', data, options)
         return await this.unwrap(response, data)
     }
 
@@ -45,10 +46,10 @@ export default class Connection {
             .then(response => response.status === 200);
     }
 
-    sendRequest(urlSuffix, method, data) {
-        return actionFetch(
+    sendRequest(urlSuffix, method, data = {}, options = {}) {
+        return queueMakeRequest(
             this.buildUrl(urlSuffix),
-            this.buildOptions(method, data)
+            this.buildOptions(method, data, options)
         )
     }
 
@@ -71,15 +72,17 @@ export default class Connection {
         return url;
     }
 
-    buildOptions(method, data, options = {}) {
+    buildOptions(method, data = {}, { headers = {}, ...options }) {
         let request = {
             headers: {
                 'Accept': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-XSRF-TOKEN': getCsrfToken()
+                'X-XSRF-TOKEN': getCsrfToken(),
+                ...headers
             },
             withCredentials: true,
-            ignoreCache: (options.ignoreCache || null) === true,
+            ignoreCache: options.ignoreCache === true,
+            allowStaleCache: options.allowStaleCache === true,
         };
 
         if (method) {
@@ -95,10 +98,6 @@ export default class Connection {
             }
         }
 
-        if (options.ignoreCache) {
-            request.ignoreCache = options.ignoreCache
-        }
-
         return {
             ...request,
             ...options
@@ -111,7 +110,7 @@ export default class Connection {
 
     url(id, query) {
         if ( ! this.endpoint) {
-            throw new Error('Endpoint must be set before using this connection');
+            throw new Error('Endpoint must be set before using this connection')
         }
 
         let url = this.endpoint;

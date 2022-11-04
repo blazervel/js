@@ -1,18 +1,16 @@
-import { render } from '@deps/preact'
-import { useEffect, useState } from '@deps/preact/compat'
+import { render } from '@pckg/preact'
+import { useEffect, useState } from '@pckg/preact/compat'
+import { AppLayout } from '@blazervel-ui/components'
 import blazervel from '../actionsjs/app/blazervel'
 import route from '../actionsjs/app/routes'
 import lang from '../actionsjs/app/translations'
-
-import progress from '../actionsjs/helpers/progress/progress'
-import '../actionsjs/helpers/progress/progress.css'
 
 const Body = ({ children }) => {
 
   const [page, setPage] = useState(null)
 
   useEffect(() => {
-
+    
     window.route = route
     window.lang = lang
 
@@ -34,11 +32,7 @@ const Body = ({ children }) => {
             return false
           },
           handlePopstate = (event) => {
-            progress.start()
-            blazervel.Page.load(event.state.url).then(page => {
-              setPage(page)
-              progress.done()
-            })
+            blazervel.Page.load(event.state.url).then(page => setPage(page))
           }
 
     linkElements.forEach(link => link.addEventListener('click', (event) => handleClick(event, link)))
@@ -46,11 +40,7 @@ const Body = ({ children }) => {
     window.addEventListener('popstate', handlePopstate)
 
     if (!page) {
-      progress.start()
-      blazervel.Page.load(window.location.href).then(page => {
-        setPage(page)
-        progress.done()
-      })
+      blazervel.Page.load(window.location.href).then(page => setPage(page))
     }
 
     return () => {
@@ -61,17 +51,14 @@ const Body = ({ children }) => {
   }, [page])
 
   if (!page) {
-    return <></>
+    return <AppLayout />
   }
 
   const { Component, props } = page
 
   return (
     <div className="z-0 relative">
-      <Component
-        $b={blazervel}
-        {...props}
-      />
+      <Component $b={blazervel} {...props} />
     </div>
   )
 }

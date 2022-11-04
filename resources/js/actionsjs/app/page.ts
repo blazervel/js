@@ -1,6 +1,6 @@
-import resolveComponent from '../../preact/resolve-component'
 import Connection from '../helpers/connection'
-import { requestTimeout } from '../helpers/fetch'
+import resolveComponent from '../../preact/resolve-component'
+import progress from '../helpers/progress'
 
 interface PageProps {
   action: string
@@ -9,58 +9,24 @@ interface PageProps {
   componentName: string
 }
 
-let onLoadingHooks: Array<Function> = [], onLoadHooks: Array<Function> = []
-
-const onLoading: Function = (percentage) => {
-  onLoadingHooks.map(callback => callback(percentage))
-}
-
-const onLoad: Function = (page) => {
-  onLoadHooks.map(callback => callback(page))
-}
-
 export default ($app) => ({
 
-  async load(url: string): Promise<object> {
+  async load(url: string): Promise<PageProps> {
 
-    let pageData: Promise<PageProps>,
-        msPassed: number = 0
-  
-    const clearRequestTimer = () => {
-            clearInterval(requestTimer)
-            onLoading(100)
-          },
-          requestTimer = setInterval(() => {
-            msPassed = msPassed + 1
-            
-            onLoading(
-              (msPassed / requestTimeout) * 100
-            )
-          }, 1)
-    
-    pageData = await (new Connection('actions/pages-data'))._get({
-      url,
-      namespace: 'blazervel'
-    })
-    .then(response => { clearRequestTimer(); return response })
-    .catch(() => clearRequestTimer())
-    
-    const page: object = {
+    progress.start()
+
+    const conn = new Connection('actions/pages-data'),
+          pageData: Promise<PageProps> = (
+            await conn
+              ._get({ url, namespace: 'blazervel' })
+              .then(response => { progress.done(); return response })
+              .catch(() => progress.done())
+          )
+
+    return {
       ...pageData,
       Component: await resolveComponent(pageData.componentName)
     }
-  
-    onLoadHooks.map(callback => callback(page))
-    
-    return page
-  },
-
-  onLoading(callback) {
-    onLoadingHooks.push(callback)
-  },
-
-  onLoad(callback) {
-    onLoadHooks.push(callback)
   },
 
 })

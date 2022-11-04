@@ -7,16 +7,19 @@ import Actions from './actions'
 import Models from './models'
 import Page from './page'
 
+import cache from '../helpers/cache'
+
+const _resources = ['Actions', 'Auth', 'Models', 'Page']
+
 const App = new Proxy({
     Builder,
     Container,
     Connection,
-
-    // Resources
     Models,
     Actions,
     Auth,
     Page,
+    Store: cache.store,
 }, {
     get(target: object, prop: string, receiver: ProxyConstructor) {
 
@@ -26,7 +29,7 @@ const App = new Proxy({
 
             if (
                 propertyValue instanceof Function &&
-                ['Actions', 'Auth', 'Models', 'Page'].includes(prop)
+                _resources.includes(prop)
             ) {
                 return propertyValue(receiver)
             }

@@ -84,6 +84,7 @@ class ServiceProvider extends BaseServiceProvider
             collect([
                 'Blazervel\\Action'           => 'Blazervel\\Blazervel\\Action',
                 'Blazervel\\WithModelActions' => 'Blazervel\\Blazervel\\WithModelActions',
+                'B'                           => 'Blazervel\\Blazervel\\Support\\Helpers',
             ])->map(fn ($class, $namespace) => (
                 $loader->alias(
                     $namespace,

@@ -1,5 +1,5 @@
-import render from '@deps/preact-render-to-string/jsx'
-import { h } from '@deps/preact'
+import render from '@pckg/preact-render-to-string/jsx'
+import { h } from '@pckg/preact'
 import blazervel from '../actionsjs/app/boot'
 import route from '../actionsjs/app/routes'
 import lang from '../actionsjs/app/translations'

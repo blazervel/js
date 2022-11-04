@@ -18,7 +18,9 @@ export default (config: object = {}) => {
   config = _merge(config, 'resolve.alias', {
     '@blazervel-ui': path.resolve(`${vendorPath}/blazervel/ui/resources/js`),
     '@blazervel':    path.resolve(`${vendorPath}/blazervel/blazervel/resources/js`),
-    '@deps':         path.resolve('./node_modules'),
+    '@vendor':       path.resolve('./vendor'),
+    '@pckg':         path.resolve('./node_modules'),
+    '@pub':          path.resolve('./public'),
     '@':             path.resolve('./resources/js'),
   })
 

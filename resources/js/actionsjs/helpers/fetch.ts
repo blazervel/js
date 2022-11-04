@@ -1,6 +1,6 @@
-import axios from '@deps/axios'
+import axios from '@pckg/axios'
+import { debounce } from '@pckg/lodash'
 import cache, { cacheKey } from './cache'
-import _ from 'lodash'
 
 const debounceFetchWait: number = 500,
       maxQueueItems: number = 20
@@ -10,7 +10,7 @@ export const requestTimeout: number = 20 * 1000 // 20s
 /**
  * Fetch/send data via Axios using cache adapter
  */
-export const actionFetch = (url, options) => {
+export const makeRequest = (url, options) => {
 
     const instance = axios.create({
         adapter: cache.adapter,
@@ -24,55 +24,36 @@ export const actionFetch = (url, options) => {
         //onDownloadProgress: (progressEvent) => {},
     })
 
+    if (options.allowStaleCache !== true) {
+        return request
+    }
+
     request.then(response => {
+
+        console.log(response.request)
+
         if (!response.request.fromCache) {
             return
         }
 
+        // Remove item from store and queue a fresh response
         cache.store.removeItem(
             cacheKey(url, options)
         )
 
-        actionFetch(url, options)
+        queueMakeRequest(url, options)
     })
 
     return request
 }
 
-interface QueueItemProps {
-    key: string
-    url: string
-    options: object
-    resolve: Function
-}
-
-const getQueueItem = (key: string): QueueItemProps => queue.filter(q => q.key === key)[0]
-
-let queue: Array<QueueItemProps> = [], queueReject: Function, queueResponse: Promise<object>
-
-const debounceFetch = _.debounce(() => {
-
-    // TODO: Throttle/chunk queue into groups of maxQueueItems
-
-    actionFetch('api/blazervel/batch', {method: 'post', data: {queue: JSON.stringify(queue)}})
-        .then(response => response.data.batch.map(response => {
-            // Cache individual request responses
-            cache.store.setItem(response.key, response)
-
-            getQueueItem(response.key).resolve(response)
-        }))
-        .catch(error => queueReject(error))
-        .then(() => queue = [])
-
-}, debounceFetchWait)
-
-export async function actionBatchFetch (url, options) {
+export const queueMakeRequest = async (url, options) => {
 
     const key = cacheKey(url, options)
 
     // Return cached response (and queue refresh) if exists
     if (cache.store.getItem(key)) {
-        return actionFetch(url, options)
+        return await makeRequest(url, options)
     }
 
     // Add to queue
@@ -89,4 +70,29 @@ export async function actionBatchFetch (url, options) {
     return await queueResponse
 }
 
-export default actionBatchFetch
+interface QueueItemProps {
+    key: string
+    url: string
+    options: object
+    resolve: Function
+}
+
+const getQueueItem = (key: string): QueueItemProps => queue.filter(q => q.key === key)[0]
+
+let queue: Array<QueueItemProps> = [], queueReject: Function, queueResponse: Promise<object>
+
+const debounceFetch = debounce(() => {
+    console.log('gp')
+    // TODO: Throttle/chunk queue into groups of maxQueueItems
+    makeRequest('api/blazervel/batch', {method: 'post', data: {queue: JSON.stringify(queue)}})
+        .then(response => response.data.batch.map(response => {
+            // Cache individual request responses
+            cache.store.setItem(response.key, response)
+
+            getQueueItem(response.key).resolve(response)
+            console.log(response)
+        }))
+        .catch(error => queueReject(error))
+        .then(() => queue = [])
+
+}, debounceFetchWait)

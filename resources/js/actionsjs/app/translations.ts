@@ -1,17 +1,20 @@
-import Connection from '../helpers/connection'
+import config from './config'
 
-const langConfig = await (new Connection('actions/translations-config'))._get({ namespace: 'blazervel' })
+config.load()
+
+const localizationConfig = await config.localization
 
 export default function (
   key: string,
   replace: object = {},
   fallback: boolean = true,
-  count: number|null = null,
-  locale: string|null = null
+  count: number|null = null
 ) {
 
-  const translations: object = langConfig.translations,
+  const translations: object = localizationConfig.translations,
         keys: Array<string> = key.split('.')
+
+  console.log(config, translations)
 
   let translation: string|null = null
 
