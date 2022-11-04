@@ -1,17 +1,14 @@
 import config from './config'
 
-config.load()
-
-const localizationConfig = await config.localization
-
-export default function (
+export default async function (
   key: string,
   replace: object = {},
   fallback: boolean = true,
   count: number|null = null
 ) {
 
-  const translations: object = localizationConfig.translations,
+  const langConfig = await config.localization,
+        translations: object = langConfig.translations,
         keys: Array<string> = key.split('.')
 
   console.log(config, translations)

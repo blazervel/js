@@ -21,9 +21,13 @@ const config: ConfigProps = {
             await conn._get({ namespace: 'blazervel' }, { allowStaleCache: true })
           )
 
-    configResolver.runAll(resolveWithConfigs)
+    configResolver.runAll(
+      resolveWithConfigs
+    )
   }
 
 }
+
+config.load()
 
 export default config
