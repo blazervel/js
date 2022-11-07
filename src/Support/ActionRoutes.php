@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Config;
 
 class ActionRoutes
 {
-    public string $endpointPrefix = 'api/blazervel';
+    public string $endpointPrefix = '/api/blazervel';
 
     public static function register()
     {

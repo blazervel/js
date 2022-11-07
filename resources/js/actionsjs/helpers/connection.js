@@ -1,5 +1,4 @@
-import { cacheKey } from './cache';
-import { queueMakeRequest } from './fetch'
+import { queueMakeRequest } from './make-request'
 
 export default class Connection {
 
@@ -73,17 +72,10 @@ export default class Connection {
     }
 
     buildOptions(method, data = {}, { headers = {}, ...options }) {
+        
         let request = {
-            headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-XSRF-TOKEN': getCsrfToken(),
-                ...headers
-            },
-            withCredentials: true,
-            ignoreCache: options.ignoreCache === true,
-            allowStaleCache: options.allowStaleCache === true,
-        };
+            headers: {}
+        }
 
         if (method) {
             request.method = method;
@@ -125,33 +117,4 @@ export default class Connection {
 
         return url;
     }
-
-    _makeInit(method, data, options) {
-
-        let defaults = {
-            credentials: 'same-origin', // to send our session cookie
-            headers: {
-                'Accept': 'application/json',
-                'X-XSRF-TOKEN': getCsrfToken()
-            }
-        };
-
-        if (method) {
-            defaults.method = method;
-        }
-
-        if (data) {
-            defaults.headers['Content-Type'] = 'application/json';
-            defaults.data = data;
-        }
-
-        return Object.assign(defaults, options || {});
-    }
-}
-
-function getCsrfToken()
-{
-    if (typeof document === 'undefined') return;
-
-    return decodeURIComponent((document.cookie.match('(^|; )XSRF-TOKEN=([^;]*)') || 0)[2]);
 }

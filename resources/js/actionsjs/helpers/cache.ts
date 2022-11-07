@@ -4,8 +4,6 @@ import { md5 } from './utils'
 export const cacheKey = (url: string, options: object|null) => {
   let orderedOptions = {}
 
-  url = url.replace('/api/blazervel/', '')
-
   if (options !== null) {
     Object.keys(options).sort().map(key => {
       orderedOptions[key] = options[key]
@@ -15,7 +13,7 @@ export const cacheKey = (url: string, options: object|null) => {
   return md5(`${url}${JSON.stringify(orderedOptions)}`)
 }
 
-const cache = setupCache({
+export const cache = () => ({ //setupCache
   maxAge: 15 * 60 * 1000,
   key: req => cacheKey(req.url, req.params || null),
   invalidate: null,
@@ -28,5 +26,7 @@ const cache = setupCache({
   clearOnStale: false,
   clearOnError: true,
 })
+
+export const store = {getItem() {}, setItem() {}, removeItem() {}} //cache.store
 
 export default cache

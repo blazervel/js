@@ -1,17 +1,25 @@
-import config from './config'
+export default function (langConfig: {translations: object, locale: string}) {
+  return (
+    key: string,
+    replace: object = {},
+    fallback: boolean = true,
+    count: number|null = null,
+    config: object
+  ) => (
+    lang(key, replace, fallback, count, config || langConfig)
+  )
+}
 
-export default async function (
+function lang(
   key: string,
   replace: object = {},
   fallback: boolean = true,
-  count: number|null = null
+  count: number|null = null,
+  config: object
 ) {
 
-  const langConfig = await config.localization,
-        translations: object = langConfig.translations,
+  const translations: object = config.translations,
         keys: Array<string> = key.split('.')
-
-  console.log(config, translations)
 
   let translation: string|null = null
 

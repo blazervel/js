@@ -1,6 +1,6 @@
 import axios from '@pckg/axios'
 import { debounce } from '@pckg/lodash'
-import cache, { cacheKey } from './cache'
+import { cache, store, cacheKey } from './cache'
 
 const debounceFetchWait: number = 500,
       maxQueueItems: number = 20
@@ -17,6 +17,8 @@ export const makeRequest = (url, options) => {
         timeout: requestTimeout
     })
 
+    options = getRequestOptions(options)
+
     const request = instance({
         url,
         ...options,
@@ -30,14 +32,12 @@ export const makeRequest = (url, options) => {
 
     request.then(response => {
 
-        console.log(response.request)
-
         if (!response.request.fromCache) {
             return
         }
 
         // Remove item from store and queue a fresh response
-        cache.store.removeItem(
+        store.removeItem(
             cacheKey(url, options)
         )
 
@@ -52,7 +52,7 @@ export const queueMakeRequest = async (url, options) => {
     const key = cacheKey(url, options)
 
     // Return cached response (and queue refresh) if exists
-    if (cache.store.getItem(key)) {
+    if (store.getItem(key)) {
         return await makeRequest(url, options)
     }
 
@@ -82,17 +82,49 @@ const getQueueItem = (key: string): QueueItemProps => queue.filter(q => q.key ==
 let queue: Array<QueueItemProps> = [], queueReject: Function, queueResponse: Promise<object>
 
 const debounceFetch = debounce(() => {
-    console.log('gp')
+    
     // TODO: Throttle/chunk queue into groups of maxQueueItems
-    makeRequest('api/blazervel/batch', {method: 'post', data: {queue: JSON.stringify(queue)}})
+    makeRequest('/api/blazervel/batch', {method: 'post', data: {queue: JSON.stringify(queue)}})
         .then(response => response.data.batch.map(response => {
             // Cache individual request responses
-            cache.store.setItem(response.key, response)
+            store.setItem(response.key, response)
 
             getQueueItem(response.key).resolve(response)
-            console.log(response)
         }))
         .catch(error => queueReject(error))
         .then(() => queue = [])
 
 }, debounceFetchWait)
+
+const getRequestOptions = ({
+    headers,
+    withCredentials = true,
+    ignoreCache = false,
+    allowStaleCache = false,
+    ...options
+}) => ({
+    ...options,
+    headers: {
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-XSRF-TOKEN': getCsrfToken(),
+        ...headers
+    },
+    withCredentials,
+    ignoreCache,
+    allowStaleCache,
+})
+
+const getCsrfToken = () => {
+    if (typeof document === 'undefined') {
+        return
+    }
+
+    let xsrfToken
+    
+    xsrfToken = document.cookie.match('(^|; )XSRF-TOKEN=([^;]*)') || 0
+    xsrfToken = xsrfToken[2]
+    xsrfToken = decodeURIComponent(xsrfToken)
+        
+    return xsrfToken
+}

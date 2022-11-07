@@ -32,23 +32,21 @@ class Routes extends Action
         $routes = $this->config['routes'];
         $actions = $this->getRouteActions();
 
-        $routes = (
-            collect($routes)
-                ->filter(fn ($route) => isset($actions[$route['uri']]))
-                ->map(function ($route, $name) use ($actions) {
-                    
-                    $action = $actions[$route['uri']] ?? null;
+        collect($routes)
+            ->filter(fn ($route) => isset($actions[$route['uri']]))
+            ->map(function ($route, $name) use ($actions) {
+                
+                $action = $actions[$route['uri']] ?? null;
 
-                    $action = $action ? Actions::actionKey($action) : $action;
+                $action = $action ? Actions::actionKey($action) : $action;
 
-                    $route['action'] = $action;
+                $routes[$name]['action'] = $action;
 
-                    return [$name => $route];
+                return [$name => $route];
 
-                })
-                ->collapse()
-                ->all()
-        );
+            })
+            ->collapse()
+            ->all();
 
         $this->config['routes'] = $routes;
 
@@ -76,30 +74,28 @@ class Routes extends Action
         $routes = $this->config['routes'];
         $actions = $this->getRouteActions();
 
-        $routes = (
-            collect($routes)
-                ->filter(fn ($route) => isset($actions[$route['uri']]))
-                ->map(function ($route, $name) use ($actions) {
-                    $action = $actions[$route['uri']];
+        collect($routes)
+            ->filter(fn ($route) => isset($actions[$route['uri']]))
+            ->map(function ($route, $name) use ($actions) {
+                $action = $actions[$route['uri']];
 
-                    if (Str::contains('@', $action)) {
-                        list($class, $method) = explode('@', $action);
-                    }
+                if (Str::contains('@', $action)) {
+                    list($class, $method) = explode('@', $action);
+                }
 
-                    $class = $action;
-                    $method = '__invoke';
+                $class = $action;
+                $method = '__invoke';
 
-                    if (is_subclass_of($class, Action::class)) {
-                        $method = 'handle';
-                    }
+                if (is_subclass_of($class, Action::class)) {
+                    $method = 'handle';
+                }
 
-                    $route['parameters'] = $this->getRouteParams($class, $method);
+                $routes[$name]['parameters'] = $this->getRouteParams($class, $method);
 
-                    return [$name => $route];
-                })
-                ->collapse()
-                ->all()
-        );
+                return [$name => $route];
+            })
+            ->collapse()
+            ->all();
 
         $this->config['routes'] = $routes;
 

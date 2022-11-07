@@ -7,7 +7,7 @@ import Actions from './actions'
 import Models from './models'
 import Page from './page'
 
-import cache from '../helpers/cache'
+import { cache } from '../helpers/cache'
 
 const _resources = ['Actions', 'Auth', 'Models', 'Page']
 

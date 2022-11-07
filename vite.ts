@@ -1,37 +1,45 @@
 import { defineConfig as viteDefineConfig } from 'vite'
-import aliasConfig from './vite/alias'
-import devServerConfig from './vite/dev-server'
-import { _env, _set, _merge } from './vite/utils'
 import tailwindcss from 'tailwindcss'
 
-export const defineConfig = (config: object = {}) => {
+import {
+  envConfig,
+  aliasConfig,
+  devServerConfig,
+  _envIs,
+  _set,
+  _merge
+} from './resources/js/vite'
 
-	const appEnv = _env('APP_ENV', null, config.mode)
+interface BlazerelConfigProps {
+  tailwind: boolean|undefined
+}
 
-	if (config.preserveSymlinks !== false) {
-		config.preserveSymlinks = true
-	}
+export const defineConfig = (
+  config: object = {},
+  blazervel: BlazerelConfigProps = { tailwind: true }
+) => {
 
-	config = _merge(config, 'define', {
-		__APP_NAME__: JSON.stringify(_env('APP_NAME', null, config.mode)),
-		__APP_URL__: JSON.stringify(_env('APP_URL', config.host || null, config.mode)),
-		__APP_ENV__: JSON.stringify(appEnv),
-	})
+  const isDev = _envIs(['local', 'development'], config.mode)
 
-	// Add tailwind to plugins
-	// (even if not used - will not be added to output in that case)
-	config = _merge(config, 'plugins', [tailwindcss()])
+	if (blazervel.tailwind) {
+    config = _merge(config, 'plugins', [
+      tailwindcss()
+    ])
+  }
 
-	// Add blazervel & project aliases
+  // Set default env variables
+	config = envConfig(config)
+
+  // Add default aliases (e.g. alias @ -> ./resources/js)
 	config = aliasConfig(config)
 
-	// Configure https and HMR host/port etc.
-	if (['local', 'development'].includes(String(appEnv).toLowerCase())) {
+  // Configure dev server (e.g. valet https, HMR, etc.)
+	if (isDev) {
 		config = devServerConfig(config)
 	}
 
-	// Define vite config
-	config = viteDefineConfig(config)
-
-	return config
+	// Pass to vite
+	return viteDefineConfig(
+    config
+  )
 }

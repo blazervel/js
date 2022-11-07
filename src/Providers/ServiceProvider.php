@@ -74,10 +74,6 @@ class ServiceProvider extends BaseServiceProvider
 
     private function registerAnonymousClassAliases(): self
     {
-        if (! Config::get('blazervel.actions.anonymous_classes', true)) {
-            return $this;
-        }
-
         $this->app->booting(function ($app) {
             $loader = AliasLoader::getInstance();
 
@@ -92,12 +88,14 @@ class ServiceProvider extends BaseServiceProvider
                 )
             ));
 
-            Actions::anonymousClasses()->map(fn ($class, $namespace) => (
-                $loader->alias(
-                    $namespace,
-                    $class
-                )
-            ));
+            if (Config::get('blazervel.actions.anonymous_classes', true)) {
+                Actions::anonymousClasses()->map(fn ($class, $namespace) => (
+                    $loader->alias(
+                        $namespace,
+                        $class
+                    )
+                ));
+            }
         });
 
         return $this;

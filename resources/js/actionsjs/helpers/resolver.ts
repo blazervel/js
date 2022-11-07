@@ -17,6 +17,8 @@ class Resolver {
     Object.entries(resolveWiths).map(([key, resolveWith]) => (
       this.run(key, resolveWith)
     ))
+
+    return resolveWiths
   }
 
 }
