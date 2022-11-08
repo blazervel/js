@@ -42,8 +42,8 @@ class Localization extends Action
         );
 
         $packageTranslations = collect([
-            'blazervel'            => 'blazervel/ui',
-            'blazervel_auth'       => 'blazervel/auth',
+            'blazervel'            => 'blazervel/blazervel',
+            'blazervel_ui'         => 'blazervel/ui',
             'blazervel_workspaces' => 'blazervel/workspaces',
         ])
         ->map(function ($package, $packagePrefix) {

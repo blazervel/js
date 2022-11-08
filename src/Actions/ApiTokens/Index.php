@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\Blazervel\Actions\Pages;
+namespace Blazervel\Blazervel\Actions\ApiTokens;
 
-class Show
+class Index
 {
     public function __invoke()
     {

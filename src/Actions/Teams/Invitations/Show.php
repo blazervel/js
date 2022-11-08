@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Actions\Pages;
+namespace Blazervel\Blazervel\Actions\Teams\Invitations;
 
 class Show
 {

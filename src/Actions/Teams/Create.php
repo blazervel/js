@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\Blazervel\Actions\Pages;
+namespace Blazervel\Blazervel\Actions\Teams;
 
-class Show
+class Create
 {
     public function __invoke()
     {
