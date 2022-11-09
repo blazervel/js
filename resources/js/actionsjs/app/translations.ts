@@ -21,18 +21,39 @@ function lang(
   const translations: object = config.translations,
         keys: Array<string> = key.split('.')
 
-  let translation: string|null = null
+  let translation: string|null = null,
+      results: object = translations
+  
+  keys.map(k => {
+    if (typeof results[k] === 'object') {
+      results = results[k]
+      return
+    }
+    
+    translation = results[k] || ''
+  })
 
-  keys.map(k => translation = translations[k] || '')
 
   if (!translation && fallback) {
-    for (var localeKey in translations) {
-      keys.map(k => translation = translations[localeKey][k] || '')
 
-      if (typeof translation === 'string') {
+    for (var localeKey in translations) {
+    
+      results = translations[localeKey]
+
+      keys.map(k => {
+        if (typeof results[k] === 'object') {
+          results = results[k]
+          return
+        }
+
+        translation = results[k] || ''
+      })
+
+      if (translation) {
         break
       }
     }
+
   }
 
   count = count !== null && (Array.isArray(count) || count === Object(count)) 

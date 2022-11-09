@@ -1,5 +1,5 @@
 import Connection from '../helpers/connection'
-import resolveComponent from '../../preact/resolve-component'
+import { resolveComponent } from '../../utils'
 import progress from '../helpers/progress'
 
 interface PageProps {
