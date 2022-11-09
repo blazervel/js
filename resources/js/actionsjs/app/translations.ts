@@ -29,7 +29,7 @@ function lang(
     for (var localeKey in translations) {
       keys.map(k => translation = translations[localeKey][k] || '')
 
-      if (translation) {
+      if (typeof translation === 'string') {
         break
       }
     }
