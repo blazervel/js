@@ -16,7 +16,7 @@ class NewPasswordCreate
      */
     public function __invoke(Request $request): InertiaResponse
     {
-        return Inertia::render('@blazervel-ui/inertia/react/Pages/ResetPassword', [
+        return Inertia::render('@blazervel-ui/react/jetstream/Pages/ResetPassword', [
             'email' => $request->email,
             'token' => $request->route('token'),
         ]);

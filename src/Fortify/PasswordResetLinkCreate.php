@@ -14,7 +14,7 @@ class PasswordResetLinkCreate
      */
     public function __invoke(): InertiaResponse
     {
-        return Inertia::render('@blazervel-ui/Pages/Auth/ForgotPassword', [
+        return Inertia::render('@blazervel-ui/Pages/ForgotPassword', [
             'status' => session('status'),
         ]);
     }

@@ -19,6 +19,6 @@ class EmailVerificationPrompt
     {
         return $request->user()->hasVerifiedEmail()
                     ? redirect()->intended(RouteServiceProvider::HOME)
-                    : Inertia::render('@blazervel-ui/inertia/react/Pages/VerifyEmail', ['status' => session('status')]);
+                    : Inertia::render('@blazervel-ui/react/jetstream/Pages/VerifyEmail', ['status' => session('status')]);
     }
 }

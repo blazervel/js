@@ -10,7 +10,7 @@ class Show
 {
     public function __invoke(Request $request): Response
     {
-        return Inertia::render('@blazervel-ui/inertia/react/Pages/Users/Show', [
+        return Inertia::render('@blazervel-ui/react/jetstream/Pages/Users/Show', [
             'user' => $request->user()
         ]);
     }
