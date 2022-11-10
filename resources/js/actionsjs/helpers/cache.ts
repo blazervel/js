@@ -1,4 +1,4 @@
-import { setupCache } from '@pckg/axios-cache-adapter/src/api'
+import { setupCache } from '@pckg/axios-cache-adapter'
 import { md5 } from './utils'
 
 export const cacheKey = (url: string, options: object|null) => {
