@@ -1,4 +1,4 @@
-import { setupCache } from '@pckg/axios-cache-adapter'
+import { setupCache } from '@pckg/axios-cache-adapter/src/api'
 import { md5 } from './utils'
 
 export const cacheKey = (url: string, options: object|null) => {
@@ -13,7 +13,7 @@ export const cacheKey = (url: string, options: object|null) => {
   return md5(`${url}${JSON.stringify(orderedOptions)}`)
 }
 
-export const cache = () => ({ //setupCache
+export const cache = setupCache({
   maxAge: 15 * 60 * 1000,
   key: req => cacheKey(req.url, req.params || null),
   invalidate: null,
