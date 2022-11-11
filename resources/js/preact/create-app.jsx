@@ -2,17 +2,13 @@ import { render } from '@pckg/preact'
 import { useEffect, useState } from '@pckg/preact/compat'
 import { AppLayout } from '@blazervel-ui/components'
 import blazervel from '../actionsjs/app/blazervel'
-import route from '../actionsjs/app/routes'
-import lang from '../actionsjs/app/translations'
+import { config, lang, route } from '@blazervel'
 
 const Body = ({ children }) => {
 
   const [page, setPage] = useState(null)
 
   useEffect(() => {
-    
-    window.route = route
-    window.lang = lang
 
     const linkElements = document.querySelectorAll('a:not([target="_blank"])'),
           handleClick = (event, link) => {
@@ -40,7 +36,16 @@ const Body = ({ children }) => {
     window.addEventListener('popstate', handlePopstate)
 
     if (!page) {
-      blazervel.Page.load(window.location.href).then(page => setPage(page))
+      blazervel.Page.load(window.location.href).then(page => {
+        config.init(page.config)
+
+        window.lang = lang(config.localization)
+        window.route = route(config.routes)
+
+        const __coolVariable = 'test'
+
+        setPage(page)
+      })
     }
 
     return () => {

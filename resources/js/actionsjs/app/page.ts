@@ -1,31 +1,65 @@
 import Connection from '../helpers/connection'
 import { resolveComponent } from '../../utils'
 import progress from '../helpers/progress'
+import ErrorPage from '../../pages/error'
 
 interface PageProps {
+  status: number
   action: string
   props: object
+  config: object
   Component?: Function
-  componentName: string
+  componentName?: string
 }
 
+const formatError = (error: string): {status: number} => ({
+  status: parseInt(String(error).split('with status code ')[1])
+})
+
 export default ($app) => ({
+
+  errorPage(error: {status: number, heading?: string, message?: string }) {
+    return {
+      props: error,
+      Component: ErrorPage
+    }
+  },
 
   async load(url: string): Promise<PageProps> {
 
     progress.start()
 
     const conn = new Connection('actions/pages-data'),
-          pageData: Promise<PageProps> = (
+          response: PageProps = (
             await conn
               ._get({ url, namespace: 'blazervel' })
-              .then(response => { progress.done(); return response })
-              .catch(() => progress.done())
+              .then(response => {
+                progress.done()
+                return response 
+              })
+              .catch(error => {
+                progress.done()
+                return formatError(error)
+              })
           )
 
+    if (!response.componentName) {
+      return this.errorPage(response)
+    }
+
+    let Component = await resolveComponent(response.componentName)
+
+    if (Component === null) {
+      return this.errorPage({ status: 404 })
+    }
+
+    if (Component.default) {
+      Component = Component.default
+    }
+
     return {
-      ...pageData,
-      Component: await resolveComponent(pageData.componentName)
+      ...response,
+      Component
     }
   },
 

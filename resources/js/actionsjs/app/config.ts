@@ -5,6 +5,7 @@ interface ConfigProps {
   initialized: boolean
   localization: Promise<object>
   routes: Promise<object>
+  init: Function
   load: Function
 }
 
@@ -17,6 +18,11 @@ const config: ConfigProps = {
   localization: configResolver.create('localization'),
 
   routes: configResolver.create('routes'),
+
+  init(config: {localization: object, routes: object}): void {
+    this.localization = config.localization
+    this.routes = config.routes
+  },
 
   async load() {
 

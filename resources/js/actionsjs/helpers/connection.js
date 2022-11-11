@@ -1,4 +1,4 @@
-import { queueMakeRequest } from './make-request'
+import { makeRequest, queueMakeRequest } from './make-request'
 
 export default class Connection {
 
@@ -46,7 +46,7 @@ export default class Connection {
     }
 
     sendRequest(urlSuffix, method, data = {}, options = {}) {
-        return queueMakeRequest(
+        return makeRequest( //queueMakeRequest(
             this.buildUrl(urlSuffix),
             this.buildOptions(method, data, options)
         )
@@ -97,7 +97,10 @@ export default class Connection {
     }
 
     unwrap(response, data) {
-        return response.data
+        return {
+            status: response.status,
+            ...response.data
+        }
     }
 
     url(id, query) {

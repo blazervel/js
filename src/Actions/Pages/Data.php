@@ -5,7 +5,7 @@ namespace Blazervel\Blazervel\Actions\Pages;
 use Blazervel\Blazervel\Action;
 use Blazervel\Blazervel\Actions\Handle;
 use Blazervel\Blazervel\Support\Actions;
-use Illuminate\Support\Str;
+use Blazervel\Blazervel\Actions\Config;
 use Illuminate\Http\Request;
 
 class Data extends Action
@@ -20,6 +20,7 @@ class Data extends Action
         $data = [
             'action' => $action,
             'props' => $response,
+            'config' => Config\App::run(),
             'componentName' => $component
         ];
 

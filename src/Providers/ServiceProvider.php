@@ -2,11 +2,14 @@
 
 namespace Blazervel\Blazervel\Providers;
 
+use Illuminate\Contracts\Http\Kernel;
+
 use Blazervel\Blazervel\Actions\Pages;
 use Blazervel\Blazervel\Console\MakeActionCommand;
 use Blazervel\Blazervel\Console\MakeAnonymousActionCommand;
 use Blazervel\Blazervel\Support\Actions;
 use Blazervel\Blazervel\Support\ActionRoutes;
+use Blazervel\Blazervel\Http\Middleware\BlazervelMiddleware;
 
 use Lorisleiva\Actions\Facades\Actions as LaravelActions;
 
@@ -36,7 +39,9 @@ class ServiceProvider extends BaseServiceProvider
 
     public function register()
     {
-        Jetstream::$registersRoutes = false;
+        if (class_exists(Jetstream::class)) {
+            Jetstream::$registersRoutes = false;
+        }
 
         $this
             ->ensureDirectoryExists()
@@ -49,15 +54,22 @@ class ServiceProvider extends BaseServiceProvider
         $this
             ->loadViews()
             ->loadRoutes()
+            ->loadMiddleware()
             ->loadTranslations()
             ->loadConfig()
             ->loadCommands();
 
-        if (!$this->hasProvider(FortifyServiceProvider::class)) {
+        if (
+            !$this->hasProvider(FortifyServiceProvider::class) &&
+            class_exists(Fortify::class)
+        ) {
             $this->loadFortify();
         }
 
-        if (!$this->hasProvider(JetstreamServiceProvider::class)) {
+        if (
+            !$this->hasProvider(JetstreamServiceProvider::class) &&
+            class_exists(Jetstream::class)
+        ) {
             $this
                 ->loadJetstream()
                 ->loadJetstreamPermissions();
@@ -151,6 +163,16 @@ class ServiceProvider extends BaseServiceProvider
         // );
 
         ActionRoutes::register();
+
+        return $this;
+    }
+
+    private function loadMiddleware(): self
+    {
+        $kernel = $this->app->make(Kernel::class);
+
+        $kernel->appendMiddlewareToGroup('web', BlazervelMiddleware::class);
+        $kernel->appendToMiddlewarePriority(BlazervelMiddleware::class);
 
         return $this;
     }

@@ -1,6 +1,6 @@
 import axios from '@pckg/axios'
 import { debounce } from '@pckg/lodash'
-import { cache, store, cacheKey } from './cache'
+import { cache, cacheKey } from './cache'
 
 const debounceFetchWait: number = 500,
       maxQueueItems: number = 20
@@ -18,6 +18,8 @@ export const makeRequest = (url, options) => {
     })
 
     options = getRequestOptions(options)
+    
+    console.log(options)
 
     const request = instance({
         url,
@@ -30,29 +32,32 @@ export const makeRequest = (url, options) => {
         return request
     }
 
-    request.then(response => {
+    // request.then(response => {
 
-        if (!response.request.fromCache) {
-            return
-        }
+    //     if (!response.request.fromCache) {
+    //         return
+    //     }
 
-        // Remove item from store and queue a fresh response
-        store.removeItem(
-            cacheKey(url, options)
-        )
+    //     // Remove item from store and queue a fresh response
+    //     store.removeItem(
+    //         cacheKey({url, ...options})
+    //     )
 
-        queueMakeRequest(url, options)
-    })
+    //     queueMakeRequest(url, options)
+
+    // }).catch(error => {
+    //     console.log('error', error)
+    // })
 
     return request
 }
 
 export const queueMakeRequest = async (url, options) => {
 
-    const key = cacheKey(url, options)
+    const key = cacheKey({url, ...options})
 
     // Return cached response (and queue refresh) if exists
-    if (store.getItem(key)) {
+    if (await cache.store.store[key] !== null) {
         return await makeRequest(url, options)
     }
 
@@ -87,7 +92,7 @@ const debounceFetch = debounce(() => {
     makeRequest('/api/blazervel/batch', {method: 'post', data: {queue: JSON.stringify(queue)}})
         .then(response => response.data.batch.map(response => {
             // Cache individual request responses
-            store.setItem(response.key, response)
+            cache.store.setItem(response.key, response)
 
             getQueueItem(response.key).resolve(response)
         }))

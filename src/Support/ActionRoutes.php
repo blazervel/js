@@ -9,12 +9,19 @@ use Illuminate\Support\Facades\Config;
 
 class ActionRoutes
 {
-    public string $endpointPrefix = '/api/blazervel';
+    private string $endpointPrefix = '/api/blazervel';
 
-    public static function register()
+    private array $middleware = ['api'];
+
+    public static function register(): void
     {
-        Route::middleware(['api', /*'auth:sanctum'*/])->group(function () {
-            Route::prefix(static::endpointPrefix())->group(function() {
+        (new self)->registerRoutes();
+    }
+
+    public function registerRoutes(): void
+    {
+        Route::middleware($this->middleware)->group(function () {
+            Route::prefix($this->endpointPrefix)->group(function() {
                 // Model Action Routes
                 Route::get(   'models/{model}',             ModelActions\Index::class);
                 Route::post(  'models/{model}',             ModelActions\Store::class);
@@ -30,10 +37,5 @@ class ActionRoutes
                 Route::get(   'batch',                      ActionActions\Batch::class);
             });
         });
-    }
-
-    public static function endpointPrefix()
-    {
-        return (new self)->endpointPrefix;
     }
 }

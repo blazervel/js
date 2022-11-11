@@ -1,4 +1,4 @@
-export function resolvePage(name: string) {
+export function resolvePage(name: string): any {
 
   let components,
       alias = '@'
@@ -28,24 +28,24 @@ export function resolvePage(name: string) {
   throw new Error(`Page not found: ${name}`)
 }
 
-export function resolveComponent(name: string) {
+export function resolveComponent(name: string): any {
 
   let components,
       alias = '@'
 
   if (name.includes('@blazervel-ui')) {
 
-    components = import.meta.glob('@blazervel-ui/**/components/**/*.*')
+    components = import.meta.glob('@blazervel-ui/**/*.*')
     alias = '@blazervel-ui'
 
   } else if (name.includes('@blazervel')) {
 
-    components = import.meta.glob('@blazervel/**/components/**/*.*')
+    components = import.meta.glob('@blazervel/**/*.*')
     alias = '@blazervel'
 
   } else {
 
-    components = import.meta.glob('@/**/components/**/*.*')
+    components = import.meta.glob('@/**/*.*')
 
   }
 
@@ -55,7 +55,7 @@ export function resolveComponent(name: string) {
     return page
   }
 
-  throw new Error(`Page not found: ${name}`)
+  return null
 }
 
 const componentLookup = (components, name) => {
@@ -72,6 +72,7 @@ const componentLookup = (components, name) => {
 
     page = components[path]
     page = typeof page === 'function' ? page() : page
+    page = page.default || page
 
     break
   }
