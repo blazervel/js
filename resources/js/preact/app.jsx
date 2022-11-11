@@ -1,10 +1,8 @@
-import { render } from '@pckg/preact'
 import { useEffect, useState } from '@pckg/preact/compat'
-import { AppLayout } from '@blazervel-ui/components'
-import blazervel from '../actionsjs/app/blazervel'
+import blazervel from '../app/blazervel'
 import { config, lang, route } from '@blazervel'
 
-const Body = ({ children }) => {
+export default function () {
 
   const [page, setPage] = useState(null)
 
@@ -37,12 +35,10 @@ const Body = ({ children }) => {
 
     if (!page) {
       blazervel.Page.load(window.location.href).then(page => {
-        config.init(page.config)
+        const appConfig = config(page.config)
 
-        window.lang = lang(config.localization)
-        window.route = route(config.routes)
-
-        const __coolVariable = 'test'
+        window.lang = lang(appConfig.localization)
+        window.route = route(appConfig.routes)
 
         setPage(page)
       })
@@ -56,7 +52,7 @@ const Body = ({ children }) => {
   }, [page])
 
   if (!page) {
-    return <AppLayout />
+    return <></>
   }
 
   const { Component, props } = page
@@ -67,5 +63,3 @@ const Body = ({ children }) => {
     </div>
   )
 }
-
-export default () => render(<Body />, document.body)

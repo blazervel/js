@@ -1,8 +1,8 @@
-import blazervel from './actionsjs/app/blazervel'
-import routeMethod from './actionsjs/app/routes'
-import translateMethod from './actionsjs/app/translations'
+import blazervel from './app/blazervel'
+import routeMethod from './app/routes'
+import translateMethod from './app/translations'
 
-export { default as config } from './actionsjs/app/config'
+export { default as config } from './app/config'
 
 export const route  = routeMethod
 export const lang   = translateMethod

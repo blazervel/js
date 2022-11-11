@@ -4,8 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Blazervel') }}</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    @vite('resources/js/app.tsx')
+    @vite('resources/js/app.js')
   </head>
   <body class="font-sans antialiased"></body>
 </html>

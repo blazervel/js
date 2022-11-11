@@ -1,6 +1,6 @@
-import Model from '../helpers/models/model'
+import Model from './model'
 import Container from '../helpers/container'
-import { snake } from '../helpers/utils'
+import { snake } from '../../utils'
 
 let container
 

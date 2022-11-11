@@ -41,7 +41,7 @@ export default (Config): object => {
 
 			Config.log(
 				'{theme}[Blazervel]',
-				`No key/cert at {green}${valetDefaultCredsPath}`,
+				`No key/cert at {green}${Config.certsPath}`,
 				`Have you run {blue}{underline}'valet secure'{theme} yet? 🤔`
 			)
 			

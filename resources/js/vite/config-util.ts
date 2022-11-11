@@ -1,7 +1,7 @@
 
 import setupAliases from './setup-aliases'
 import setupDevServer from "./setup-dev-server"
-import { BlazervelLoaderProps } from "./types"
+import { BlazervelLoaderProps } from "../types"
 
 export default class ConfigUtil {
 

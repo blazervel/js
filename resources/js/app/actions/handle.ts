@@ -1,10 +1,37 @@
-import { snake } from './utils'
+import Connection from '../helpers/connection'
+import { snake } from '../../utils'
+
+export default () => p({
+    
+    run: async function (action, data) {
+        const response = await (new Connection(`actions/${action}`))._get(data)
+        return response
+    },
+
+    get: (target, prop, receiver) => {
+        if (typeof target[prop] === 'undefined') {
+
+            receiver.stack.push(prop)
+
+            return receiver
+        }
+
+        if (prop === 'run') {
+            const action = receiver.stack.map(s => snake(s)).join('-')
+            receiver.stack = []
+
+            return (...data) => target.run(action, data)
+        }
+
+        return target[prop]
+    }
+})
 
 /**
  * Reuseable proxy
  * @docs https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
  */
-export default (
+const p = (
     data?: object,
     _get?: (name: string) => null,
     _set?: (name: string, value:any) => null,
@@ -48,7 +75,7 @@ export default (
             return null
         },
 
-        get(target: object, prop: string, receiver: ProxyConstructor) {
+        get(target: {_stack: Array<string>, snake: Function}, prop: string, receiver: ProxyConstructor) {
 
             const propertyName = prop,
                   property = target[propertyName],

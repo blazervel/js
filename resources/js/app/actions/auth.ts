@@ -1,5 +1,5 @@
 import Connection from '../helpers/connection'
-import { AuthAttemptProps } from './types/auth'
+import { AuthAttemptProps } from '../../types'
 
 export default ($app) => ({
   
@@ -23,7 +23,7 @@ export default ($app) => ({
     return this._currentUser() !== null
   },
 
-  async attempt(props: AuthAttemptProps) {
+  async attempt({ email, password }: AuthAttemptProps) {
     const response = await (new Connection('actions/auth-attempt'))._post({ email, password, namespace: 'blazervel' })
 
     if (response.user || false) {

@@ -1,5 +1,5 @@
-import Builder from './builder';
-import Connection from '../connection';
+import Builder from './builder'
+import Connection from '../helpers/connection'
 
 export default class Model {
 

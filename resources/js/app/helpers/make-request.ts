@@ -2,10 +2,8 @@ import axios from '@pckg/axios'
 import { debounce } from '@pckg/lodash'
 import { cache, cacheKey } from './cache'
 
-const debounceFetchWait: number = 500,
-      maxQueueItems: number = 20
-
-export const requestTimeout: number = 20 * 1000 // 20s
+const debounceFetchWait: number = 500
+//const maxQueueItems: number = 20
 
 /**
  * Fetch/send data via Axios using cache adapter
@@ -14,13 +12,10 @@ export const makeRequest = (url, options) => {
 
     const instance = axios.create({
         adapter: cache.adapter,
-        timeout: requestTimeout
     })
 
     options = getRequestOptions(options)
     
-    console.log(options)
-
     const request = instance({
         url,
         ...options,

@@ -1,7 +1,7 @@
-import Connection from '../helpers/connection'
-import { resolveComponent } from '../../utils'
-import progress from '../helpers/progress'
-import ErrorPage from '../../pages/error'
+import Connection from './helpers/connection'
+import { resolveComponent } from '../utils'
+import progress from './helpers/progress'
+import Error from '../preact/error'
 
 interface PageProps {
   status: number
@@ -21,7 +21,7 @@ export default ($app) => ({
   errorPage(error: {status: number, heading?: string, message?: string }) {
     return {
       props: error,
-      Component: ErrorPage
+      Component: Error
     }
   },
 

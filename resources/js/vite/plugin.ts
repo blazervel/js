@@ -1,5 +1,5 @@
 import ConfigUtil from './config-util'
-import { BlazerelConfigProps, BlazervelLoaderProps } from './types'
+import { BlazerelConfigProps, BlazervelLoaderProps } from '../types'
 
 export default (options: BlazervelLoaderProps) => (blazervel: BlazerelConfigProps = {}) => ({
 
