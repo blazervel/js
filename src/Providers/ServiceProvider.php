@@ -54,7 +54,7 @@ class ServiceProvider extends BaseServiceProvider
         $this
             ->loadViews()
             ->loadRoutes()
-            ->loadMiddleware()
+            // ->loadMiddleware()
             ->loadTranslations()
             ->loadConfig()
             ->loadCommands();

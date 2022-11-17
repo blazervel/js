@@ -13,6 +13,10 @@ export default (options: BlazervelLoaderProps) => (blazervel: BlazerelConfigProp
 
     const Config = new ConfigUtil(config, mode, options)
 
+    Config.merge('define', {
+      BLAZERVEL_OPTIONS: blazervel
+    })
+
     // Add default aliases (e.g. alias @ -> ./resources/js)
     Config.setupAliases()
 

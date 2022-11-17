@@ -14,6 +14,8 @@ export const makeRequest = (url, options) => {
         adapter: cache.adapter,
     })
 
+    console.log(url, options)
+
     options = getRequestOptions(options)
     
     const request = instance({

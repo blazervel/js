@@ -8,6 +8,7 @@ export interface BlazervelLoaderProps {
 
 export interface BlazerelConfigProps {
   certsPath?: string
+  inertia?: boolean
 }
 
 export interface BlazervelComposerConfigProps {

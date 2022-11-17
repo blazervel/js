@@ -28,22 +28,13 @@ class Action
      *
      * @var string
      */
-    protected $rootView = 'blazervel::app';
+    // protected $rootView = 'blazervel::app';
 
-    public function render()
-    {
-        return view($this->getRootView());
-    }
 
-    public function getRootView()
-    {
-        return $this->rootView;
-    }
-
-    private function expectsInertia(): bool
-    {
-        return in_array(WithInertia::class, class_uses($this));
-    }
+    // public function getRootView()
+    // {
+    //     return $this->rootView;
+    // }
 
     protected function validate(array $rules = null): array
     {
