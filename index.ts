@@ -1,7 +1,6 @@
-import { loadEnv, UserConfig } from 'vite'
+import { loadEnv, UserConfig, searchForWorkspaceRoot } from 'vite'
 import { homedir } from 'os'
 import path from 'path'
-import setupAliases from './resources/js/vite/setup-aliases'
 import setupDevServer from './resources/js/vite/setup-dev-server'
 
 export interface BlazerelConfigProps {
@@ -18,25 +17,36 @@ export default (options: BlazerelConfigProps) => ({
       return config
     }
 
-    const basePath = process.cwd()
-  
     // Add default aliases (e.g. alias @ -> ./resources/js)
-    config = setupAliases(
-      config,
-      basePath,
-      path.resolve(__dirname)
-    )
+    const basePath = searchForWorkspaceRoot(process.cwd()),
+          packagePath = path.resolve(__dirname)
+
+    config.server = config.server || {}
+    config.server.fs = config.server.fs || {}
+
+    config.server.fs.allow = [
+      ...(config.server.fs.allow || []),
+      path.relative(basePath, packagePath),
+      basePath
+    ]
+
+    config.resolve = config.resolve || {}
+    
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      '@tightenco/ziggy': `${basePath}/vendor/tightenco/ziggy/src/js`,
+      '@blazervel': `${packagePath}/resources/js`,
+      '@pckg': `${basePath}/node_modules`
+    }
 
     if (mode !== 'development') {
       return config
     }
 
-    console.log('test')
-
     // Configure dev server (e.g. valet https, HMR, etc.)
     config = setupDevServer(
       config,
-      loadEnv(mode, basePath, '').APP_URL || '',
+      loadEnv(mode, process.cwd(), '').APP_URL || '',
       path.resolve(homedir(), '.config/valet/Certificates/') // options.certsPath
     )
     
