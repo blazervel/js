@@ -28,8 +28,8 @@ export default (options: BlazerelConfigProps) => ({
     // Add default aliases (e.g. alias @ -> ./resources/js)
     config = setupAliases(
       config,
-      path.resolve(__dirname),
-      path.resolve('.')
+      path.resolve('.'),
+      path.resolve(__dirname)
     )
 
     if (mode !== 'development') {
