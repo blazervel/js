@@ -1,7 +1,7 @@
 import { UserConfig } from 'vite'
 import fs from 'fs'
 
-export default (config: UserConfig, appUrl: string, certsPath?: string): object => {
+export default (config: UserConfig, appUrl: string, certsPath: string): object => {
 
 	const hmrHost = appUrl.split('//').reverse()[0],
 				host = config.server?.hmr?.host || config.server?.host || config.host || hmrHost,
