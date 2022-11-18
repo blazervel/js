@@ -17,6 +17,8 @@ export default (options: BlazerelConfigProps) => ({
       return config
     }
 
+    const basePath = process.cwd()
+
     if (options.tailwind === true) {
       config.plugins = config.plugins || []
       
@@ -28,7 +30,7 @@ export default (options: BlazerelConfigProps) => ({
     // Add default aliases (e.g. alias @ -> ./resources/js)
     config = setupAliases(
       config,
-      path.resolve('.'),
+      basePath,
       path.resolve(__dirname)
     )
 
@@ -36,10 +38,12 @@ export default (options: BlazerelConfigProps) => ({
       return config
     }
   
+    console.log(loadEnv(mode, basePath, '').APP_URL || '')
+    
     // Configure dev server (e.g. valet https, HMR, etc.)
     config = setupDevServer(
       config,
-      loadEnv('APP_URL', mode, ''),
+      loadEnv(mode, basePath, '').APP_URL || '',
       path.resolve(homedir(), '.config/valet/Certificates/')
     )
     
