@@ -37,9 +37,7 @@ export default (options: BlazerelConfigProps) => ({
     if (mode !== 'development') {
       return config
     }
-  
-    console.log(loadEnv(mode, basePath, '').APP_URL || '')
-    
+
     // Configure dev server (e.g. valet https, HMR, etc.)
     config = setupDevServer(
       config,

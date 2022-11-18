@@ -4,8 +4,8 @@ import fs from 'fs'
 export default (config: UserConfig, appUrl: string, certsPath: string): object => {
 
 	const hmrHost = appUrl.split('//').reverse()[0],
-				host = config.server.hmr.host || config.server.host || config.host || hmrHost,
-				port = config.server.port || 3025
+				host = config.server?.hmr?.host || config.server?.host || config.host || hmrHost,
+				port = config.server?.port || 3025
 
 	// Set HMR host
 	config.server = config.server || {}
