@@ -1,4 +1,3 @@
-export * from './dates'
 export * from './resolve-component'
 
 export const snake = camelString => (
