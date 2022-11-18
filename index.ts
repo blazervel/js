@@ -1,7 +1,6 @@
 import { loadEnv, UserConfig } from 'vite'
 import { homedir } from 'os'
 import path from 'path'
-import tailwindcss from 'tailwindcss'
 import setupAliases from './resources/js/vite/setup-aliases'
 import setupDevServer from './resources/js/vite/setup-dev-server'
 
@@ -17,16 +16,7 @@ export default (options: BlazerelConfigProps) => ({
       return config
     }
 
-    const basePath = process.cwd(),
-          { certsPath, ...blazervelOptions } = options
-
-    if (options.tailwind === true) {
-      config.plugins = config.plugins || []
-      
-      config.plugins.push(
-        tailwindcss()
-      )
-    }
+    const basePath = process.cwd()
   
     // Add default aliases (e.g. alias @ -> ./resources/js)
     config = setupAliases(
