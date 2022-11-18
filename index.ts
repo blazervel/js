@@ -31,11 +31,13 @@ export default (options: BlazerelConfigProps) => ({
       return config
     }
 
+    console.log('test')
+
     // Configure dev server (e.g. valet https, HMR, etc.)
     config = setupDevServer(
       config,
       loadEnv(mode, basePath, '').APP_URL || '',
-      options.certsPath || path.resolve(homedir(), '.config/valet/Certificates/')
+      path.resolve(homedir(), '.config/valet/Certificates/') // options.certsPath
     )
     
     return config
