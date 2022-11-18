@@ -1,5 +1,9 @@
 import Connection from '../helpers/connection'
-import { AuthAttemptProps } from '../../types'
+
+export interface AuthAttemptProps {
+  email: string
+  password: string
+}
 
 export default ($app) => ({
   

@@ -4,7 +4,9 @@ import path from 'path'
 import setupAliases from './resources/js/vite/setup-aliases'
 import setupDevServer from './resources/js/vite/setup-dev-server'
 
-import { BlazerelConfigProps } from '../types'
+export interface BlazerelConfigProps {
+  certsPath?: string
+}
 
 export default (options: BlazerelConfigProps) => ({
 
