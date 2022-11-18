@@ -1,11 +1,3 @@
-export interface BlazervelLoaderProps {
-  certsPath: string
-  packagePath: string
-  basePath: string
-  loadEnv: Function
-  lodash: any
-}
-
 export interface BlazerelConfigProps {
   certsPath?: string
   inertia?: boolean
