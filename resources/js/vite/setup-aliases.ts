@@ -16,11 +16,9 @@ export default (config, basePath, packagePath): object => {
   
   config.resolve.alias = {
     ...(config.resolve.alias || {}),
-    '@blazervel-ui': `${packagesPath}/ui/resources/js`,
-    '@blazervel':    `${packagesPath}/blazervel/resources/js`,
-    '@vendor':       vendorPath,
-    '@pckg':         `${basePath}/node_modules`,
-    '@':             `${basePath}/resources/js`,
+    '@tightenco/ziggy': `${vendorPath}/tightenco/ziggy/src/js`,
+    '@blazervel': `${packagesPath}/blazervel/resources/js`,
+    '@pckg': `${basePath}/node_modules`
   }
 
   return config

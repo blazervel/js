@@ -53,7 +53,7 @@ class Actions
     {
         $component = $action;
         $component = Str::replace('-', '/', $component);
-        $component = "@/blazervel/{$component}";
+        $component = "blazervel/{$component}";
 
         return $component;
     }

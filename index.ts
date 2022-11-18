@@ -17,7 +17,8 @@ export default (options: BlazerelConfigProps) => ({
       return config
     }
 
-    const basePath = process.cwd()
+    const basePath = process.cwd(),
+          { certsPath, ...blazervelOptions } = options
 
     if (options.tailwind === true) {
       config.plugins = config.plugins || []
@@ -42,7 +43,7 @@ export default (options: BlazerelConfigProps) => ({
     config = setupDevServer(
       config,
       loadEnv(mode, basePath, '').APP_URL || '',
-      path.resolve(homedir(), '.config/valet/Certificates/')
+      options.certsPath || path.resolve(homedir(), '.config/valet/Certificates/')
     )
     
     return config

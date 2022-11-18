@@ -15,7 +15,7 @@ export function resolvePage(name: string): any {
 
   } else {
 
-    components = import.meta.glob('@/**/Pages/**/*.*')
+    components = import.meta.glob('./**/Pages/**/*.*')
 
   }
 
@@ -45,7 +45,7 @@ export function resolveComponent(name: string): any {
 
   } else {
 
-    components = import.meta.glob('@/**/*.*')
+    components = import.meta.glob('./**/*.*')
 
   }
 
