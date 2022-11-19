@@ -24,9 +24,9 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
-        if (!WorkspaceUserInviteModel::intendedUrlIsWorkspaceInviteAccept()) {
-            return redirect()->route('login');
-        }
+        // if (!WorkspaceUserInviteModel::intendedUrlIsWorkspaceInviteAccept()) {
+        //     return redirect()->route('login');
+        // }
 
 
         Validator::make($input, [
