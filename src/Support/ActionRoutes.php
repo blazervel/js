@@ -35,6 +35,8 @@ class ActionRoutes
                 Route::get(   'actions/{action}',           ActionActions\Handle::class);
                 Route::post(  'batch',                      ActionActions\Batch::class);
                 Route::get(   'batch',                      ActionActions\Batch::class);
+                Route::post(  'run-actions',                ActionActions\RunActions::class);
+                Route::get(   'run-actions',                ActionActions\RunActions::class);
             });
         });
     }

@@ -81,15 +81,6 @@ export default class Connection {
             request.method = method;
         }
 
-        if (data) {
-            if (method === 'get') {
-                request.params = data
-            } else {
-                request.data = data
-                request.headers['Content-Type'] = 'application/json'
-            }
-        }
-
         return {
             ...request,
             ...options
