@@ -1,33 +1,3 @@
-export function resolvePage(name: string): any {
-
-  let components,
-      alias = '@'
-
-  if (name.includes('@blazervel-ui')) {
-
-    components = import.meta.glob('@blazervel-ui/**/Pages/**/*.*')
-    alias = '@blazervel-ui'
-
-  } else if (name.includes('@blazervel')) {
-
-    components = import.meta.glob('@blazervel/**/Pages/**/*.*')
-    alias = '@blazervel'
-
-  } else {
-
-    components = import.meta.glob('./**/Pages/**/*.*')
-
-  }
-
-  const page = componentLookup(components, name.replace(alias, ''))
-
-  if (page) {
-    return page
-  }
-
-  throw new Error(`Page not found: ${name}`)
-}
-
 export function resolveComponent(name: string): any {
 
   let components,

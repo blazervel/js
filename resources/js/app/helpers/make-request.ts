@@ -11,10 +11,8 @@ const debounceFetchWait: number = 500
 export const makeRequest = (url, options) => {
 
     const instance = axios.create({
-        adapter: cache.adapter,
+        adapter: options.adapter || cache.adapter,
     })
-
-    console.log(url, options)
 
     options = getRequestOptions(options)
     
@@ -49,12 +47,15 @@ export const makeRequest = (url, options) => {
     return request
 }
 
-export const queueMakeRequest = async (url, options) => {
+export const queueMakeRequest = async (url, { bypassQueue, options }) => {
 
     const key = cacheKey({url, ...options})
 
     // Return cached response (and queue refresh) if exists
-    if (await cache.store.store[key] !== null) {
+    if (
+        bypassQueue ||
+        await cache.store.store[key] !== null
+    ) {
         return await makeRequest(url, options)
     }
 
@@ -99,23 +100,38 @@ const debounceFetch = debounce(() => {
 }, debounceFetchWait)
 
 const getRequestOptions = ({
+    method,
+    data,
     headers,
     withCredentials = true,
     ignoreCache = false,
     allowStaleCache = false,
     ...options
-}) => ({
-    ...options,
-    headers: {
-        'Accept': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-XSRF-TOKEN': getCsrfToken(),
-        ...headers
-    },
-    withCredentials,
-    ignoreCache,
-    allowStaleCache,
-})
+}) => {
+
+    if (data) {
+        if (method === 'get') {
+            options.params = data
+        } else {
+            options.data = data
+            headers['Content-Type'] = 'application/json'
+        }
+    }
+    
+    return {
+        ...options,
+        method,
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-XSRF-TOKEN': getCsrfToken(),
+            ...headers
+        },
+        withCredentials,
+        ignoreCache,
+        allowStaleCache,
+    }
+}
 
 const getCsrfToken = () => {
     if (typeof document === 'undefined') {
