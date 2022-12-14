@@ -2,15 +2,14 @@
 
 namespace Blazervel\Blazervel\Actions\Config;
 
-use Blazervel\Blazervel\Action;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Lang as BaseLang;
 use Illuminate\Support\Str;
 
-class Localization extends Action
+class Translations extends Config
 {
-    public function handle()
+    public function generate(): array
     {
         return [
             'locale' => app()->getLocale(),

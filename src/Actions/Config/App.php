@@ -9,8 +9,9 @@ class App extends Action
     public function handle()
     {
         return \B::arr(
-            localization: Localization::run(),
+            translations: Translations::run(),
             routes: Routes::run(),
+            models: Models::run()
         );
     }
 }

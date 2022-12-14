@@ -37,7 +37,7 @@ export default function () {
       blazervel.Page.load(window.location.href).then(page => {
         const appConfig = config(page.config)
 
-        window.lang = lang(appConfig.localization)
+        window.lang = lang(appConfig.translations)
         window.route = route(appConfig.routes)
 
         setPage(page)

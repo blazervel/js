@@ -5,6 +5,7 @@ namespace Blazervel\Blazervel\Providers;
 use Illuminate\Contracts\Http\Kernel;
 
 use Blazervel\Blazervel\Actions\Pages;
+use Blazervel\Blazervel\Console\MakeConfigCommand;
 use Blazervel\Blazervel\Console\MakeActionCommand;
 use Blazervel\Blazervel\Console\MakeAnonymousActionCommand;
 use Blazervel\Blazervel\Support\Actions;
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\RateLimiter;
 
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
@@ -88,7 +90,7 @@ class ServiceProvider extends BaseServiceProvider
     private function loadConfig(): self
     {
         $this->publishes([
-            "{$this->path}/config/blazervel.php" => config_path('blazervel.php'),
+            static::path('config/blazervel.php') => config_path('blazervel.php'),
         ], 'blazervel');
 
         return $this;
@@ -98,6 +100,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
+                MakeConfigCommand::class,
                 MakeActionCommand::class,
                 MakeAnonymousActionCommand::class
             ]);
@@ -109,7 +112,8 @@ class ServiceProvider extends BaseServiceProvider
     private function loadViews(): self
     {
         $this->loadViewsFrom(
-            "{$this->path}/resources/views", 'blazervel'
+            static::path('resources/views'),
+            'blazervel'
         );
 
         return $this;
@@ -180,7 +184,7 @@ class ServiceProvider extends BaseServiceProvider
     private function loadTranslations(): self
     {
         $this->loadTranslationsFrom(
-            "{$this->path}/lang",
+            static::path('lang'),
             'blazervel'
         );
 
@@ -193,7 +197,7 @@ class ServiceProvider extends BaseServiceProvider
 
         // Register inertia views and routes for fortify
         $this->loadRoutesFrom(
-            "{$this->path}/routes/fortify.php"
+            static::path('routes/fortify.php')
         );
 
         Fortify::createUsersUsing(
@@ -261,7 +265,7 @@ class ServiceProvider extends BaseServiceProvider
 
         // Register inertia views and routes for jetstream
         $this->loadRoutesFrom(
-            "{$this->path}/routes/jetstream.php"
+            static::path('routes/jetstream.php')
         );
         
         Jetstream::createTeamsUsing(
@@ -367,5 +371,13 @@ class ServiceProvider extends BaseServiceProvider
         }
 
         return in_array($provider, $this->providers);
+    }
+
+    static function path(string ...$path): string
+    {
+        return join('/', [
+            Str::remove('src/Providers', __DIR__),
+            ...$path
+        ]);
     }
 }

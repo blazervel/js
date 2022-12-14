@@ -1,21 +1,12 @@
-import Connection from './helpers/connection'
+import translations from '@blazervel/../../dist/config/translations'
+import routes from '@blazervel/../../dist/config/routes'
+import models from '@blazervel/../../dist/config/models'
+import { ConfigProps } from '../types'
 
-interface ConfigProps {
-  localization: object
-  routes: object
+const config: ConfigProps = {
+  translations,
+  routes,
+  models
 }
 
-export async function loadConfig(): Promise<ConfigProps> {
-
-  const conn = new Connection('actions/config-app'),
-        response = (
-          await conn._get({ namespace: 'blazervel' }, { allowStaleCache: true })
-        )
-
-  return {
-    localization: await response.localization,
-    routes: await response.routes
-  }
-}
-
-export default (config: ConfigProps): ConfigProps => config
+export default config

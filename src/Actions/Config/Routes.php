@@ -8,28 +8,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Routing\Router;
 use ReflectionMethod;
 use Tightenco\Ziggy\Ziggy;
 
-class Routes extends Action
+class Routes extends Config
 {
-    public array $config;
-
-    public function handle()
+    public function generate(): array
     {
-        $this->config = (new Ziggy)->toArray();
+        $config = (new Ziggy)->toArray();
+        $config = $this->setRouteActions($config);
+        $config = $this->setRouteParams($config);
 
-        $this
-            ->setRouteActions()
-            ->setRouteParams();
-
-        return $this->config;
+        return $config;
     }
 
-    private function setRouteActions(): self
+    private function setRouteActions(array $config): array
     {
-        $routes = $this->config['routes'];
+        $routes = $config['routes'];
         $actions = $this->getRouteActions();
 
         collect($routes)
@@ -48,58 +43,62 @@ class Routes extends Action
             ->collapse()
             ->all();
 
-        $this->config['routes'] = $routes;
+        $config['routes'] = $routes;
 
-        return $this;
+        return $config;
     }
 
     private function getRouteActions(): Collection
     {
-        $actions = (array) Route::getRoutes();
+        $routeActions = (array) Route::getRoutes();
 
-        $actions = collect($actions)
-                        ->filter(fn ($list, $key) => Str::contains($key, 'actionList'))
-                        ->first();
+        $routeActions = collect(
+            collect($routeActions)
+                ->filter(fn ($list, $key) => Str::contains($key, 'actionList'))
+                ->first() ?: []
+        );
 
         return (
-            collect($actions)
-                ->filter(fn ($route, $action) => is_subclass_of($action, Action::class))
-                ->map(fn ($route, $action) => [$route->uri => $action])
+            $routeActions
+                ->filter(fn ($route, $routeAction) => (
+                    is_subclass_of(explode('@', $routeAction)[0], Action::class) ||
+                    class_uses(explode('@', $routeAction)[0], '\\Blazervel\\Blazervel\\WithBlazervel')
+                ))
+                ->map(fn ($route, $routeAction) => [$route->uri => $routeAction])
                 ->collapse()
         );
     }
 
-    private function setRouteParams(): self
+    private function setRouteParams(array $config): array
     {
-        $routes = $this->config['routes'];
+        $routes = collect($config['routes']);
         $actions = $this->getRouteActions();
 
-        collect($routes)
+        $routes
             ->filter(fn ($route) => isset($actions[$route['uri']]))
-            ->map(function ($route, $name) use ($actions) {
+            ->each(function ($route, $name) use ($actions) {
                 $action = $actions[$route['uri']];
 
-                if (Str::contains('@', $action)) {
+                if (Str::contains($action, '@')) {
+                    
                     list($class, $method) = explode('@', $action);
-                }
 
-                $class = $action;
-                $method = '__invoke';
+                } else {
 
-                if (is_subclass_of($class, Action::class)) {
-                    $method = 'handle';
+                    $class = $action;
+                    $method = '__invoke';
+
+                    if (is_subclass_of($class, Action::class)) {
+                        $method = 'handle';
+                    }
                 }
 
                 $routes[$name]['parameters'] = $this->getRouteParams($class, $method);
+            });
 
-                return [$name => $route];
-            })
-            ->collapse()
-            ->all();
+        $config['routes'] = $routes;
 
-        $this->config['routes'] = $routes;
-
-        return $this;
+        return $config;
     }
 
     private function getRouteParams(string $class, string $method)
@@ -108,8 +107,9 @@ class Routes extends Action
 
         return (
             collect($reflect->getParameters())
-                ->filter(fn ($p) => $p->getType()->getName() !== Request::class)
-                ->map(fn ($p) => [$p->getName() => $p->getType()->getName()])
+                ->map(fn ($p) => [$p->getName() => ($t = $p->getType()) ? $t->getName() : 'mixed'])
+                ->collapse()
+                ->filter(fn ($type, $name) => $type !== Request::class)
                 ->collapse()
         );
     }
