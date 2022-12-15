@@ -1,7 +1,7 @@
 import { loadEnv, UserConfig, searchForWorkspaceRoot } from 'vite'
 import { homedir } from 'os'
 import path from 'path'
-import shelljs from 'shelljs'
+import { exec } from 'node:child_process'
 import setupDevServer from './resources/js/vite/setup-dev-server'
 
 export interface BlazerelConfigProps {
@@ -24,11 +24,6 @@ export default (options: BlazerelConfigProps) => ({
 
     config.server = config.server || {}
     config.server.fs = config.server.fs || {}
-
-    const publicDir = config.publicDir || 'public'
-    
-    // Generate config files
-    shelljs.exec("php artisan blazervel:config")
 
     config.server.fs.allow = [
       ...(config.server.fs.allow || []),
@@ -55,6 +50,9 @@ export default (options: BlazerelConfigProps) => ({
       loadEnv(mode, process.cwd(), '').APP_URL || '',
       path.resolve(homedir(), '.config/valet/Certificates/') // options.certsPath
     )
+    
+    // Generate static config/schema files
+    exec('php artisan blazervel:build')
     
     return config
   }

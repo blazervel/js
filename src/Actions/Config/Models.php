@@ -5,6 +5,8 @@ namespace Blazervel\Blazervel\Actions\Config;
 use ReflectionClass;
 use ReflectionMethod;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
 class Models extends Config
@@ -13,20 +15,46 @@ class Models extends Config
     {
         return [
             'shared' => [
-                'methods' => $this->getClassMethods(Model::class, true),
+                'methods' => $this->getModelMethods(Model::class, true),
             ],
             'models' => (
-                collect(get_declared_classes())
+                collect(File::allFiles(app_path('Models')))
+                    ->map(fn ($file) => join('\\', ['App', 'Models', Str::remove('.php', $file->getFilename())]))
                     ->filter(fn ($class) => is_subclass_of($class, Model::class))
+                    ->filter(fn ($class) => (new ReflectionClass($class))->isAbstract() === false)
                     ->map(fn ($class) => [$class => [
-                        'methods' => $this->getClassMethods($class)
+                        'key' => Str::remove('App.', Str::replace('\\', '.', $class)),
+                        'attributes' => $this->getModelAttributes($class),
+                        'methods' => ($methods = $this->getModelMethods($class)),
+                        'scopes' => collect($methods)->filter(fn ($params, $method) => Str::endswith($method, 'Scope'))->all()
                     ]])
                     ->collapse()
+                    ->all()
             )
         ];
     }
 
-    private function getClassMethods(string $class, bool $includeInherited = false): array
+    private function getModelAttributes(string $class): array
+    {
+        $model = new $class;
+        $schema = DB::select("DESCRIBE {$model->getTable()}");
+
+        return (
+            collect($schema)
+                ->map(fn ($field) => [
+                    $field->Field => join('', [
+                        Str::camel($field->Type),
+                        $field->Null === 'NO' && is_null($field->Default)
+                            ? ''
+                            : '?'
+                    ])
+                ])
+                ->collapse()
+                ->all()
+        );
+    }
+
+    private function getModelMethods(string $class, bool $includeInherited = false): array
     {
         $methods = (new ReflectionClass($class))->getMethods(ReflectionMethod::IS_PUBLIC);
         $methods = collect($methods);

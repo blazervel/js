@@ -15,7 +15,11 @@ export interface ModelsConfigProps {
 }
 
 export interface ConfigProps {
-  translations: TranslationsConfigProps
-  routes: RoutesConfigProps
-  models: ModelsConfigProps
+  translations: object, //TranslationsConfigProps
+  routes: object, //RoutesConfigProps
+  models: object, //ModelsConfigProps
+  notifications: object,
+  controllers: object,
+  actions: object,
+  jobs: object
 }

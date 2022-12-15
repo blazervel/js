@@ -1,29 +1,33 @@
 <?php
 
-namespace Blazervel\Blazervel\Console;
+namespace Blazervel\Blazervel\Console\Commands;
 
+use Blazervel\Blazervel\Actions\Config\Actions;
+use Blazervel\Blazervel\Actions\Config\Controllers;
+use Blazervel\Blazervel\Actions\Config\Jobs;
 use Blazervel\Blazervel\Actions\Config\Translations;
 use Blazervel\Blazervel\Actions\Config\Routes;
 use Blazervel\Blazervel\Actions\Config\Models;
+use Blazervel\Blazervel\Actions\Config\Notifications;
 use Blazervel\Blazervel\Providers\ServiceProvider;
 use Illuminate\Support\Facades\File;
 use Illuminate\Console\Command;
 
-class MakeConfigCommand extends Command
+class BuildCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'blazervel:config';
+    protected $signature = 'blazervel:build';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate json config files for Blazervel';
+    protected $description = 'Generate json config/schema files for Blazervel';
 
     /**
      * Execute the console command.
@@ -40,6 +44,10 @@ class MakeConfigCommand extends Command
             Translations::class,
             Routes::class,
             Models::class,
+            Notifications::class,
+            Controllers::class,
+            Actions::class,
+            Jobs::class,
         ])->each(fn ($helper) => (
             file_put_contents(
                 "{$directory}/{$helper::outputFileName()}",

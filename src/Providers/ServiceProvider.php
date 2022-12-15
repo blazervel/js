@@ -5,9 +5,9 @@ namespace Blazervel\Blazervel\Providers;
 use Illuminate\Contracts\Http\Kernel;
 
 use Blazervel\Blazervel\Actions\Pages;
-use Blazervel\Blazervel\Console\MakeConfigCommand;
 use Blazervel\Blazervel\Console\MakeActionCommand;
 use Blazervel\Blazervel\Console\MakeAnonymousActionCommand;
+use Blazervel\Blazervel\Console\Commands\BuildCommand;
 use Blazervel\Blazervel\Support\Actions;
 use Blazervel\Blazervel\Support\ActionRoutes;
 use Blazervel\Blazervel\Http\Middleware\BlazervelMiddleware;
@@ -100,9 +100,9 @@ class ServiceProvider extends BaseServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                MakeConfigCommand::class,
+                MakeAnonymousActionCommand::class,
                 MakeActionCommand::class,
-                MakeAnonymousActionCommand::class
+                BuildCommand::class
             ]);
         }
 

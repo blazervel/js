@@ -4,6 +4,8 @@ namespace Blazervel\Blazervel\Actions\Config;
 
 use Illuminate\Support\Str;
 use JsonSerializable;
+use ReflectionMethod;
+use ReflectionUnionType;
 
 abstract class Config implements JsonSerializable
 {
@@ -31,5 +33,18 @@ abstract class Config implements JsonSerializable
     public function jsonSerialize(): mixed
     {
         return static::run();
+    }
+
+    protected function getMethodReturnType(ReflectionMethod $method)
+    {
+        if (!$type = $method->getReturnType()) {
+            return null;
+        }
+
+        if ($type::class === ReflectionUnionType::class) {
+            return collect($type->getTypes())->map(fn ($t) => $t->getName())->join('|');
+        }
+
+        return $type->getName() . ($type->allowsNull() ? '|null' : '');
     }
 }
