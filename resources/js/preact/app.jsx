@@ -2,6 +2,10 @@ import { useEffect, useState } from '@pckg/preact/compat'
 import blazervel from '../app/blazervel'
 import { config, lang, route } from '@blazervel'
 
+
+window.lang = lang(config.translations)
+window.route = route(config.routes)
+
 export default function () {
 
   const [page, setPage] = useState(null)
@@ -34,14 +38,7 @@ export default function () {
     window.addEventListener('popstate', handlePopstate)
 
     if (!page) {
-      blazervel.Page.load(window.location.href).then(page => {
-        const appConfig = config(page.config)
-
-        window.lang = lang(appConfig.translations)
-        window.route = route(appConfig.routes)
-
-        setPage(page)
-      })
+      blazervel.Page.load(window.location.href).then(setPage)
     }
 
     return () => {

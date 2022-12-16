@@ -6,10 +6,13 @@ use Blazervel\Blazervel\Action;
 use Blazervel\Blazervel\Actions\Handle;
 use Blazervel\Blazervel\Support\Actions;
 use Blazervel\Blazervel\Actions\Config;
+use Blazervel\Blazervel\WithBlazervel;
 use Illuminate\Http\Request;
 
 class Data extends Action
 {
+    use WithBlazervel;
+
     public function handle(Request $request, string $url)
     {
         $action    = Actions::urlAction($url);

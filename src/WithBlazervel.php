@@ -2,4 +2,10 @@
 
 namespace Blazervel\Blazervel;
 
-trait WithBlazervel {}
+trait WithBlazervel
+{
+    public function getRootView(): string
+    {
+        return 'blazervel::app';
+    }
+}

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '@pckg/axios'
 import { debounce } from '@pckg/lodash'
 
 

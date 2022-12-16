@@ -2,7 +2,7 @@
 
 namespace Blazervel\Blazervel\Actions;
 
-use Blazervel\Blazervel\Action;
+use Blazervel\Blazervel\WithBlazervel;
 use Blazervel\Blazervel\Support\Actions;
 use Exception;
 use Illuminate\Http\Request;
@@ -26,9 +26,9 @@ class Handle
 
         $actionClass = Actions::keyAction($action);
 
-        if (!is_subclass_of($actionClass, Action::class)) {
+        if (!class_uses($actionClass, WithBlazervel::class)) {
             throw new Exception(
-                "[$actionClass] does not extend [" . Action::class . "]"
+                "[$actionClass] is missing trait [" . WithBlazervel::class . "]"
             );
         }
 

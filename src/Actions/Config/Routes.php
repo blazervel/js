@@ -103,6 +103,10 @@ class Routes extends Config
 
     private function getRouteParams(string $class, string $method)
     {
+        if (!method_exists($class, $method)) {
+            return [];
+        }
+        
         $reflect = new ReflectionMethod($class, $method);
 
         return (
