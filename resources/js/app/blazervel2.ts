@@ -240,8 +240,6 @@ const builderProxy = () => {
         )
       }
 
-      console.log(target, p, receiver, this)
-    
       return receiver
 
     } 
