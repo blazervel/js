@@ -6,15 +6,20 @@ use ReflectionClass;
 use ReflectionMethod;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
-use Illuminate\Notifications\Notification;
 
 class Jobs extends Config
 {
     public function generate(): array
     {
+        $path = app_path('Jobs');
+
+        if (!File::exists($path)) {
+            return [];
+        }
+
         return [
             'notifications' => (
-                collect(File::allFiles(app_path('Jobs')))
+                collect(File::allFiles($path))
                     ->map(fn ($file) => (
                         Str::replace('/', '\\', Str::replace(app_path(), 'App', Str::remove('.php', $file->getPathname())))
                     ))
