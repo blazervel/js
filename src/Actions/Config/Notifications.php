@@ -12,9 +12,15 @@ class Notifications extends Config
 {
     public function generate(): array
     {
+        $path = app_path('Notifications');
+
+        if (!File::exists($path)) {
+            return [];
+        }
+
         return [
             'notifications' => (
-                collect(File::allFiles(app_path('Notifications')))
+                collect(File::allFiles($path))
                     ->map(fn ($file) => (
                         Str::replace('/', '\\', Str::replace(app_path(), 'App', Str::remove('.php', $file->getPathname())))
                     ))

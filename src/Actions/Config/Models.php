@@ -13,12 +13,18 @@ class Models extends Config
 {
     public function generate(): array
     {
+        $path = app_path('Models');
+
+        if (!File::exists($path)) {
+            return [];
+        }
+
         return [
             'shared' => [
                 'methods' => $this->getModelMethods(Model::class, true),
             ],
             'models' => (
-                collect(File::allFiles(app_path('Models')))
+                collect(File::allFiles($path))
                     ->map(fn ($file) => join('\\', ['App', 'Models', Str::remove('.php', $file->getFilename())]))
                     ->filter(fn ($class) => is_subclass_of($class, Model::class))
                     ->filter(fn ($class) => (new ReflectionClass($class))->isAbstract() === false)

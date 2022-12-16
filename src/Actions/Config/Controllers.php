@@ -13,9 +13,15 @@ class Controllers extends Config
 {
     public function generate(): array
     {
+        $path = app_path('Http/Controllers');
+
+        if (!File::exists($path)) {
+            return [];
+        }
+
         return [
             'controllers' => (
-                collect(File::allFiles(app_path('Http/Controllers')))
+                collect(File::allFiles($path))
                     ->map(fn ($file) => (
                         Str::replace('/', '\\', Str::replace(app_path(), 'App', Str::remove('.php', $file->getPathname())))
                     ))
