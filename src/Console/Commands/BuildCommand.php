@@ -45,7 +45,6 @@ class BuildCommand extends Command
             Routes::class,
             Models::class,
             Notifications::class,
-            Controllers::class,
             Actions::class,
             Jobs::class,
         ])->each(fn ($helper) => (

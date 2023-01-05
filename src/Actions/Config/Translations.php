@@ -41,9 +41,8 @@ class Translations extends Config
         );
 
         $packageTranslations = collect([
-            'blazervel'            => 'blazervel/blazervel',
-            'blazervel_ui'         => 'blazervel/ui',
-            'blazervel_workspaces' => 'blazervel/workspaces',
+            'blazervel' => 'blazervel/blazervel',
+            'blazervel_ui' => 'blazervel/ui'
         ])
         ->map(function ($package, $packagePrefix) {
             if (!File::exists($packageLangPath = base_path("vendor/{$package}/lang"))) {

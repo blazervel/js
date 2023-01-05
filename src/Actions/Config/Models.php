@@ -2,6 +2,7 @@
 
 namespace Blazervel\Blazervel\Actions\Config;
 
+use Exception;
 use ReflectionClass;
 use ReflectionMethod;
 use Illuminate\Support\Str;
@@ -43,7 +44,12 @@ class Models extends Config
     private function getModelAttributes(string $class): array
     {
         $model = new $class;
-        $schema = DB::select("DESCRIBE {$model->getTable()}");
+        
+        try {
+            $schema = DB::select("DESCRIBE {$model->getTable()}");
+        } catch (Exception $e) {
+            $schema = [];
+        }
 
         return (
             collect($schema)

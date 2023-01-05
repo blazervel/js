@@ -2,13 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use Laravel\Jetstream\Jetstream;
-
 use Blazervel\Blazervel\Actions\Terms;
 use Blazervel\Blazervel\Actions\Policy;
 use Blazervel\Blazervel\Actions\ApiTokens;
 use Blazervel\Blazervel\Actions\Teams;
 use Blazervel\Blazervel\Actions\Users;
 use Blazervel\Blazervel\Exceptions\OopsyDoopsies;
+use Laravel\Jetstream\Http\Controllers\TeamInvitationController;
 
 // Include Jetstream routes
 try {
@@ -73,9 +73,9 @@ Route::group(['middleware' => array_merge($middleware, $authMiddleware)], functi
             Route::get('teams/create', Teams\Create::class)->name('teams.create');
             Route::get('teams/{team}', Teams\Show::class  )->name('teams.show');
 
-            Route::middleware(['signed'])->group(fn () => (
-                Route::get('team-invitations/{invitation}', Teams\Invitations\Show::class)->name('team-invitations.accept')
-            ));
+            Route::get('/team-invitations/{invitation}', [TeamInvitationController::class, 'accept'])
+                        // ->middleware(['signed'])
+                        ->name('team-invitations.accept');
         }
     });
 

@@ -35,8 +35,6 @@ use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
 {
-    private string $path = __DIR__ . '/../..';
-
     private ?array $providers = null;
 
     public function register()
@@ -68,13 +66,15 @@ class ServiceProvider extends BaseServiceProvider
             $this->loadFortify();
         }
 
-        if (
-            !$this->hasProvider(JetstreamServiceProvider::class) &&
-            class_exists(Jetstream::class)
-        ) {
-            $this
-                ->loadJetstream()
-                ->loadJetstreamPermissions();
+        if (class_exists(Jetstream::class)) {
+
+            $this->loadJetstreamRoutes();
+
+            if (! $this->hasProvider(JetstreamServiceProvider::class)) {
+                $this
+                    ->loadJetstream()
+                    ->loadJetstreamPermissions();
+            }
         }
     }
 
@@ -244,7 +244,7 @@ class ServiceProvider extends BaseServiceProvider
     private function loadJetstream(): self
     {
         // Set jetstream config defaults
-        if (Config::set('jetstream.features', null) === null) {
+        if (Config::get('jetstream.features', null) === null) {
             foreach([
                 'middleware'         => ['web'],
                 'auth_session'       => AuthenticateSession::class,
@@ -262,11 +262,6 @@ class ServiceProvider extends BaseServiceProvider
                 Config::set("jetstream.{$key}", $value);
             }
         }
-
-        // Register inertia views and routes for jetstream
-        $this->loadRoutesFrom(
-            static::path('routes/jetstream.php')
-        );
         
         Jetstream::createTeamsUsing(
             $this->fallback(
@@ -347,6 +342,16 @@ class ServiceProvider extends BaseServiceProvider
         //         $role->description
         //     )
         // ));
+
+        return $this;
+    }
+
+    protected function loadJetstreamRoutes(): self
+    {
+        // Register inertia views and routes for jetstream
+        $this->loadRoutesFrom(
+            static::path('routes/jetstream.php')
+        );
 
         return $this;
     }

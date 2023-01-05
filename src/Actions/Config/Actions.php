@@ -2,7 +2,7 @@
 
 namespace Blazervel\Blazervel\Actions\Config;
 
-use Blazervel\Blazervel\Support\Actions as SupportActions;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
@@ -11,19 +11,44 @@ class Actions extends Config
 {
     public function generate(): array
     {
-        return [
-            'actions' => (
-                collect(SupportActions::classes())
-                    ->keys()
-                    ->filter(fn ($class) => (new ReflectionClass($class))->isAbstract() === false)
-                    ->map(fn ($class) => [$class => [
-                        'key' => Str::remove('App.Actions.Blazervel.', Str::replace('\\', '.', $class)),
-                        'methods' => $this->getActionInvoker($class)
-                    ]])
-                    ->collapse()
-                    ->all()
-            )
-        ];
+        $controllerActions = (new Controllers)->generate();
+
+        $standaloneActions = (
+            collect($this->classes())
+                ->keys()
+                ->filter(fn ($class) => (new ReflectionClass($class))->isAbstract() === false)
+                ->map(fn ($class) => [$class => [
+                    'key' => Str::remove('App.', Str::replace('\\', '.', $class)),
+                    'methods' => $this->getActionInvoker($class)
+                ]])
+                ->collapse()
+                ->all()
+        );
+
+        return ['actions' => array_merge(
+            $controllerActions['controllers'],
+            $standaloneActions
+        )];
+    }
+
+    private function classes(): array
+    {
+        $actionsDir       = 'app/Actions';
+        $actionsNamespace = 'App\\Actions';
+        $classNames       = [];
+        $files            = (new Filesystem)->allFiles(base_path($actionsDir));
+
+        foreach ($files as $file) {
+            $path      = $file->getPathName();
+            $className = explode("{$actionsDir}/", $path)[1];
+            $className = Str::remove('.php', $className);
+            $className = Str::replace('/', '\\', $className);
+            $className = "{$actionsNamespace}\\{$className}";
+
+            $classNames[$className] = $path;
+        }
+
+        return $classNames;
     }
 
     private function getActionInvoker(string $class): array

@@ -17,6 +17,7 @@ class AuthenticatedSessionCreate
     {
         return Inertia::render('@blazervel-ui/react/jetstream/Pages/Login', [
             'canResetPassword' => Route::has('password.request'),
+            'canRegister' => Route::has('register'),
             'status' => session('status'),
         ]);
     }

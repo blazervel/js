@@ -30,7 +30,7 @@ class Controllers extends Config
                     ->filter(fn ($class) => (new ReflectionClass($class))->isAbstract() === false)
                     ->map(fn ($class) => [$class => [
                         'key' => Str::remove('App.', Str::replace('\\', '.', $class)),
-                        'actions' => $this->getControllerActions($class)
+                        'methods' => $this->getControllerActions($class)
                     ]])
                     ->collapse()
                     ->all()

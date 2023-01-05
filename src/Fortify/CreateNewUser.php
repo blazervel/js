@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
-use Blazervel\Workspaces\Models\WorkspaceUserInviteModel;
 use Laravel\Jetstream\Jetstream;
 
 class CreateNewUser implements CreatesNewUsers
@@ -24,16 +23,11 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
-        // if (!WorkspaceUserInviteModel::intendedUrlIsWorkspaceInviteAccept()) {
-        //     return redirect()->route('login');
-        // }
-
-
         Validator::make($input, [
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
-            // 'terms'    => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
+            'terms'    => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
         $user = User::create([
@@ -42,14 +36,13 @@ class CreateNewUser implements CreatesNewUsers
             'password' => Hash::make($input['password']),
         ]);
 
-        // if (!$this->ensureAcceptingInvitation()) {
-        //     $user->ownedTeams()->save(Team::forceCreate([
-        //         'user_id' => $user->id,
-        //         'name' => explode(' ', $user->name, 2)[0]."'s Company",
-        //         'personal_team' => true,
-        //     ]));
-        // }
-        
+        if (! $this->ensureAcceptingInvitation()) {
+            $user->ownedTeams()->save(Team::forceCreate([
+                'user_id' => $user->id,
+                'name' => explode(' ', $user->name, 2)[0]."'s Company",
+                'personal_team' => true,
+            ]));
+        }
 
         return $user;
     }
