@@ -54,6 +54,8 @@ class BuildCommand extends Command
             )
         ));
 
+        $this->comment('Blazervel json config files built for translations, routes, models, notifications, actions, and jobs');
+
         return 0;
     }
 }

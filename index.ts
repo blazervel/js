@@ -17,6 +17,9 @@ export default (options: BlazerelConfigProps) => ({
     if (!['build', 'serve'].includes(command)) {
       return config
     }
+    
+    // Generate static config/schema files
+    exec('php artisan blazervel:build')
 
     // Add default aliases (e.g. alias @ -> ./resources/js)
     const basePath = searchForWorkspaceRoot(process.cwd()),
@@ -50,9 +53,6 @@ export default (options: BlazerelConfigProps) => ({
       loadEnv(mode, process.cwd(), '').APP_URL || '',
       path.resolve(homedir(), '.config/valet/Certificates/') // options.certsPath
     )
-    
-    // Generate static config/schema files
-    exec('php artisan blazervel:build')
     
     return config
   }
