@@ -19,7 +19,6 @@ export interface ConfigProps {
   routes: object, //RoutesConfigProps
   models: object, //ModelsConfigProps
   notifications: object,
-  controllers: object,
   actions: object,
   jobs: object
 }
