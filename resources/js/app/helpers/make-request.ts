@@ -87,7 +87,7 @@ let queue: Array<QueueItemProps> = [], queueReject: Function, queueResponse: Pro
 const debounceFetch = debounce(() => {
     
     // TODO: Throttle/chunk queue into groups of maxQueueItems
-    makeRequest('/api/blazervel/batch', {method: 'post', data: {queue: JSON.stringify(queue)}})
+    makeRequest('/api/blazervel/batch-requests', {method: 'post', data: {queue: JSON.stringify(queue)}})
         .then(response => response.data.batch.map(response => {
             // Cache individual request responses
             cache.store.setItem(response.key, response)

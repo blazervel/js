@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Actions;
+namespace Blazervel\BlazervelQL\Actions;
 
 use Illuminate\Database\Eloquent\Model;
 use Exception;
@@ -10,12 +10,12 @@ use Illuminate\Http\Request;
 use ReflectionClass;
 use ReflectionMethod;
 
-class RunActions
+class HandleBatchActions
 {
     public function __invoke(Request $request)
     {
         // Example request:
-        // http://blazervel.test/api/blazervel/run-actions
+        // http://blazervel.test/api/blazervel/batch-actions
         // ?actions=[{%22key%22:%2240661014d060c64829b0b721da6a8818%22,%22url%22:%22%E2%80%A6thod%22:%22get%22,%22params%22:{%22namespace%22:%22blazervel%22}}}]
         $request->validate([
             'actions' => 'required|json'

@@ -33,7 +33,7 @@ interface RunnerOptionsProps {
 const store = (window as any).localStorage
 
 const runnerOptions: RunnerOptionsProps = {
-  route: '/api/blazervel/run-actions',
+  route: '/api/blazervel/batch-actions',
   method: 'get', //'post'
   debounceDelay: 500,
 }

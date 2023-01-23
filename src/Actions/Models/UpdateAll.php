@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Actions\Models;
+namespace Blazervel\BlazervelQL\Actions\Models;
 
 class UpdateAll extends ModelAction
 {

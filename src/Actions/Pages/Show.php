@@ -1,11 +1,32 @@
 <?php
 
-namespace Blazervel\Blazervel\Actions\Pages;
+namespace Blazervel\BlazervelQL\Actions\Pages;
 
-class Show
+use Blazervel\BlazervelQL\Action;
+use Blazervel\BlazervelQL\Actions\ResolveAction;
+use Blazervel\BlazervelQL\Support\Actions;
+use Blazervel\BlazervelQL\Actions\Config;
+use Blazervel\BlazervelQL\WithBlazervel;
+use Illuminate\Http\Request;
+
+class Show extends Action
 {
-    public function __invoke()
+    use WithBlazervel;
+
+    public function handle(Request $request, string $url)
     {
-        return [];
+        $action    = Actions::urlAction($url);
+        $params    = Actions::urlParams($url);
+        $component = Actions::actionComponent($action);
+        $response  = ResolveAction::run(new Request($params), $action);
+
+        $data = [
+            'action' => $action,
+            'props' => $response,
+            'config' => Config\App::run(),
+            'componentName' => $component
+        ];
+
+        return $data;
     }
 }

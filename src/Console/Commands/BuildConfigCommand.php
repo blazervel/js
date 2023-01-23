@@ -1,19 +1,20 @@
 <?php
 
-namespace Blazervel\Blazervel\Console\Commands;
+namespace Blazervel\BlazervelQL\Console\Commands;
 
-use Blazervel\Blazervel\Actions\Config\Actions;
-use Blazervel\Blazervel\Actions\Config\Controllers;
-use Blazervel\Blazervel\Actions\Config\Jobs;
-use Blazervel\Blazervel\Actions\Config\Translations;
-use Blazervel\Blazervel\Actions\Config\Routes;
-use Blazervel\Blazervel\Actions\Config\Models;
-use Blazervel\Blazervel\Actions\Config\Notifications;
-use Blazervel\Blazervel\Providers\ServiceProvider;
+use Blazervel\BlazervelQL\Actions\Config\Actions;
+use Blazervel\BlazervelQL\Actions\Config\Controllers;
+use Blazervel\BlazervelQL\Actions\Config\Notifications;
+use Blazervel\BlazervelQL\Actions\Config\Jobs;
+use Blazervel\BlazervelQL\Actions\Config\BlazervelControllers;
+use Blazervel\BlazervelQL\Actions\Config\Translations;
+use Blazervel\BlazervelQL\Actions\Config\Routes;
+use Blazervel\BlazervelQL\Actions\Config\Models;
+use Blazervel\BlazervelQL\Providers\ServiceProvider;
 use Illuminate\Support\Facades\File;
 use Illuminate\Console\Command;
 
-class BuildCommand extends Command
+class BuildConfigCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -44,9 +45,10 @@ class BuildCommand extends Command
             Translations::class,
             Routes::class,
             Models::class,
-            Notifications::class,
-            Actions::class,
-            Jobs::class,
+            BlazervelControllers::class,
+            // Notifications::class,
+            // Actions::class,
+            // Jobs::class,
         ])->each(fn ($helper) => (
             file_put_contents(
                 "{$directory}/{$helper::outputFileName()}",

@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Actions\Config;
+namespace Blazervel\BlazervelQL\Actions\Config;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;

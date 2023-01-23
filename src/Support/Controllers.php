@@ -4,15 +4,14 @@ namespace Blazervel\BlazervelQL\Support;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Symfony\Component\Finder\Finder;
 
-class Actions
+class Controllers
 {
     public static function dir(): string
     {
-        return Config::get('blazervel.actions.actions_dir', 'app/Actions/Blazervel');
+        return 'app/Http/Blazervel';
     }
 
     public static function namespace(): string
@@ -20,6 +19,23 @@ class Actions
         return (new Collection(explode('/', static::dir())))
                     ->map(fn ($slug) => Str::ucfirst(Str::camel($slug)))
                     ->join('\\');
+    }
+
+    public static function view(string $controllerClass): string
+    {
+        return collect(explode('\\', Str::remove(static::namespace() . '\\', $controllerClass)))->join('/') . '.tsx';
+    }
+
+    public static function configDefaults(string $controllerClass): array
+    {
+        $namespace = collect(explode('\\', Str::remove(static::namespace() . '\\', $controllerClass)));
+        $name = $namespace->join('/');
+
+        return [
+            'name' => $name,
+            'view' => "/{$name}", //"/{$name}.tsx",
+            'route' => $namespace->map(fn ($s) => Str::snake($s, '-'))->join('/'),
+        ];
     }
 
     public static function urlRoute(string $url, string $method = 'GET')

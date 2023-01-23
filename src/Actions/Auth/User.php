@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Actions\Auth;
+namespace Blazervel\BlazervelQL\Actions\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

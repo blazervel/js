@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\Blazervel\Http\Middleware;
+namespace Blazervel\BlazervelQL\Http\Middleware;
 
-use Blazervel\Blazervel\WithBlazervel;
+use Blazervel\BlazervelQL\WithBlazervel;
 use Closure;
 
 class BlazervelMiddleware

@@ -1,5 +1,5 @@
 <?php
 
-namespace Blazervel\Blazervel\Support;
+namespace Blazervel\BlazervelQL\Support;
 
 class Features extends Actions {}

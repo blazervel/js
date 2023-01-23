@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Actions\Models;
+namespace Blazervel\BlazervelQL\Actions\Models;
 
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;

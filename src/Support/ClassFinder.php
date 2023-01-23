@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Support;
+namespace Blazervel\BlazervelQL\Support;
 
 use Symfony\Component\Finder\Finder;
 

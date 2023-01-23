@@ -29,7 +29,7 @@ export default ($app) => ({
 
     progress.start()
 
-    const conn = new Connection('actions/pages-data'),
+    const conn = new Connection('actions/pages-show'),
           response: PageProps = (
             await conn
               ._get({ url, namespace: 'blazervel' })

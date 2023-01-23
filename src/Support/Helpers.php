@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\Blazervel\Support;
+namespace Blazervel\BlazervelQL\Support;
 
 use Illuminate\Support\Collection;
 

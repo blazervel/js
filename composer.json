@@ -1,6 +1,6 @@
 {
-  "name": "blazervel/blazervel",
-  "description": "Zero-configuration Laravel development workflow",
+  "name": "blazervel/blazervelql",
+  "description": "Query language API and JS helper for Laravel",
   "license": "MIT",
   "authors": [
       {
@@ -21,12 +21,12 @@
   },
   "autoload": {
       "psr-4": {
-          "Blazervel\\Blazervel\\": "src"
+          "Blazervel\\BlazervelQL\\": "src"
       }
   },
   "autoload-dev": {
       "psr-4": {
-          "Blazervel\\Blazervel\\Tests\\": "tests"
+          "Blazervel\\BlazervelQL\\Tests\\": "tests"
       }
   },
   "config": {
@@ -35,7 +35,7 @@
   "extra": {
       "laravel": {
           "providers": [
-              "Blazervel\\Blazervel\\Providers\\ServiceProvider"
+              "Blazervel\\BlazervelQL\\Providers\\ServiceProvider"
           ]
       }
   }

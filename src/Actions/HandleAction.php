@@ -1,14 +1,14 @@
 <?php
 
-namespace Blazervel\Blazervel\Actions;
+namespace Blazervel\BlazervelQL\Actions;
 
-use Blazervel\Blazervel\WithBlazervel;
-use Blazervel\Blazervel\Support\Actions;
+use Blazervel\BlazervelQL\HasBlazervel;
+use Blazervel\BlazervelQL\Support\Actions;
 use Exception;
 use Illuminate\Http\Request;
 use ReflectionMethod;
 
-class Handle
+class HandleAction
 {
     public static function run(Request $request, string $action)
     {
@@ -26,9 +26,9 @@ class Handle
 
         $actionClass = Actions::keyAction($action);
 
-        if (!class_uses($actionClass, WithBlazervel::class)) {
+        if (!class_uses($actionClass, HasBlazervel::class)) {
             throw new Exception(
-                "[$actionClass] is missing trait [" . WithBlazervel::class . "]"
+                "[$actionClass] is missing trait [" . HasBlazervel::class . "]"
             );
         }
 

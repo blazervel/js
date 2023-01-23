@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\Blazervel\Actions\Models;
+namespace Blazervel\BlazervelQL\Actions\Models;
 
-use Blazervel\Blazervel\Support\Actions;
+use Blazervel\BlazervelQL\Support\Actions;
 
 class Notify extends ModelAction
 {

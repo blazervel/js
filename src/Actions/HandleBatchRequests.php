@@ -1,11 +1,11 @@
 <?php
 
-namespace Blazervel\Blazervel\Actions;
+namespace Blazervel\BlazervelQL\Actions;
 
-use Blazervel\Blazervel\Support\Actions;
+use Blazervel\BlazervelQL\Support\Actions;
 use Illuminate\Http\Request;
 
-class Batch
+class HandleBatchRequests
 {
     public function __invoke(Request $request)
     {

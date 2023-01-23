@@ -1,59 +1,48 @@
-import { loadEnv, UserConfig, searchForWorkspaceRoot } from 'vite'
-import { homedir } from 'os'
+import { UserConfig, searchForWorkspaceRoot } from 'vite'
+import { cwd, __dirname } from 'node:process'
 import path from 'path'
-import { exec } from 'node:child_process'
-import setupDevServer from './resources/js/vite/setup-dev-server'
 
-export interface BlazerelConfigProps {
-  certsPath?: string
+interface Props {
+
 }
 
-export default (options: BlazerelConfigProps) => ({
+export default (options: Props) => ({
 
-  name: 'blazervel',
+  name: '@blazervel/ql',
   
   config: (config: UserConfig, { mode, command }: { mode: string, command: string }) => {
 
     if (!['build', 'serve'].includes(command)) {
       return config
     }
-    
-    // Generate static config/schema files
-    exec('php artisan blazervel:build')
 
-    // Add default aliases (e.g. alias @ -> ./resources/js)
-    const basePath = searchForWorkspaceRoot(process.cwd()),
+    const basePath = searchForWorkspaceRoot(cwd()),
           packagePath = path.resolve(__dirname)
 
-    config.server = config.server || {}
-    config.server.fs = config.server.fs || {}
-
-    config.server.fs.allow = [
-      ...(config.server.fs.allow || []),
-      path.relative(basePath, packagePath),
-      basePath
-    ]
-
-    config.resolve = config.resolve || {}
+    // Alias blazervelql utilities
+    config.resolve = {
+      alias: {
+        ...(config.resolve.alias || {}),
+        '@blazervel/ql': `${packagePath}/resources/js`,
+      }
+    }
     
-    config.resolve.alias = {
-      ...(config.resolve.alias || {}),
-      '@tightenco/ziggy': `${basePath}/vendor/tightenco/ziggy/src/js`,
-      '@blazervel': `${packagePath}/resources/js`,
-      '@pckg': `${basePath}/node_modules`
+    // Allow importing from package directory in ./vendor (or ../packages when in development)
+    config.server = {
+      fs: {
+        allow: [
+          ...(config.server.fs.allow || []),
+          path.relative(basePath, packagePath),
+          basePath
+        ]
+      }
     }
 
-    if (mode !== 'development') {
-      return config
+    // Preserve symlinks (e.g. when using ../packages folder in development)
+    if (mode === 'development') {
+      config.preserveSymlinks = true
     }
 
-    // Configure dev server (e.g. valet https, HMR, etc.)
-    config = setupDevServer(
-      config,
-      loadEnv(mode, process.cwd(), '').APP_URL || '',
-      path.resolve(homedir(), '.config/valet/Certificates/') // options.certsPath
-    )
-    
     return config
   }
 })
