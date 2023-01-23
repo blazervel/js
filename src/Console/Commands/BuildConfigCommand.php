@@ -21,7 +21,7 @@ class BuildConfigCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'blazervel:build';
+    protected $signature = 'blazervelql:build-config';
 
     /**
      * The console command description.

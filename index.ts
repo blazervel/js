@@ -1,5 +1,6 @@
 import { UserConfig, searchForWorkspaceRoot } from 'vite'
 import { cwd, __dirname } from 'node:process'
+import { exec } from 'node:child_process'
 import path from 'path'
 
 interface Props {
@@ -18,6 +19,9 @@ export default (options: Props) => ({
 
     const basePath = searchForWorkspaceRoot(cwd()),
           packagePath = path.resolve(__dirname)
+
+    // Generate static config/schema files
+    // exec('php artisan blazervelql:build-config')
 
     // Alias blazervelql utilities
     config.resolve = {
