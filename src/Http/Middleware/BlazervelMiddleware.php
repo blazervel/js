@@ -14,7 +14,7 @@ class BlazervelMiddleware
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function __invoke($request, Closure $next)
     {
         $route = $request->route();
         $routeAction = $route->getAction();

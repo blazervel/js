@@ -1,5 +1,5 @@
 import { UserConfig, searchForWorkspaceRoot } from 'vite'
-import { cwd, __dirname } from 'node:process'
+import { cwd } from 'node:process'
 import { exec } from 'node:child_process'
 import path from 'path'
 
@@ -27,7 +27,9 @@ export default (options: Props) => ({
     config.resolve = {
       alias: {
         ...(config.resolve.alias || {}),
+        '@tightenco/ziggy': `${basePath}/vendor/tightenco/ziggy/src/js`,
         '@blazervel/ql': `${packagePath}/resources/js`,
+        '@pckg': path.resolve('./node_modules'),
       }
     }
     

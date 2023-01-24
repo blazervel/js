@@ -13,7 +13,7 @@ class Show extends Action
 {
     use WithBlazervel;
 
-    public function handle(Request $request, string $url)
+    public function __invoke(Request $request, string $url)
     {
         $action    = Actions::urlAction($url);
         $params    = Actions::urlParams($url);

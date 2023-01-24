@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Attempt extends Action
 {
-    public function handle(Request $request)
+    public function __invoke(Request $request)
     {
         $request->validate([
           'email' => 'required|string|email:dns,rfc,spoof,filter|max:255|exists:users,email',

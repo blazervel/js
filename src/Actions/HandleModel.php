@@ -5,9 +5,8 @@ namespace Blazervel\BlazervelQL\Actions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use lluminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
-class HandleAction
+class HandleModel
 {
     protected Request $request;
 

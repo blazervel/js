@@ -3,7 +3,6 @@
 namespace Blazervel\BlazervelQL\Support;
 
 use Blazervel\BlazervelQL\Actions;
-use Blazervel\BlazervelQL\Actions\Models as ModelActions;
 use Illuminate\Support\Facades\Route;
 
 class ApiRoutes

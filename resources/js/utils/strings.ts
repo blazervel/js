@@ -1,5 +1,3 @@
-export { resolveComponent } from './resolve-component'
-
 export const snake = str => (
   str
     .replace(/[A-Z]/g, char => ` ${char.toLowerCase()}`)

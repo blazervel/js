@@ -4,7 +4,7 @@ export default function (langConfig: {translations: object, locale: string}) {
     replace: object = {},
     fallback: boolean = true,
     count: number|null = null,
-    config: object
+    config: {locale: string, translations: object}
   ) => (
     lang(key, replace, fallback, count, config || langConfig)
   )
@@ -15,7 +15,7 @@ function lang(
   replace: object = {},
   fallback: boolean = true,
   count: number|null = null,
-  config: object
+  config: {locale: string, translations: object}
 ) {
 
   const translations: object = config.translations,

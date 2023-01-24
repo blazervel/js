@@ -35,7 +35,7 @@ class BuildConfigCommand extends Command
      *
      * @return int
      */
-    public function handle()
+    public function __invoke()
     {
         $directory = ServiceProvider::path('dist/config');
 
