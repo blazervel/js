@@ -26,7 +26,7 @@ export default (options: Props) => ({
     // Alias blazervelql utilities
     config.resolve = {
       alias: {
-        ...(config.resolve.alias || {}),
+        ...(config.resolve?.alias || {}),
         '@tightenco/ziggy': `${basePath}/vendor/tightenco/ziggy/src/js`,
         '@blazervel/ql': `${packagePath}/resources/js`,
         '@pckg': path.resolve('./node_modules'),
@@ -37,7 +37,7 @@ export default (options: Props) => ({
     config.server = {
       fs: {
         allow: [
-          ...(config.server.fs.allow || []),
+          ...(config.server?.fs?.allow || []),
           path.relative(basePath, packagePath),
           basePath
         ]
