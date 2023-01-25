@@ -2,7 +2,7 @@
 
 namespace Blazervel\BlazervelQL;
 
-trait HasBlazervel
+trait HasBlazervelQL
 {
     //
 }

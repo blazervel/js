@@ -11,13 +11,7 @@ localForage.config({
   description : 'Local storage for BlazervelQL query caching',
 })
 
-const defaultStore: Storage = localForage.createInstance({
-  name: 'default'
-})
-
-const httpStore: Storage = localForage.createInstance({
-  name: 'httpRequests'
-})
+const store: Storage = localForage.createInstance({ name: 'default' })
 
 export const storeKey = ({ url, params = null }: {url: string, params?: object|null}) => {
   let orderedParams = {}
@@ -34,7 +28,6 @@ export const storeKey = ({ url, params = null }: {url: string, params?: object|n
 export const findOrNew = async (req: Request, handleRequest: (req: Request) => Promise<Response>): Promise<Response> => {
 
   const key = storeKey(req),
-        store = httpStore,
         fromStore = await store.getItem(key)
 
   let res: Response
@@ -58,11 +51,4 @@ export const findOrNew = async (req: Request, handleRequest: (req: Request) => P
   })
 }
 
-export const refesh = () => {
-
-}
-
-export default {
-  default: defaultStore.store,
-  http: httpStore.store
-}
+export default store

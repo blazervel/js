@@ -1,17 +1,17 @@
 import axios from '@pckg/axios'
 import { debounce } from '@pckg/lodash'
 import { Request, RequestConfig, Response, QueueItem, AxiosRequestOptions } from '../types'
-import store, { storeKey } from './cache'
-import { findOrNew } from './store'
+import store, { storeKey } from './store'
 
 const debounceQueueMakeRequestWait: number = 500
 //const maxQueueItems: number = 20
 
 let queue: Array<QueueItem> = []
 
-export const queueMakeRequest = (request: Request) => {
+export const queueMakeRequest = async (request: Request) => {
 
-    const key = storeKey(request)
+    const key = storeKey(request),
+          fromStore = await store.getItem(key)
 
     let queueItem: QueueItem
 
@@ -20,9 +20,11 @@ export const queueMakeRequest = (request: Request) => {
     ))
 
     // Get item from store or queue request
-    store.getItem(key)
-        .then(res => queueItem.resolve(res))
-        .catch(() => debounceQueueMakeRequest())
+    if (fromStore !== null) {
+        queueItem.resolve(fromStore)
+    } else {
+        debounceQueueMakeRequest()
+    }
 
     return queuedItemResolver
 }
