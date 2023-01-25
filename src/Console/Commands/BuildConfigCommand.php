@@ -1,16 +1,16 @@
 <?php
 
-namespace Blazervel\BlazervelQL\Console\Commands;
+namespace Blazervel\BlazervelJS\Console\Commands;
 
-use Blazervel\BlazervelQL\Actions\Config\Actions;
-use Blazervel\BlazervelQL\Actions\Config\Controllers;
-use Blazervel\BlazervelQL\Actions\Config\Notifications;
-use Blazervel\BlazervelQL\Actions\Config\Jobs;
-use Blazervel\BlazervelQL\Actions\Config\BlazervelControllers;
-use Blazervel\BlazervelQL\Actions\Config\Translations;
-use Blazervel\BlazervelQL\Actions\Config\Routes;
-use Blazervel\BlazervelQL\Actions\Config\Models;
-use Blazervel\BlazervelQL\Providers\ServiceProvider;
+use Blazervel\BlazervelJS\Actions\Config\Actions;
+use Blazervel\BlazervelJS\Actions\Config\Controllers;
+use Blazervel\BlazervelJS\Actions\Config\Notifications;
+use Blazervel\BlazervelJS\Actions\Config\Jobs;
+use Blazervel\BlazervelJS\Actions\Config\BlazervelControllers;
+use Blazervel\BlazervelJS\Actions\Config\Translations;
+use Blazervel\BlazervelJS\Actions\Config\Routes;
+use Blazervel\BlazervelJS\Actions\Config\Models;
+use Blazervel\BlazervelJS\Providers\ServiceProvider;
 use Illuminate\Support\Facades\File;
 use Illuminate\Console\Command;
 
@@ -21,7 +21,7 @@ class BuildConfigCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'blazervelql:build-config';
+    protected $signature = 'blazerveljs:build-config';
 
     /**
      * The console command description.

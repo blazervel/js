@@ -1,9 +1,9 @@
 <?php
 
-namespace Blazervel\BlazervelQL\Actions\Config;
+namespace Blazervel\BlazervelJS\Actions\Config;
 
-use Blazervel\BlazervelQL\Action;
-use Blazervel\BlazervelQL\Support\Actions;
+use Blazervel\BlazervelJS\Action;
+use Blazervel\BlazervelJS\Support\Actions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;

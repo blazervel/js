@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\BlazervelQL\Actions;
+namespace Blazervel\BlazervelJS\Actions;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;

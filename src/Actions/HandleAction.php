@@ -1,9 +1,9 @@
 <?php
 
-namespace Blazervel\BlazervelQL\Actions;
+namespace Blazervel\BlazervelJS\Actions;
 
-use Blazervel\BlazervelQL\HasBlazervel;
-use Blazervel\BlazervelQL\Support\Actions;
+use Blazervel\BlazervelJS\HasBlazervel;
+use Blazervel\BlazervelJS\Support\Actions;
 use Exception;
 use Illuminate\Http\Request;
 use ReflectionMethod;

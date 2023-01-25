@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\BlazervelQL\Actions\Config;
+namespace Blazervel\BlazervelJS\Actions\Config;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;

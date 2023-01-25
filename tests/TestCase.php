@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\BlazervelQL\Tests;
+namespace Blazervel\BlazervelJS\Tests;
 
 use Illuminate\Support\Str;
 use Tests\CreatesApplication;

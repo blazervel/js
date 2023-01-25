@@ -20,12 +20,12 @@
   },
   "autoload": {
       "psr-4": {
-          "Blazervel\\BlazervelQL\\": "src"
+          "Blazervel\\BlazervelJS\\": "src"
       }
   },
   "autoload-dev": {
       "psr-4": {
-          "Blazervel\\BlazervelQL\\Tests\\": "tests"
+          "Blazervel\\BlazervelJS\\Tests\\": "tests"
       }
   },
   "config": {
@@ -34,7 +34,7 @@
   "extra": {
       "laravel": {
           "providers": [
-              "Blazervel\\BlazervelQL\\Providers\\ServiceProvider"
+              "Blazervel\\BlazervelJS\\Providers\\ServiceProvider"
           ]
       }
   }

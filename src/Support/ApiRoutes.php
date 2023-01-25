@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\BlazervelQL\Support;
+namespace Blazervel\BlazervelJS\Support;
 
-use Blazervel\BlazervelQL\Actions;
+use Blazervel\BlazervelJS\Actions;
 use Illuminate\Support\Facades\Route;
 
 class ApiRoutes

@@ -5,10 +5,10 @@ import { Request, Response } from '../types'
 // browser support: https://github.com/localForage/localForage/wiki/Supported-Browsers-Platforms
 
 localForage.config({
-  name: 'BlazervelQL',
+  name: 'BlazervelJS',
   version: 1.0,
-  storeName: 'blazervelql',
-  description : 'Local storage for BlazervelQL query caching',
+  storeName: 'blazerveljs',
+  description : 'Local storage for BlazervelJS query caching',
 })
 
 const store: Storage = localForage.createInstance({ name: 'default' })

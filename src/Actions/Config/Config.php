@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\BlazervelQL\Actions\Config;
+namespace Blazervel\BlazervelJS\Actions\Config;
 
 use Illuminate\Support\Str;
 use JsonSerializable;

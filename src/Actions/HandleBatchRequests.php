@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\BlazervelQL\Actions;
+namespace Blazervel\BlazervelJS\Actions;
 
-use Blazervel\BlazervelQL\Support\Actions;
+use Blazervel\BlazervelJS\Support\Actions;
 use Illuminate\Http\Request;
 
 class HandleBatchRequests

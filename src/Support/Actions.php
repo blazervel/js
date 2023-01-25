@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\BlazervelQL\Support;
+namespace Blazervel\BlazervelJS\Support;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
@@ -58,25 +58,6 @@ class Actions
         return $component;
     }
 
-    public static function keyClass(string $classKey): string
-    {
-        // Support blazervel package actions
-        if (Str::startsWith($classKey, 'blazervel-')) {
-            $actionsNamespace = '';
-        } else {
-            $actionsNamespace = static::dir();
-            $actionsNamespace = explode('/', $actionsNamespace);
-            $actionsNamespace = collect($actionsNamespace)->map(fn ($an) => Str::ucfirst(Str::camel($an)))->join('\\');
-            $actionsNamespace = "\\{$actionsNamespace}";
-        }
-
-        $actionClass = explode('-', $classKey);
-        $actionClass = collect($actionClass)->map(fn ($ac) => Str::ucfirst(Str::camel($ac)))->join('\\');
-        $actionClass = "{$actionsNamespace}\\{$actionClass}";
-
-        return $actionClass;
-    }
-
     public static function keyAction(string $actionKey): string
     {
         // Support blazervel package actions
@@ -105,16 +86,6 @@ class Actions
         return $key->join('-');
     }
 
-    public static function directories(): array
-    {
-        $directory = static::dir();
-        $directories = Finder::create()->in($directory)->directories()->sortByName();
-
-        return (new Collection($directories))
-                    ->map(fn ($dir) => Str::remove(base_path() . '/', $dir->getPathname()))
-                    ->all();
-    }
-
     public static function classes(): Collection
     {
         $actionsDir       = static::dir();
@@ -133,28 +104,5 @@ class Actions
         }
 
         return collect($classNames);
-    }
-
-    public static function anonymousClasses(): Collection
-    {
-        $actions = [];
-
-        foreach (static::classes() as $className => $path) {
-            if (gettype(
-                $class = require($path)
-            ) !== 'object') {
-                continue;
-            }
-
-            $class = get_class($class);
-
-            if (! Str::contains($class, '@anonymous')) {
-                continue;
-            }
-
-            $actions[$className] = $class;
-        }
-
-        return new Collection($actions);
     }
 }

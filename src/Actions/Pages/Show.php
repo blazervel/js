@@ -1,12 +1,12 @@
 <?php
 
-namespace Blazervel\BlazervelQL\Actions\Pages;
+namespace Blazervel\BlazervelJS\Actions\Pages;
 
-use Blazervel\BlazervelQL\Action;
-use Blazervel\BlazervelQL\Actions\ResolveAction;
-use Blazervel\BlazervelQL\Support\Actions;
-use Blazervel\BlazervelQL\Actions\Config;
-use Blazervel\BlazervelQL\WithBlazervel;
+use Blazervel\BlazervelJS\Action;
+use Blazervel\BlazervelJS\Actions\ResolveAction;
+use Blazervel\BlazervelJS\Support\Actions;
+use Blazervel\BlazervelJS\Actions\Config;
+use Blazervel\BlazervelJS\WithBlazervel;
 use Illuminate\Http\Request;
 
 class Show extends Action

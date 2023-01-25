@@ -21,9 +21,9 @@ export default (options: Props) => ({
           packagePath = path.resolve(__dirname)
 
     // Generate static config/schema files
-    // exec('php artisan blazervelql:build-config')
+    // exec('php artisan blazerveljs:build-config')
 
-    // Alias blazervelql utilities
+    // Alias blazerveljs utilities
     config.resolve = {
       alias: {
         ...(config.resolve?.alias || {}),

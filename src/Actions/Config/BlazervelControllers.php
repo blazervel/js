@@ -1,13 +1,13 @@
 <?php
 
-namespace Blazervel\BlazervelQL\Actions\Config;
+namespace Blazervel\BlazervelJS\Actions\Config;
 
 use ReflectionClass;
 use ReflectionMethod;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
-use Blazervel\BlazervelQL\Controller;
+use Blazervel\BlazervelJS\Controller;
 use ReflectionProperty;
 
 class BlazervelControllers extends Config

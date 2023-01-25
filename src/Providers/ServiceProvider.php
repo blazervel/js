@@ -1,9 +1,9 @@
 <?php
 
-namespace Blazervel\BlazervelQL\Providers;
+namespace Blazervel\BlazervelJS\Providers;
 
-use Blazervel\BlazervelQL\Console\Commands\BuildConfigCommand;
-use Blazervel\BlazervelQL\Support\ApiRoutes;
+use Blazervel\BlazervelJS\Console\Commands\BuildConfigCommand;
+use Blazervel\BlazervelJS\Support\ApiRoutes;
 use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
@@ -39,7 +39,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->loadViewsFrom(
             static::path('resources/views'),
-            'blazervelql'
+            'blazerveljs'
         );
 
         return $this;

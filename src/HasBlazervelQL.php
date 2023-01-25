@@ -1,8 +1,8 @@
 <?php
 
-namespace Blazervel\BlazervelQL;
+namespace Blazervel\BlazervelJS;
 
-trait HasBlazervelQL
+trait HasBlazervelJS
 {
     //
 }

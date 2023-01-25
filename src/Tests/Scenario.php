@@ -1,6 +1,6 @@
 <?php
 
-namespace Blazervel\BlazervelQL\Tests;
+namespace Blazervel\BlazervelJS\Tests;
 
 abstract class Scenario
 {
